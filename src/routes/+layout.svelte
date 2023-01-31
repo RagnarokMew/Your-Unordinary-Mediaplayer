@@ -22,7 +22,7 @@
         <a href="#">Play</a>
         <a href="#">Music</a>
         <a href="#">Statistics</a>
-        <a href="#">Forum</a>
+        <a href="/forum">Forum</a>
         <a href="#">Account</a>
         <a href="#">Settings</a>
     </nav>
