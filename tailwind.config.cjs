@@ -1,10 +1,14 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./src/**/*.{html,js,svelte,ts}'],
+  content: ['./src/**/*.{html,js,svelte,ts}','./src/Components/*.svelte'],
   darkMode: 'class',
   theme: {
     extend: {
       colors: {
+        'blue':{
+          450: '#2989ff',
+        },
+
         /* Light Theme Colour Palette */
         'primary': '',
         'secondary': '',
