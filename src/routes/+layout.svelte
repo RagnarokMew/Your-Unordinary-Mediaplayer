@@ -1,7 +1,6 @@
 <script>
 	import { onMount } from "svelte";
     import "../app.css";
-	//import ColourExample from "../Examples/ColourExample.svelte";
 
     onMount(async ()=>{
 
@@ -28,10 +27,6 @@
     </nav>
 
     <slot />
-
-    <br>
-    <!--<ColourExample/>-->
-
 </main>
 
 <style>
