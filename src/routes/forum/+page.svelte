@@ -1,13 +1,10 @@
 <script lang="ts">
 	import type { ActionData, PageData } from './$types';
     import Question from './Question.svelte';
-    import type { Question as _Question, Review } from "./interfaces"
+    import type { Question as _Question, Review } from "$lib/interfaces"
 
     export let data: PageData;
     // export let form: ActionData;
-
-    console.log("pg data");
-    console.log(data);
 
     const questions: _Question[] = data.questions;
 

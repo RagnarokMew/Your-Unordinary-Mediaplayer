@@ -1,5 +1,5 @@
 import type { PageServerLoad, Actions } from "./$types";
-import type { Question, Review } from "./interfaces"
+import type { Question, Review } from "$lib/interfaces"
 
 //? Mock data
 let questions: Question[] = [
