@@ -38,9 +38,11 @@
 		{/if}
 
 		{#if addingReview}
-			<form method="POST" action="?/review">
+			<form method="POST" action="?/review" class="flex flex-col">
 				<label for="review">Review:</label>
-				<input type="text" name="question" id="question" />
+				<input type="text" name="review" id="question" />
+				<label for="rating">Rating:</label>
+				<input type="range" name="rating" min="1" max="10">
 			</form>
 		{/if}
 	</div>
