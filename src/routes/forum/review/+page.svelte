@@ -1,5 +1,5 @@
 <script lang="ts">
-    
+    let ratingValue = 10;
 </script>
 
 <main class="flex flex-col justify-between p-10 w-full h-full">
@@ -10,8 +10,8 @@
             <input name="review" type="text"/>
         </div>
         <div class="flex flex-col">
-            <label for="rating">Rating:</label>
-            <input name="rating" type="range"/>
+            <label for="rating">Rating: {ratingValue}</label>
+            <input name="rating" type="range" min="1" max="10" bind:value={ratingValue}/>
         </div>
         <button type="submit" class="font-bold self-center">Submit</button>
     </form>
