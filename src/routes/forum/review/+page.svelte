@@ -7,11 +7,11 @@
     <form method="POST" action="/forum?/review" class="flex flex-col">
         <div class="flex flex-col">
             <label for="review">Review:</label>
-            <input name="review" type="text"/>
+            <input name="review" type="text" class="max-w-3xl"/>
         </div>
         <div class="flex flex-col">
-            <label for="rating">Rating: {ratingValue}</label>
-            <input name="rating" type="range" min="1" max="10" bind:value={ratingValue}/>
+            <label for="rating" class="">Rating: {ratingValue}</label>
+            <input name="rating" type="range" min="1" max="10" bind:value={ratingValue} class="max-w-xs"/>
         </div>
         <button type="submit" class="font-bold self-center">Submit</button>
     </form>
