@@ -1,6 +1,7 @@
 <script lang="ts">
     let audio: HTMLAudioElement;
     let time: number = 0;
+    let volume: number = 0.5;
     $: audioLength = audio?.duration;
 
     const playSong = () => {
@@ -14,6 +15,7 @@
 
     const seekSong = () => audio.currentTime = time;
     const updateRange = () => time = audio.currentTime;
+    const updateVolume = () => audio.volume = volume;
 
     const nextSong = () => {
         //TBA
@@ -37,7 +39,7 @@
     <!-- Central panel -->
     <div class="flex flex-col justify-between items-center row-start-2 row-end-3 col-start-2 col-end-3 m-4">
         <img src="" alt="Placeholder" class="border w-[512px] h-[512px]">
-        <audio on:seeked={updateRange} controls bind:this={audio}></audio>
+        <audio on:seeked={updateRange} bind:this={audio}></audio>
 
         <!-- Controls -->
         <div class="flex flex-row items-center justify-evenly bg-rose-200 w-2/3 h-1/6">
@@ -45,7 +47,15 @@
             <button on:click={playSong}>Play</button>
             <button on:click={nextSong}>Next</button>
             <button on:click={likeSong}>Like</button>
-            <input on:change={seekSong} bind:value={time} type="range" min="0" max={audioLength ? audioLength : 0}>
+            <div class="flex flex-col">
+                <label for="time">Time:</label>
+                <input on:change={seekSong} bind:value={time} type="range" min="0" max={audioLength} name="time">
+            </div>
+
+            <div class="flex flex-col">
+                <label for="volume">Volume:</label>
+                <input on:change={updateVolume} bind:value={volume} type="range" min="0" max="1" step="0.1" name="volume">
+            </div>
         </div>
     </div>
 
