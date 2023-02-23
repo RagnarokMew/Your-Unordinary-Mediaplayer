@@ -1,7 +1,16 @@
 <script lang="ts">
+    import type { PageData } from "./$types";
+
+    export let data: PageData;
+    export const ssr = false;
+
+    const songs = data.post.songs;
+    let currentSong = 0;
+
     let audio: HTMLAudioElement;
     let time: number = 0;
     let volume: number = 0.5;
+
     $: audioLength = audio?.duration;
 
     const playSong = () => {
@@ -18,11 +27,15 @@
     const updateVolume = () => audio.volume = volume;
 
     const nextSong = () => {
-        //TBA
+        currentSong++;
+        currentSong = currentSong % songs.length;
     }
 
     const prevSong = () => {
-        //TBA
+        currentSong--;
+        if (currentSong < 0) {
+            currentSong = songs.length - 1;
+        }
     }
 
     const likeSong = () => {
@@ -43,7 +56,7 @@
     <!-- Central panel -->
     <div class="flex flex-col justify-between items-center row-start-2 row-end-3 col-start-2 col-end-3 m-4 gap-2">
         <img src="" alt="Placeholder" class="border w-[512px] h-[512px]">
-        <audio on:seeked={updateRange} bind:this={audio}>Audio</audio>
+        <audio on:seeked={updateRange} bind:this={audio} src={songs[currentSong] ?? ""}>Audio</audio>
 
         <p>Lorem ipsum - Dolor Sit Amet</p>
 
