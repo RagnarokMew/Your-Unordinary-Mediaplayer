@@ -13,7 +13,7 @@
         <button on:click={toggleTheme} class="toggle-dark">Theme</button>
         <a href="/" class="w-10 h-10"> <img src="/Icons/home.svg" class="" alt="Home"> </a>
         <a href="/play"> <img src="/Icons/play.svg" class="w-10 h-10" alt="Play"> </a>
-        <a href="#"> <img src="/Icons/musical-notes.svg" class="w-10 h-10" alt="Music"> </a>
+        <a href="/upload"> <img src="/Icons/musical-notes.svg" class="w-10 h-10" alt="Music"> </a>
         <a href="#"> <img src="/Icons/pie-chart.svg" class="w-10 h-10" alt="Statistics"> </a>
         <a href="/forum"> <img src="/Icons/people.svg" class="w-10 h-10" alt="Forum"> </a>
         <a href="#"> <img src="/Icons/home.svg" class="w-10 h-10" alt="Account"> </a>
