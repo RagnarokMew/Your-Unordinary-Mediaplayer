@@ -1,23 +1,15 @@
-import type { PageLoad } from "./$types";
+import type { PageLoad } from './$types';
+import type { Song } from '$lib/interfaces';
+import { getAllSongBuffers } from '$lib/indexedDB';
 
-export const load = (({ params }) => {
-    let songs: IDBDatabase;
-    const request = window.indexedDB.open("songs");
+export const load = (async({ params }) => {
 
-    request.onsuccess = (event: Event) => {
-        songs = request.result;
-        console.log("Songs loaded successfully!");
+  const songsData = await getAllSongBuffers() as Song[];
+  const songs: Song[] = songsData
+
+  return {
+    post: {
+      songs
     }
-
-    request.onerror = (event: Event) => {
-        console.error("Could not load the songs!")
-    }
-
-    //TODO: get the songs/playlists from the DB
-
-    return {
-      post: {
-        songs: []
-      }
-    };
-  }) satisfies PageLoad;
+  };
+}) satisfies PageLoad;

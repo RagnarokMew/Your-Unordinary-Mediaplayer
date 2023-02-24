@@ -12,6 +12,8 @@
     let volume: number = 0.5;
 
     $: audioLength = audio?.duration;
+    $: blob = new Blob([songs[currentSong].audio], { type: "audio/mp3" });
+    $: url = URL.createObjectURL(blob)
 
     const playSong = () => {
         if (audio.paused) {
@@ -38,10 +40,6 @@
         }
     }
 
-    const likeSong = () => {
-        //TBA
-    }
-
     const addToPlaylist = () => {
         //TBA
     }
@@ -56,16 +54,15 @@
     <!-- Central panel -->
     <div class="flex flex-col justify-between items-center row-start-2 row-end-3 col-start-2 col-end-3 m-4 gap-2">
         <img src="" alt="Placeholder" class="border w-[512px] h-[512px]">
-        <audio on:seeked={updateRange} bind:this={audio} src={songs[currentSong] ?? ""}>Audio</audio>
+        <audio on:timeupdate={updateRange} bind:this={audio} src={url}>Audio</audio>
 
-        <p>Lorem ipsum - Dolor Sit Amet</p>
+        <p>{songs[currentSong].name} by {songs[currentSong].artist}</p>
 
         <!-- Controls -->
         <div class="flex flex-row items-center justify-evenly bg-rose-200 w-2/3 h-1/6">
             <button on:click={prevSong}>Previous</button>
             <button on:click={playSong}>Play</button>
             <button on:click={nextSong}>Next</button>
-            <button on:click={likeSong}>Like</button>
             <button on:click={addToPlaylist}>Save</button>
             <div class="flex flex-col">
                 <label for="time">Time:</label>
