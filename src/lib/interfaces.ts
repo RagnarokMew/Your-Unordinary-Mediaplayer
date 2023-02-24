@@ -9,3 +9,9 @@ export interface Review {
     review: string;
     rating: number;
 }
+
+export interface Song {
+    artist?: string;
+    name: string;
+    audio: ArrayBuffer;
+}
