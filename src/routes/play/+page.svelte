@@ -2,11 +2,11 @@
     import type { PageData } from "./$types";
 
     export let data: PageData;
-    export const ssr = false;
 
     const songs = data.post.songs;
     let currentSong = 0;
 
+    let timeInput: HTMLInputElement;
     let audio: HTMLAudioElement;
     let time: number = 0;
     let volume: number = 0.5;
@@ -25,7 +25,10 @@
     }
 
     const seekSong = () => audio.currentTime = time;
-    const updateRange = () => time = audio.currentTime;
+    const updateRange = () => {
+        if (document.activeElement === timeInput) return;
+        time = audio.currentTime;
+    }
     const updateVolume = () => audio.volume = volume;
 
     const nextSong = () => {
@@ -66,7 +69,7 @@
             <button on:click={addToPlaylist}>Save</button>
             <div class="flex flex-col">
                 <label for="time">Time:</label>
-                <input on:change={seekSong} bind:value={time} type="range" min="0" max={audioLength} name="time">
+                <input bind:this={timeInput} on:change={seekSong} bind:value={time} type="range" min="0" max={audioLength} name="time">
             </div>
 
             <div class="flex flex-col">
