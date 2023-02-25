@@ -9,6 +9,10 @@
     const audioContext = new AudioContext();
     const panner = audioContext.createStereoPanner();
     panner.pan.value = 0;
+    const biquad = audioContext.createBiquadFilter();
+    const biquadFilters: BiquadFilterType[] = ["lowpass", "highpass", "bandpass", "lowshelf", "highshelf", "peaking", "notch", "allpass"];
+    let biquadIndex = 0;
+
     let track: MediaElementAudioSourceNode;
 
     let timeInput: HTMLInputElement;
@@ -17,6 +21,7 @@
     let volume: number = 0.5;
     let panning: number = 0;
 
+    $: biquad.type = biquadFilters[biquadIndex];
     $: audioLength = audio?.duration;
     $: blob = new Blob([songs[currentSong].audio], { type: "audio/mp3" });
     let url: string;
@@ -29,7 +34,7 @@
     const playSong = () => {
         if (!track) {
             track = audioContext.createMediaElementSource(audio);
-            track.connect(panner).connect(audioContext.destination);
+            track.connect(panner).connect(biquad).connect(audioContext.destination);
         }
 
         if (audio.paused) {
@@ -104,9 +109,16 @@
     </div>
 
     <!-- Bottom panel -->
-    <div class="row-start-3 row-end-4 col-start-2 col-end-3 bg-rose-200 m-4 w-1/2 h-2/3 self-center justify-self-center">
-        <label for="stereo">Panning:</label>
-        <input on:change={updatePanning} bind:value={panning} type="range" min="-1" max="1" step="0.1" name="stereo">
+    <div class="flex flex-row gap-5 row-start-3 row-end-4 col-start-2 col-end-3 bg-rose-200 m-4 w-1/2 h-2/3 self-center justify-self-center">
+        <div class="flex flex-col">
+            <label for="stereo">Panning:</label>
+            <input on:change={updatePanning} bind:value={panning} type="range" min="-1" max="1" step="0.1" name="stereo">
+        </div>
+
+        <div class="flex flex-col">
+            <label for="biquad">Biquad: {biquadFilters[biquadIndex]}</label>
+            <input bind:value={biquadIndex} type="range" min="0" max={biquadFilters.length - 1} step="1" name="Biquad">
+        </div>
     </div>
 
 </main>
