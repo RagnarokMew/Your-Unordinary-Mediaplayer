@@ -13,7 +13,12 @@
 
     $: audioLength = audio?.duration;
     $: blob = new Blob([songs[currentSong].audio], { type: "audio/mp3" });
-    $: url = URL.createObjectURL(blob)
+    let url: string;
+
+    $: {
+        URL.revokeObjectURL(url);
+        url = URL.createObjectURL(blob);
+    }
 
     const playSong = () => {
         if (audio.paused) {
