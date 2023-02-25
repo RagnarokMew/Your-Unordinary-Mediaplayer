@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { saveSongBuffer } from "$lib/indexedDB";
+    import { saveSong } from "$lib/indexedDB";
 
     let artistName: string;
     let songName: string;
@@ -15,7 +15,7 @@
             
             reader.onloadend = () => {
                 const buffer = reader.result as ArrayBuffer;
-                saveSongBuffer(buffer, songName, artistName);
+                saveSong(buffer, songName, artistName);
             }
         }
         

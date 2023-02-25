@@ -2,7 +2,7 @@
 let songs: IDBDatabase;
 
 const initDB = async() => {
-    const request = window.indexedDB.open('songs', 15);
+    const request = window.indexedDB.open('songs', 1);
     
     request.onblocked = () => {
         console.warn("Unable to access the database!")
@@ -10,6 +10,18 @@ const initDB = async() => {
 
     request.onerror = () => {
         console.warn("Encountered an error while accessing the database!")
+    }
+
+    request.onupgradeneeded = () => {
+        const db = request.result;
+        if (request.result.version === 1) {
+            const store = db.createObjectStore("songs", { autoIncrement: true });
+            store.createIndex("artist", "artist", { unique: false })
+            store.createIndex("name", "name", { unique: false })
+        }
+        else {
+            console.warn(`Unknown database version: ${db.version}`);
+        }
     }
 
     await new Promise((resolve, reject) => {
@@ -25,7 +37,7 @@ const initDB = async() => {
 }
 
 
-export const saveSongBuffer = async(audio: ArrayBuffer, songName: string, songArtist: string = "User") => {
+export const saveSong = async(audio: ArrayBuffer, songName: string, songArtist: string = "User") => {
     if (!songs) {
         await initDB();
     }
@@ -43,13 +55,14 @@ export const saveSongBuffer = async(audio: ArrayBuffer, songName: string, songAr
     trans.oncomplete = () => console.log("Saved the song successfully!");
 }
 
-export const getSongBuffer = async(name: string) => {
+export const getSong = async(name: string) => {
     if (!songs) {
         await initDB();
     }
     const trans = songs.transaction("songs", "readonly");
     const store = trans.objectStore("songs");
-    const request = store.get(name);
+    const nameIndex = store.index("name");
+    const request = nameIndex.get(name);
 
     return new Promise(function(resolve, reject) {
         trans.oncomplete = () => {
@@ -59,7 +72,7 @@ export const getSongBuffer = async(name: string) => {
     })
 }
 
-export const getAllSongBuffers = async() => {
+export const getAllSongs = async() => {
     if (!songs) {
         await initDB();
     }
@@ -67,6 +80,42 @@ export const getAllSongBuffers = async() => {
     const trans = songs.transaction("songs", "readonly");
     const store = trans.objectStore("songs");
     const request = store.getAll()
+
+    return new Promise(function(resolve, reject) {
+        trans.oncomplete = () => {
+            const result = request.result;
+            resolve(result);
+        }
+    })
+}
+
+export const getAllSongsWithName = async(name: string) => {
+    if (!songs) {
+        await initDB();
+    }
+
+    const trans = songs.transaction("songs", "readonly");
+    const store = trans.objectStore("songs");
+    const nameIndex = store.index("name");
+    const request = nameIndex.getAll(name);
+
+    return new Promise(function(resolve, reject) {
+        trans.oncomplete = () => {
+            const result = request.result;
+            resolve(result);
+        }
+    })
+}
+
+export const getAllSongsFromArtist = async(name: string) => {
+    if (!songs) {
+        await initDB();
+    }
+
+    const trans = songs.transaction("songs", "readonly");
+    const store = trans.objectStore("songs");
+    const artistIndex = store.index("artist");
+    const request = artistIndex.getAll(name);
 
     return new Promise(function(resolve, reject) {
         trans.oncomplete = () => {
