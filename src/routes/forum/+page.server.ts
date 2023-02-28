@@ -43,12 +43,13 @@ export const actions = {
 
         const data = await request.formData();
         const userQuestion = data.get("question");
+        const userDetails = data.get("details")
 
         questions.push(
             {
                 user: "Bob", 
                 question: (userQuestion?.toString() ?? ""), 
-                details: "",
+                details: (userDetails?.toString() ?? ""),
             }
         )
 
