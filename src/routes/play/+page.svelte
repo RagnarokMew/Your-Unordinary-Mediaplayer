@@ -1,10 +1,16 @@
 <script lang="ts">
     import type { PageData } from "./$types";
+	import { goto } from "$app/navigation";
 
     export let data: PageData;
 
     const songs = data.post.songs;
     let currentSong = 0;
+
+    if (songs.length === 0){
+        alert("Please upload a song first!")
+        goto("/upload");
+    }
 
     const audioContext = new AudioContext();
     const panner = audioContext.createStereoPanner();
@@ -23,7 +29,7 @@
 
     $: biquad.type = biquadFilters[biquadIndex];
     $: audioLength = audio?.duration;
-    $: blob = new Blob([songs[currentSong].audio], { type: "audio/mp3" });
+    $: blob = new Blob([songs[currentSong]?.audio ?? ""], { type: "audio/mp3" });
     let url: string;
 
     $: {
@@ -45,8 +51,13 @@
         }
     }
 
-    const seekSong = () => audio.currentTime = time;
+    const seekSong = () =>  {
+        audio.currentTime = time;
+        //to avoid it remaining stuck on the element and bugging out
+        (document.activeElement as HTMLElement)?.blur();
+    }
     const updateRange = () => {
+        //to avoid it not updating the time properly
         if (document.activeElement === timeInput) return;
         time = audio.currentTime;
     }
@@ -84,7 +95,7 @@
         <img src="" alt="Placeholder" class="border w-[512px] h-[512px]">
         <audio on:timeupdate={updateRange} bind:this={audio} src={url}>Audio</audio>
 
-        <p>{songs[currentSong].name} by {songs[currentSong].artist}</p>
+        <p>{songs[currentSong]?.name ?? "Nothing"} by {songs[currentSong]?.artist ?? "Nobody"}</p>
 
         <!-- Controls -->
         <div class="flex flex-row items-center justify-evenly bg-rose-200 w-2/3 h-1/6">
