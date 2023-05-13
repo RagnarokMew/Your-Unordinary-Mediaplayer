@@ -4,8 +4,7 @@ import { getAllSongs } from '$lib/indexedDB';
 
 export const load = (async({ params }) => {
 
-  const songsData = await getAllSongs() as Song[];
-  const songs: Song[] = songsData
+  const songs = await getAllSongs() as Song[];
 
   return {
     post: {
