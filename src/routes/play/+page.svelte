@@ -1,6 +1,7 @@
 <script lang="ts">
     import type { PageData } from "./$types";
 	import { goto } from "$app/navigation";
+	import { saveSongData } from "$lib/indexedDB";
 
     export let data: PageData;
 
@@ -64,15 +65,19 @@
     const updateVolume = () => audio.volume = volume;
 
     const nextSong = () => {
+        saveSongData(songs[currentSong]);
         currentSong++;
         currentSong = currentSong % songs.length;
+        songs[currentSong].listens++;
     }
 
     const prevSong = () => {
+        saveSongData(songs[currentSong]);
         currentSong--;
         if (currentSong < 0) {
             currentSong = songs.length - 1;
         }
+        songs[currentSong].listens++;
     }
 
     const addToPlaylist = () => {
