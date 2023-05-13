@@ -16,6 +16,7 @@ export interface Song {
     audio: ArrayBuffer;
     listens: number;
     likes: number;
+    id: number;
     effects?: {
         biquad: BiquadFilterType;
         panning: number

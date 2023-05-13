@@ -1,4 +1,6 @@
 
+import type { Song } from "./interfaces";
+
 let songs: IDBDatabase;
 
 const initDB = async() => {
@@ -47,7 +49,14 @@ export const saveSong = async(audio: ArrayBuffer, songName: string, songArtist: 
     const req = store.put({
         name: songName,
         artist: songArtist,
-        audio
+        audio,
+        likes: 0,
+        listens: 0,
+        effects: {
+            biquad: "allpass",
+            compressor: false,
+            panning: 0
+        }
     });
 
     trans.onerror = () => console.warn(`Could not save the song ${songName} by ${songArtist}!`);
@@ -77,14 +86,27 @@ export const getAllSongs = async() => {
         await initDB();
     }
 
-    const trans = songs.transaction("songs", "readonly");
+    const trans = songs.transaction(["songs"], "readonly");
     const store = trans.objectStore("songs");
-    const request = store.getAll()
 
     return new Promise(function(resolve, reject) {
-        trans.oncomplete = () => {
-            const result = request.result;
-            resolve(result);
+        let songsList: Song[] = [];
+        store.openCursor().onsuccess = (e) => {
+            const cursor = (e.target as any).result as IDBCursorWithValue;
+            if (cursor != undefined) {
+                songsList.push({
+                    id: cursor.key as number,
+                    audio: cursor.value.audio as ArrayBuffer,
+                    likes: cursor.value.likes as number,
+                    listens: cursor.value.listens as number,
+                    name: cursor.value.name as string,
+                    effects: cursor.value.effects,
+                    artist: cursor.value.artist as string,
+                } satisfies Song);
+                cursor.continue();
+            }
+
+            resolve(songsList);
         }
     })
 }
@@ -123,4 +145,22 @@ export const getAllSongsFromArtist = async(name: string) => {
             resolve(result);
         }
     })
+}
+
+export const saveSongData = async(song: Song) => {
+
+    const trans = songs.transaction("songs", "readwrite");
+    const store = trans.objectStore("songs");
+
+    store.put({
+        artist: song.artist,
+        name: song.name,
+        audio: song.audio,
+        listens: song.listens ?? 0,
+        likes: song.likes ?? 0,
+        effects: song.effects ?? { biquad: "allpass", panning: 0, compressor: false },
+    }, song.id)
+
+    trans.onerror = () => console.warn(`Encountered an error while saving song data!`);
+    trans.oncomplete = () => console.log("Saved the song data successfully!");
 }
