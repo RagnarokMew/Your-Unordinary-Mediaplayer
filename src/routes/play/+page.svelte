@@ -2,6 +2,7 @@
     import type { PageData } from "./$types";
 	import { goto } from "$app/navigation";
 	import { saveSongData } from "$lib/indexedDB";
+	import Song from "./Song.svelte";
 
     export let data: PageData;
 
@@ -87,6 +88,14 @@
     const updatePanning = () => {
         panner.pan.value = panning;
     }
+
+    const songChosen = (e: CustomEvent) => {
+        const songIndex = e.detail.songIndex as number;
+        saveSongData(songs[currentSong]);
+        currentSong = songIndex;
+        songs[currentSong].listens++;
+    }
+
 </script>
 
 
@@ -122,6 +131,9 @@
 
     <!-- Right panel -->
     <div class="row-start-2 row-end-3 col-start-3 col-end-4 bg-rose-200">
+        {#each songs as song, index}
+            <Song on:playsong={songChosen} songArtist={song.artist ?? "Nobody"} songName={song.name} songIndex={index} songId={song.id} />
+        {/each}
     </div>
 
     <!-- Bottom panel -->
