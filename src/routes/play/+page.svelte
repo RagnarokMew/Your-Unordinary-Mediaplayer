@@ -7,7 +7,7 @@
 
     export let data: PageData;
 
-    const playlists = data.post.playlists;
+    let playlists = data.post.playlists;
     let currentPlaylist = 0;
     let songs = data.post.songs;
     let currentSong = 0;
@@ -45,6 +45,8 @@
     }
     let addingToPlaylist = false;
     let changingPlaylsit = false;
+    let creatingNewPlaylist = false;
+    let playlistNameInputValue: string;
 
     const playSong = () => {
         if (!track) {
@@ -90,8 +92,12 @@
             songs[currentSong].listens++;
     }
 
-    const toggleAddToPlaylist = () => addingToPlaylist = !addingToPlaylist;
+    const toggleAddToPlaylist = () => {
+        addingToPlaylist = !addingToPlaylist;
+        creatingNewPlaylist = false;
+    }
     const toggleChangingPlaylist = () => changingPlaylsit = !changingPlaylsit;
+    const toggleCreatingNewPlaylist = () => creatingNewPlaylist = !creatingNewPlaylist;
 
     const updatePanning = () => {
         panner.pan.value = panning;
@@ -130,12 +136,19 @@
     }
 
     const createNewPlaylist = async() => {
-        const id = await createPlaylist("amogus");
+        if (playlistNameInputValue.length === 0) {
+            alert("Please insert a name for the playlist!");
+            return;
+        }
+        const id = await createPlaylist(playlistNameInputValue);
+        console.log("Created a new playlist!");
         playlists.push({
             id: id,
-            name: "amogus",
+            name: playlistNameInputValue,
             songIds: [],
         } satisfies Playlist);
+        playlists = playlists;
+        creatingNewPlaylist = false;
     }
 
     const changePlaylist = async(playlistIndex: number) => {
@@ -157,7 +170,7 @@
             {#each playlists as playlist, index}
                 <button on:click={() => addToPlaylist(index)} class="bg-red-500 p-2 m-2">{playlist.name}</button>
             {/each}
-            <button on:click={createNewPlaylist} class="bg-red-500 p-2 m-2">Create new playlist</button>
+            <button on:click={toggleCreatingNewPlaylist} class="bg-red-500 p-2 m-2">Create new playlist</button>
         </div>
     {/if}
 
@@ -166,7 +179,14 @@
             {#each playlists as playlist, index}
                 <button on:click={() => changePlaylist(index)} class="bg-green-500 p-2 m-2">{playlist.name}</button>
             {/each}
-            <button on:click={createNewPlaylist} class="bg-green-500 p-2 m-2">Create new playlist</button>
+        </div>
+    {/if}
+
+    {#if creatingNewPlaylist}
+        <div class="absolute inset-y-64 inset-x-64 flex flex-col justify-center w-64 h-28 bg-blue-450 p-2">
+            <label for="playlistName">Playlist name:</label>
+            <input bind:value={playlistNameInputValue} name="playlistName" type="text">
+            <button on:click={createNewPlaylist} type="submit">Create</button>
         </div>
     {/if}
 
