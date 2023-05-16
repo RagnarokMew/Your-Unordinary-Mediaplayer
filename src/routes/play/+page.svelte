@@ -12,6 +12,10 @@
     let songs = data.post.songs;
     let currentSong = 0;
 
+    setTimeout(() => {
+        songs[0] = songs[0]; //to make the songs render (temporary fix, hopefully)
+    }, 100);
+
     if (playlists[currentPlaylist].songIds?.length === 0 || !playlists[currentPlaylist].songIds){
         alert("Please upload a song!")
         goto("/upload");
@@ -155,6 +159,7 @@
         songs = await getSongsFromPlaylist(playlists[playlistIndex]);
         currentPlaylist = playlistIndex;
         currentSong = 0;
+        songs = songs;
     }
 
 </script>
