@@ -341,8 +341,9 @@ export const createPlaylist = async(playlistName: string): Promise<number> => {
 
     return new Promise(function(resolve, reject){
         trans.oncomplete = (e: any) => {
-            return key.result;
+            resolve(key.result as number);
         }
+        trans.onerror = () => reject("Transaction failed!");
     })
     
 }
