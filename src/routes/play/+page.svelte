@@ -76,7 +76,8 @@
         saveSongData(songs[currentSong]);
         currentSong++;
         currentSong = currentSong % songs.length;
-        songs[currentSong].listens++;
+        if (songs.length > 0)
+            songs[currentSong].listens++;
     }
 
     const prevSong = () => {
@@ -85,7 +86,8 @@
         if (currentSong < 0) {
             currentSong = songs.length - 1;
         }
-        songs[currentSong].listens++;
+        if (songs.length > 0)
+            songs[currentSong].listens++;
     }
 
     const toggleAddToPlaylist = () => addingToPlaylist = !addingToPlaylist;
@@ -99,7 +101,8 @@
         const songIndex = e.detail.songIndex as number;
         saveSongData(songs[currentSong]);
         currentSong = songIndex;
-        songs[currentSong].listens++;
+        if (songs.length > 0)
+            songs[currentSong].listens++;
     }
 
     const addToPlaylist = (playlistIndex: number) => {
