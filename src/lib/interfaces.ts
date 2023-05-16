@@ -23,3 +23,9 @@ export interface Song {
         compressor: boolean
     }
 }
+
+export interface Playlist {
+    songIds: number[];
+    name: string;
+    id: number;
+}

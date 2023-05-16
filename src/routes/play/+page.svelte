@@ -1,18 +1,23 @@
 <script lang="ts">
     import type { PageData } from "./$types";
 	import { goto } from "$app/navigation";
-	import { saveSongData } from "$lib/indexedDB";
+	import { createPlaylist, getSongsFromPlaylist, savePlaylist, saveSongData } from "$lib/indexedDB";
 	import Song from "./Song.svelte";
+	import type { Playlist } from "$lib/interfaces";
 
     export let data: PageData;
 
-    const songs = data.post.songs;
+    const playlists = data.post.playlists;
+    let currentPlaylist = 0;
+    let songs = data.post.songs;
     let currentSong = 0;
 
-    if (songs.length === 0){
-        alert("Please upload a song first!")
+    if (playlists[currentPlaylist].songIds?.length === 0 || !playlists[currentPlaylist].songIds){
+        alert("Please upload a song!")
         goto("/upload");
     }
+
+    //Audio-related stuff
 
     const audioContext = new AudioContext();
     const panner = audioContext.createStereoPanner();
@@ -38,6 +43,8 @@
         URL.revokeObjectURL(url);
         url = URL.createObjectURL(blob);
     }
+    let addingToPlaylist = false;
+    let changingPlaylsit = false;
 
     const playSong = () => {
         if (!track) {
@@ -81,9 +88,8 @@
         songs[currentSong].listens++;
     }
 
-    const addToPlaylist = () => {
-        //TBA
-    }
+    const toggleAddToPlaylist = () => addingToPlaylist = !addingToPlaylist;
+    const toggleChangingPlaylist = () => changingPlaylsit = !changingPlaylsit;
 
     const updatePanning = () => {
         panner.pan.value = panning;
@@ -96,6 +102,45 @@
         songs[currentSong].listens++;
     }
 
+    const addToPlaylist = (playlistIndex: number) => {
+        let foundSong = false;
+        for (let i = 0; i < playlists[playlistIndex].songIds.length; i++) {
+            if (songs[currentSong].id === playlists[playlistIndex].songIds[i]) {
+                foundSong = true;
+                break;
+            }
+        }
+
+        if (foundSong) { //remove the song from the playlist
+            console.log(`Removed ${songs[currentSong].name} from ${playlists[playlistIndex].name}`)
+            playlists[playlistIndex].songIds = playlists[playlistIndex].songIds.filter(songId => songId !== songs[currentSong].id);
+            savePlaylist(playlists[playlistIndex]);
+            songs = songs;
+        }
+        else { //save the song to the playlist
+            console.log(`Added ${songs[currentSong].name} to ${playlists[playlistIndex].name}`)
+            playlists[playlistIndex].songIds.push(songs[currentSong].id)
+            savePlaylist(playlists[playlistIndex]);
+            songs = songs;
+        }
+
+    }
+
+    const createNewPlaylist = async() => {
+        const id = await createPlaylist("amogus");
+        playlists.push({
+            id: id,
+            name: "amogus",
+            songIds: [],
+        } satisfies Playlist);
+    }
+
+    const changePlaylist = async(playlistIndex: number) => {
+        songs = await getSongsFromPlaylist(playlists[playlistIndex]);
+        currentPlaylist = playlistIndex;
+        currentSong = 0;
+    }
+
 </script>
 
 
@@ -103,6 +148,24 @@
     <h1 class="row-span-1 col-start-2 col-end-3 font-bold text-xl self-center justify-self-center text-center">
         Media player
     </h1>
+
+    {#if addingToPlaylist}
+        <div class="absolute inset-y-52 inset-x-52 w-96 h-4">
+            {#each playlists as playlist, index}
+                <button on:click={() => addToPlaylist(index)} class="bg-red-500 p-2 m-2">{playlist.name}</button>
+            {/each}
+            <button on:click={createNewPlaylist} class="bg-red-500 p-2 m-2">Create new playlist</button>
+        </div>
+    {/if}
+
+    {#if changingPlaylsit}
+        <div class="absolute inset-y-52 inset-x-52 w-96 h-4">
+            {#each playlists as playlist, index}
+                <button on:click={() => changePlaylist(index)} class="bg-green-500 p-2 m-2">{playlist.name}</button>
+            {/each}
+            <button on:click={createNewPlaylist} class="bg-green-500 p-2 m-2">Create new playlist</button>
+        </div>
+    {/if}
 
     <!-- Central panel -->
     <div class="flex flex-col justify-between items-center row-start-2 row-end-3 col-start-2 col-end-3 m-4 gap-2">
@@ -116,7 +179,7 @@
             <button on:click={prevSong}>Previous</button>
             <button on:click={playSong}>Play</button>
             <button on:click={nextSong}>Next</button>
-            <button on:click={addToPlaylist}>Save</button>
+            <button on:click={toggleAddToPlaylist}>Save</button>
             <div class="flex flex-col">
                 <label for="time">Time:</label>
                 <input bind:this={timeInput} on:change={seekSong} bind:value={time} type="range" min="0" max={audioLength} name="time">
@@ -137,7 +200,7 @@
     </div>
 
     <!-- Bottom panel -->
-    <div class="flex flex-row gap-5 row-start-3 row-end-4 col-start-2 col-end-3 bg-rose-200 m-4 w-1/2 h-2/3 self-center justify-self-center">
+    <div class="flex flex-row gap-5 row-start-3 row-end-4 col-start-2 col-end-3 bg-rose-200 m-4 w-2/3 h-2/3 self-center justify-self-center">
         <div class="flex flex-col">
             <label for="stereo">Panning:</label>
             <input on:change={updatePanning} bind:value={panning} type="range" min="-1" max="1" step="0.1" name="stereo">
@@ -147,6 +210,8 @@
             <label for="biquad">Biquad: {biquadFilters[biquadIndex]}</label>
             <input bind:value={biquadIndex} type="range" min="0" max={biquadFilters.length - 1} step="1" name="Biquad">
         </div>
+
+        <button on:click={toggleChangingPlaylist}>Change playlist</button>
     </div>
 
 </main>
