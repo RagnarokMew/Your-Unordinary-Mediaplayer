@@ -108,6 +108,14 @@ export const saveSong = async(audio: ArrayBuffer, songName: string, songArtist: 
     })
 }
 
+export const deleteSong = async (id: number) => {
+    const trans = songs.transaction(["songs"], "readwrite");
+    const store = trans.objectStore("songs");
+
+    store.delete(id);
+    trans.onerror = () => console.warn(`Failed to delete the song with id: ${id}`);
+}
+
 export const getSong = async(name: string) => {
     if (!songs) {
         await initDB();
@@ -125,7 +133,7 @@ export const getSong = async(name: string) => {
     })
 }
 
-export const getAllSongs = async() => {
+export const getAllSongs = async(): Promise<Song[]> => {
     if (!songs) {
         await initDB();
     }
@@ -151,6 +159,11 @@ export const getAllSongs = async() => {
             }
 
             resolve(songsList);
+        }
+
+        trans.onerror = () => {
+            console.warn("Could not get all songs!");
+            reject("Could not get all songs!");
         }
     })
 }
