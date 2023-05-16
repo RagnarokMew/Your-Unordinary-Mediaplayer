@@ -1,15 +1,18 @@
 import type { PageLoad } from './$types';
-import type { Song } from '$lib/interfaces';
-import { getAllSongs } from '$lib/indexedDB';
+import { getAllPlaylists, getSongsFromPlaylist } from '$lib/indexedDB';
 
-export const load = (async({ params }) => {
+export const load = (async ({ params }) => {
 
-  const songsData = await getAllSongs() as Song[];
-  const songs: Song[] = songsData
+    const playlists = await getAllPlaylists();
+    console.table(playlists)
+    //TODO: replace with most recently-accessed playlist
+    //? Possibly by storing the value in LocalStorage or smth
+    const songs = await getSongsFromPlaylist(playlists[0]);
 
-  return {
-    post: {
-      songs
-    }
-  };
+    return {
+        post: {
+            songs,
+            playlists,
+        }
+    };
 }) satisfies PageLoad;

@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { saveSong } from "$lib/indexedDB";
+    import { getPlaylistWithId, savePlaylist, saveSong } from "$lib/indexedDB";
 
     let artistName: string;
     let songName: string;
@@ -13,9 +13,12 @@
             const reader = new FileReader();
             reader.readAsArrayBuffer(file);
             
-            reader.onloadend = () => {
+            reader.onloadend = async() => {
                 const buffer = reader.result as ArrayBuffer;
-                saveSong(buffer, songName, artistName);
+                const songId = await saveSong(buffer, songName, artistName);
+                const defaultPlaylist = await getPlaylistWithId(1);
+                defaultPlaylist.songIds.push(songId as number);
+                await savePlaylist(defaultPlaylist);
             }
         }
         

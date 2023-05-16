@@ -14,4 +14,18 @@ export interface Song {
     artist?: string;
     name: string;
     audio: ArrayBuffer;
+    listens: number;
+    likes: number;
+    id: number;
+    effects?: {
+        biquad: BiquadFilterType;
+        panning: number
+        compressor: boolean
+    }
+}
+
+export interface Playlist {
+    songIds: number[];
+    name: string;
+    id: number;
 }
