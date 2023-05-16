@@ -347,3 +347,11 @@ export const createPlaylist = async(playlistName: string): Promise<number> => {
     })
     
 }
+
+export const deletePlaylist = async(id: number) => {
+    const trans = playlists.transaction(["playlists"], "readwrite");
+    const store = trans.objectStore("playlists");
+
+    store.delete(id);
+    trans.onerror = () => console.warn(`Failed to delete the playlist with id ${id}`);
+}

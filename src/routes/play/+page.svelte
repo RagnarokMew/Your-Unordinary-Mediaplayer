@@ -1,7 +1,7 @@
 <script lang="ts">
     import type { PageData } from "./$types";
 	import { goto } from "$app/navigation";
-	import { createPlaylist, getSongsFromPlaylist, savePlaylist, saveSongData } from "$lib/indexedDB";
+	import { createPlaylist, deletePlaylist, getSongsFromPlaylist, savePlaylist, saveSongData } from "$lib/indexedDB";
 	import Song from "./Song.svelte";
 	import type { Playlist } from "$lib/interfaces";
 
@@ -162,6 +162,12 @@
         songs = songs;
     }
 
+    const deletePlaylistFromDb = async (playlistIndex: number) => {
+        await deletePlaylist(playlists[playlistIndex].id);
+        playlists.splice(playlistIndex, 1);
+        playlists = playlists;
+    }
+
 </script>
 
 
@@ -182,7 +188,10 @@
     {#if changingPlaylsit}
         <div class="absolute inset-y-52 inset-x-52 w-96 h-4">
             {#each playlists as playlist, index}
-                <button on:click={() => changePlaylist(index)} class="bg-green-500 p-2 m-2">{playlist.name}</button>
+                <div class="flex flex-row">
+                    <button on:click={() => deletePlaylistFromDb(index)}>X</button>
+                    <button on:click={() => changePlaylist(index)} class="bg-green-500 p-2 m-2">{playlist.name}</button>
+                </div>
             {/each}
         </div>
     {/if}
