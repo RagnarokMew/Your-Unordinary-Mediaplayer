@@ -1,7 +1,10 @@
 <script lang="ts">
     import "../app.css";
 
+    let darkmode = false;   
+
     const toggleTheme = () => {
+        darkmode = !darkmode;
         document.documentElement.classList.toggle('dark');
     }
 
@@ -10,9 +13,15 @@
 <main class="dark:bg-black dark:text-white flex flex-grow">
     <nav class="dark:bg-gray-900 bg-rose-200 shadow-sm shadow-rose-200/50 dark:shadow-gray-900/50 sticky top-0 left-0 h-screen p-7 font-extrabold gap-2">
         <button> <img src="/Icons/menu.svg" class="w-10 h-10" alt="Expand"> </button>
-        <button on:click={toggleTheme} class="toggle-dark">Theme</button>
+        <button on:click={toggleTheme} class="toggle-dark">
+            {#if darkmode}
+                <img src="Icons/darkmode.svg" class="w-10 h-10" alt="Theme">
+            {:else}
+                <img src="Icons/lightmode.svg" class="w-10 h-10" alt="Theme">
+            {/if}
+        </button>
         <a href="/" class="w-10 h-10"> <img src="/Icons/home.svg" class="" alt="Home"> </a>
-        <a href="/play"> <img src="/Icons/play.svg" class="w-10 h-10" alt="Play"> </a>
+        <a href="/play"> <img src="/Icons/play-circle.svg" class="w-10 h-10" alt="Play"> </a>
         <a href="/upload"> <img src="/Icons/musical-notes.svg" class="w-10 h-10" alt="Music"> </a>
         <a href="#"> <img src="/Icons/pie-chart.svg" class="w-10 h-10" alt="Statistics"> </a>
         <a href="/forum"> <img src="/Icons/people.svg" class="w-10 h-10" alt="Forum"> </a>
