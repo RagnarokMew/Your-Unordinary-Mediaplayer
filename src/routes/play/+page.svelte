@@ -45,6 +45,7 @@
     }
     let addingToPlaylist = false;
     let changingPlaylsit = false;
+    let volumeRange : HTMLElement;
 
     const playSong = () => {
         if (!track) {
@@ -70,6 +71,23 @@
         if (document.activeElement === timeInput) return;
         time = audio.currentTime;
     }
+
+    let forwardTime = 15;
+    let rewindTime = 15;
+
+    // Make a forward button
+    const forwardSeconds = () =>{ 
+        audio.currentTime += forwardTime;
+        time = audio.currentTime;
+    }
+
+    const rewindSeconds = () =>{
+        audio.currentTime -= rewindTime;
+        time = audio.currentTime;
+    }
+
+    const toggleVolume = () => volumeRange.classList.toggle("hidden");
+
     const updateVolume = () => audio.volume = volume;
 
     const nextSong = () => {
@@ -177,33 +195,69 @@
 
         <p>{songs[currentSong]?.name ?? "Nothing"} by {songs[currentSong]?.artist ?? "Nobody"}</p>
 
+        <div class="flex flex-col">
+            <label for="time">Time:</label>
+            <input bind:this={timeInput} on:change={seekSong} bind:value={time} type="range" min="0" max={audioLength} name="time">
+        </div>
+
         <!-- Controls -->
-        <div class="flex flex-row items-center justify-evenly bg-rose-200 w-2/3 h-1/6">
-            <button on:click={prevSong}>Previous</button>
-            <button on:click={playSong}>Play</button>
-            <button on:click={nextSong}>Next</button>
-            <button on:click={toggleAddToPlaylist}>Save</button>
-            <div class="flex flex-col">
-                <label for="time">Time:</label>
-                <input bind:this={timeInput} on:change={seekSong} bind:value={time} type="range" min="0" max={audioLength} name="time">
+        <div class="flex flex-row items-center justify-between bg-rose-200 dark:bg-gray-700 w-2/3 h-1/6 px-6">
+            
+            <div class="controls-left flex flex-row items-center justify-evenly gap-10">
+                <button on:click={prevSong}>
+                    <img src="Icons/previous.svg" alt="Previous" class="w-10 h-10">
+                </button>
+                <button on:click={rewindSeconds}>
+                    <img src="Icons/play-back.svg" alt="Rewind" class="w-10 h-10">
+                </button>
+                <button on:click={playSong}>
+                    <img src="Icons/play.svg" alt="Play/Pause" class="w-10 h-10">
+                </button>
+                <button on:click={forwardSeconds}>
+                    <img src="Icons/play-forward.svg" alt="Previous" class="w-10 h-10">
+                </button>
+                <button on:click={nextSong}>
+                    <img src="Icons/next.svg" alt="Next" class="w-10 h-10">
+                </button>
+    
+                <!-- Bandaid Fix-->
+                <button on:click={toggleVolume} class="flex flex-col items-center justify-center -mr-5">
+                    {#if volume > 0.65}
+                        <img src="Icons/volume-high.svg" alt="Volume" class="w-10 h-10">
+                    {:else if volume > 0.3}
+                        <img src="Icons/volume-medium.svg" alt="Volume" class="w-10 h-10">
+                    {:else if volume > 0}
+                        <img src="Icons/volume-low.svg" alt="Volume" class="w-10 h-10">
+                    {:else}
+                        <img src="Icons/volume-off.svg" alt="Volume" class="w-10 h-10">
+                    {/if}
+                </button>
+                <div bind:this={volumeRange} class="flex flex-col hidden overflow-hidden">
+                    <input on:change={updateVolume} bind:value={volume} type="range" min="0" max="1" step="0.1" name="volume" class="h-10 w-20">
+                </div>
             </div>
 
-            <div class="flex flex-col">
-                <label for="volume">Volume:</label>
-                <input on:change={updateVolume} bind:value={volume} type="range" min="0" max="1" step="0.1" name="volume">
+            <div class="controls-right flex flex-row items-center gap-10">
+                <button on:click={toggleAddToPlaylist}>
+                    <img src="Icons/add-playlist.svg" alt="Add to Playlist" class="w-10 h-10">
+                </button>
+                <button on:click={toggleChangingPlaylist}>
+                    <img src="Icons/list.svg" alt="Playlists" class="w-10 h-10">
+                </button>
             </div>
+
         </div>
     </div>
 
     <!-- Right panel -->
-    <div class="row-start-2 row-end-3 col-start-3 col-end-4 bg-rose-200">
+    <div class="row-start-2 row-end-3 col-start-3 col-end-4 bg-rose-200 dark:bg-gray-700">
         {#each songs as song, index}
             <Song on:playsong={songChosen} songArtist={song.artist ?? "Nobody"} songName={song.name} songIndex={index} songId={song.id} />
         {/each}
     </div>
 
     <!-- Bottom panel -->
-    <div class="flex flex-row gap-5 row-start-3 row-end-4 col-start-2 col-end-3 bg-rose-200 m-4 w-2/3 h-2/3 self-center justify-self-center">
+    <div class="flex flex-row gap-5 row-start-3 row-end-4 col-start-2 col-end-3 bg-rose-200 dark:bg-gray-700 m-4 w-2/3 h-2/3 self-center justify-self-center">
         <div class="flex flex-col">
             <label for="stereo">Panning:</label>
             <input on:change={updatePanning} bind:value={panning} type="range" min="-1" max="1" step="0.1" name="stereo">
@@ -213,8 +267,6 @@
             <label for="biquad">Biquad: {biquadFilters[biquadIndex]}</label>
             <input bind:value={biquadIndex} type="range" min="0" max={biquadFilters.length - 1} step="1" name="Biquad">
         </div>
-
-        <button on:click={toggleChangingPlaylist}>Change playlist</button>
     </div>
 
 </main>
