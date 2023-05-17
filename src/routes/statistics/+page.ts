@@ -3,13 +3,13 @@ import { getAllPlaylists, getAllSongs } from '$lib/indexedDB';
 
 export const load = (async ({ params }) => {
     
-    let playlists = await getAllPlaylists();
-    let songs = await getAllSongs();
+    const playlists = await getAllPlaylists();
+    const songs = await getAllSongs();
 
     return {
         post: {
-            songs,
-            playlists,
+            songs: songs,
+            playlists: playlists,
         }
     };
 }) satisfies PageLoad;
