@@ -52,10 +52,16 @@
     let creatingNewPlaylist = false;
     let playlistNameInputValue: string;
 
+    biquadIndex = biquadFilters.indexOf(songs[currentSong].effects.biquad);
+    panning = songs[currentSong].effects.panning;
+    panner.pan.value = panning;
+
     const playSong = () => {
         if (!track) {
             track = audioContext.createMediaElementSource(audio);
             track.connect(panner).connect(biquad).connect(audioContext.destination);
+            time = 0;
+            audio.currentTime = time;
         }
 
         if (audio.paused) {
@@ -79,21 +85,34 @@
     const updateVolume = () => audio.volume = volume;
 
     const nextSong = () => {
+        songs[currentSong].effects.biquad = biquadFilters[biquadIndex];
+        songs[currentSong].effects.panning = panning;
         saveSongData(songs[currentSong]);
         currentSong++;
         currentSong = currentSong % songs.length;
-        if (songs.length > 0)
+        if (songs.length > 0) {
             songs[currentSong].listens++;
+            biquadIndex = biquadFilters.indexOf(songs[currentSong].effects.biquad);
+            panning = songs[currentSong].effects.panning;
+            updatePanning();
+        }
     }
 
     const prevSong = () => {
+        songs[currentSong].effects.biquad = biquadFilters[biquadIndex];
+        songs[currentSong].effects.panning = panning;
         saveSongData(songs[currentSong]);
         currentSong--;
         if (currentSong < 0) {
             currentSong = songs.length - 1;
         }
         if (songs.length > 0)
+        {
             songs[currentSong].listens++;
+            biquadIndex = biquadFilters.indexOf(songs[currentSong].effects.biquad);
+            panning = songs[currentSong].effects.panning;
+            updatePanning();
+        }
     }
 
     const toggleAddToPlaylist = () => {
@@ -109,10 +128,17 @@
 
     const songChosen = (e: CustomEvent) => {
         const songIndex = e.detail.songIndex as number;
+        songs[currentSong].effects.biquad = biquadFilters[biquadIndex];
+        songs[currentSong].effects.panning = panning;
         saveSongData(songs[currentSong]);
         currentSong = songIndex;
         if (songs.length > 0)
+        {
             songs[currentSong].listens++;
+            biquadIndex = biquadFilters.indexOf(songs[currentSong].effects.biquad);
+            panning = songs[currentSong].effects.panning;
+            updatePanning();
+        }
     }
 
     const addToPlaylist = (playlistIndex: number) => {
@@ -159,7 +185,6 @@
         songs = await getSongsFromPlaylist(playlists[playlistIndex]);
         currentPlaylist = playlistIndex;
         currentSong = 0;
-        songs = songs;
     }
 
     const deletePlaylistFromDb = async (playlistIndex: number) => {
