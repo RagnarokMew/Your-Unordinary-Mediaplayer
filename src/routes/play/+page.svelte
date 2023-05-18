@@ -4,6 +4,7 @@
 	import { createPlaylist, deletePlaylist, getSongsFromPlaylist, savePlaylist, saveSongData } from "$lib/indexedDB";
 	import Song from "./Song.svelte";
 	import type { Playlist } from "$lib/interfaces";
+	import { onDestroy } from "svelte";
 
     export let data: PageData;
 
@@ -11,6 +12,10 @@
     let currentPlaylist = 0;
     let songs = data.post.songs;
     let currentSong = 0;
+
+    let playStart: Date = new Date();
+    let currentPlayTime = 0;
+    let clickedPlay = false;
 
     setTimeout(() => {
         songs[0] = songs[0]; //to make the songs render (temporary fix, hopefully)
@@ -52,9 +57,11 @@
     let creatingNewPlaylist = false;
     let playlistNameInputValue: string;
 
-    biquadIndex = biquadFilters.indexOf(songs[currentSong].effects.biquad);
-    panning = songs[currentSong].effects.panning;
-    panner.pan.value = panning;
+    if (songs.length > 0) {
+        biquadIndex = biquadFilters.indexOf(songs[currentSong].effects.biquad);
+        panning = songs[currentSong].effects.panning;
+        panner.pan.value = panning;
+    }
 
     const playSong = () => {
         if (!track) {
@@ -62,13 +69,18 @@
             track.connect(panner).connect(biquad).connect(audioContext.destination);
             time = 0;
             audio.currentTime = time;
+            playStart = new Date();
         }
 
         if (audio.paused) {
             audio.play();
+            playStart = new Date();
+            clickedPlay = true;
         }
         else {
             audio.pause();
+            const playEnd = new Date();
+            currentPlayTime += Math.floor( (playEnd.getTime() - (playStart?.getTime() ?? Date.now())) / 1000);
         }
     }
 
@@ -85,13 +97,15 @@
     const updateVolume = () => audio.volume = volume;
 
     const nextSong = () => {
-        songs[currentSong].effects.biquad = biquadFilters[biquadIndex];
-        songs[currentSong].effects.panning = panning;
+        updateSongData();
         saveSongData(songs[currentSong]);
+
+        playStart = new Date();
         currentSong++;
+        currentPlayTime = 0;
+        clickedPlay = false;
         currentSong = currentSong % songs.length;
         if (songs.length > 0) {
-            songs[currentSong].listens++;
             biquadIndex = biquadFilters.indexOf(songs[currentSong].effects.biquad);
             panning = songs[currentSong].effects.panning;
             updatePanning();
@@ -99,20 +113,29 @@
     }
 
     const prevSong = () => {
-        songs[currentSong].effects.biquad = biquadFilters[biquadIndex];
-        songs[currentSong].effects.panning = panning;
+        updateSongData();
         saveSongData(songs[currentSong]);
+
+        playStart = new Date();
         currentSong--;
+        currentPlayTime = 0;
+        clickedPlay = false;
         if (currentSong < 0) {
             currentSong = songs.length - 1;
         }
         if (songs.length > 0)
         {
-            songs[currentSong].listens++;
             biquadIndex = biquadFilters.indexOf(songs[currentSong].effects.biquad);
             panning = songs[currentSong].effects.panning;
             updatePanning();
         }
+    }
+
+    const updateSongData = () => {
+        songs[currentSong].effects.biquad = biquadFilters[biquadIndex];
+        songs[currentSong].effects.panning = panning;
+        if (clickedPlay === true) songs[currentSong].listens++;
+        songs[currentSong].listenTime += currentPlayTime;
     }
 
     const toggleAddToPlaylist = () => {
@@ -128,13 +151,15 @@
 
     const songChosen = (e: CustomEvent) => {
         const songIndex = e.detail.songIndex as number;
-        songs[currentSong].effects.biquad = biquadFilters[biquadIndex];
-        songs[currentSong].effects.panning = panning;
+        updateSongData();
         saveSongData(songs[currentSong]);
+
+        playStart = new Date();
         currentSong = songIndex;
+        currentPlayTime = 0;
+        clickedPlay = false;
         if (songs.length > 0)
         {
-            songs[currentSong].listens++;
             biquadIndex = biquadFilters.indexOf(songs[currentSong].effects.biquad);
             panning = songs[currentSong].effects.panning;
             updatePanning();
@@ -182,6 +207,8 @@
     }
 
     const changePlaylist = async(playlistIndex: number) => {
+        updateSongData();
+        saveSongData(songs[currentSong]);
         songs = await getSongsFromPlaylist(playlists[playlistIndex]);
         currentPlaylist = playlistIndex;
         currentSong = 0;
@@ -192,6 +219,11 @@
         playlists.splice(playlistIndex, 1);
         playlists = playlists;
     }
+
+    onDestroy(() => {
+        updateSongData();
+        saveSongData(songs[currentSong]);
+    })
 
 </script>
 
