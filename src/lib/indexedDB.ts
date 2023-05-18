@@ -1,88 +1,60 @@
 
 import type { Playlist, Song } from "./interfaces";
 
-let songs: IDBDatabase;
-let playlists: IDBDatabase;
+let database: IDBDatabase;
 
 const initDB = async() => {
-    const songsCreate = window.indexedDB.open("songs", 1);
-    const playlistsCreate = window.indexedDB.open("playlists", 1);
+    const databaseCreate = window.indexedDB.open("database", 1);
 
-    songsCreate.onblocked = () => {
+    databaseCreate.onblocked = () => {
         console.warn("Unable to access the songs database!")
     }
 
-    songsCreate.onerror = () => {
+    databaseCreate.onerror = () => {
         console.warn("Encountered an error while accessing the songs database!")
     }
 
-    songsCreate.onupgradeneeded = () => {
-        const db = songsCreate.result;
-        if (songsCreate.result.version === 1) {
-            const store = db.createObjectStore("songs", { autoIncrement: true });
-            store.createIndex("artist", "artist", { unique: false })
-            store.createIndex("name", "name", { unique: false })
-        }
-        else {
-            console.warn(`Unknown songs database version: ${db.version}`);
-        }
-    }
+    databaseCreate.onupgradeneeded = () => {
+        const db = databaseCreate.result;
+        if (databaseCreate.result.version === 1) {
+            const songsStore = db.createObjectStore("songs", { autoIncrement: true });
+            songsStore.createIndex("artist", "artist", { unique: false })
+            songsStore.createIndex("name", "name", { unique: false })
 
-    playlistsCreate.onblocked = () => {
-        console.warn("Unable to access the playlists database!")
-    }
-
-    playlistsCreate.onerror = () => {
-        console.warn("Encountered an error while accessing the playlists database!")
-    }
-
-    playlistsCreate.onupgradeneeded = () => {
-        const db = playlistsCreate.result;
-        if (playlistsCreate.result.version === 1) {
-            const store = db.createObjectStore("playlists", { autoIncrement: true });
-            store.createIndex("artist", "artist", { unique: false })
-            store.createIndex("name", "name", { unique: false })
-            store.add({
+            const playlistsStore = db.createObjectStore("playlists", { autoIncrement: true });
+            playlistsStore.createIndex("artist", "artist", { unique: false })
+            playlistsStore.createIndex("name", "name", { unique: false })
+            playlistsStore.add({
                 name: "Default",
                 songIds: [],
                 id: 1,
             } satisfies Playlist);
         }
         else {
-            console.warn(`Unknown playlists database version: ${db.version}`);
+            console.warn(`Unknown songs database version: ${db.version}`);
         }
     }
 
-    await new Promise((resolve, reject) => {
-        songsCreate.onsuccess = () => {
-            songs = songsCreate.result;
-            songs.onversionchange = () => {
-                console.log("Closing the songs database...")
-                songs.close();
-            }
-            resolve(songs);
-        };
-    })
 
     await new Promise((resolve, reject) => {
-        playlistsCreate.onsuccess = () => {
-            playlists = playlistsCreate.result;
-            playlists.onversionchange = () => {
-                console.log("Closing the playlists database...")
-                playlists.close();
+        databaseCreate.onsuccess = () => {
+            database = databaseCreate.result;
+            database.onversionchange = () => {
+                console.log("Closing the songs database...")
+                database.close();
             }
-            resolve(playlists);
+            resolve(database);
         };
     })
 }
 
 
 export const saveSong = async(audio: ArrayBuffer, songName: string, songArtist: string = "User"): Promise<IDBValidKey> => {
-    if (!songs) {
+    if (!database) {
         await initDB();
     }
 
-    const trans = songs.transaction(["songs"], "readwrite");
+    const trans = database.transaction(["songs"], "readwrite");
     const store = trans.objectStore("songs");
     const req = store.put({
         name: songName,
@@ -109,7 +81,7 @@ export const saveSong = async(audio: ArrayBuffer, songName: string, songArtist: 
 }
 
 export const deleteSong = async (id: number) => {
-    const trans = songs.transaction(["songs"], "readwrite");
+    const trans = database.transaction(["songs"], "readwrite");
     const store = trans.objectStore("songs");
 
     store.delete(id);
@@ -117,10 +89,10 @@ export const deleteSong = async (id: number) => {
 }
 
 export const getSong = async(name: string) => {
-    if (!songs) {
+    if (!database) {
         await initDB();
     }
-    const trans = songs.transaction("songs", "readonly");
+    const trans = database.transaction(["songs"], "readonly");
     const store = trans.objectStore("songs");
     const nameIndex = store.index("name");
     const request = nameIndex.get(name);
@@ -134,11 +106,11 @@ export const getSong = async(name: string) => {
 }
 
 export const getAllSongs = async(): Promise<Song[]> => {
-    if (!songs) {
+    if (!database) {
         await initDB();
     }
 
-    const trans = songs.transaction(["songs"], "readonly");
+    const trans = database.transaction(["songs"], "readonly");
     const store = trans.objectStore("songs");
 
     return new Promise(function(resolve, reject) {
@@ -169,11 +141,11 @@ export const getAllSongs = async(): Promise<Song[]> => {
 }
 
 export const getAllSongsWithName = async(name: string) => {
-    if (!songs) {
+    if (!database) {
         await initDB();
     }
 
-    const trans = songs.transaction("songs", "readonly");
+    const trans = database.transaction(["songs"], "readonly");
     const store = trans.objectStore("songs");
     const nameIndex = store.index("name");
     const request = nameIndex.getAll(name);
@@ -187,11 +159,11 @@ export const getAllSongsWithName = async(name: string) => {
 }
 
 export const getAllSongsFromArtist = async(name: string) => {
-    if (!songs) {
+    if (!database) {
         await initDB();
     }
 
-    const trans = songs.transaction("songs", "readonly");
+    const trans = database.transaction(["songs"], "readonly");
     const store = trans.objectStore("songs");
     const artistIndex = store.index("artist");
     const request = artistIndex.getAll(name);
@@ -206,7 +178,7 @@ export const getAllSongsFromArtist = async(name: string) => {
 
 export const saveSongData = async(song: Song) => {
 
-    const trans = songs.transaction("songs", "readwrite");
+    const trans = database.transaction(["songs"], "readwrite");
     const store = trans.objectStore("songs");
 
     store.put({
@@ -223,11 +195,11 @@ export const saveSongData = async(song: Song) => {
 }
 
 export const getPlaylist = async(playlistName: string): Promise<Playlist> => {
-    if (!playlists) {
+    if (!database) {
         await initDB();
     }
 
-    const trans = playlists.transaction(["playlists"], "readonly");
+    const trans = database.transaction(["playlists"], "readonly");
 
     return new Promise(function(resolve, reject) {
         trans.objectStore("playlists").index("name").openCursor().onsuccess = (e) => {
@@ -248,11 +220,11 @@ export const getPlaylist = async(playlistName: string): Promise<Playlist> => {
 }
 
 export const getPlaylistWithId = async(id: number): Promise<Playlist> => {
-    if (!playlists) {
+    if (!database) {
         await initDB();
     }
 
-    const trans = playlists.transaction(["playlists"], "readonly");
+    const trans = database.transaction(["playlists"], "readonly");
     const playlist: IDBRequest<Playlist> = trans.objectStore("playlists").get(id);
 
     return new Promise(function(resolve, reject) {
@@ -263,11 +235,11 @@ export const getPlaylistWithId = async(id: number): Promise<Playlist> => {
 }
 
 export const getAllPlaylists = async(): Promise<Playlist[]> => {
-    if (!playlists) {
+    if (!database) {
         await initDB();
     }
 
-    const trans = playlists.transaction(["playlists"], "readonly");
+    const trans = database.transaction(["playlists"], "readonly");
     const playlistsStore = trans.objectStore("playlists"); 
 
     return new Promise(function(resolve, reject)  {
@@ -289,11 +261,11 @@ export const getAllPlaylists = async(): Promise<Playlist[]> => {
 }
 
 export const getSongsFromPlaylist = async(playlist: Playlist): Promise<Song[]> => {
-    if (!playlists) {
+    if (!database) {
         await initDB();
     }
 
-    const trans = songs.transaction(["songs"], "readonly");
+    const trans = database.transaction(["songs"], "readonly");
     const songsStore = trans.objectStore("songs");
 
     return new Promise(function(resolve, reject) {
@@ -330,7 +302,7 @@ export const getSongsFromPlaylist = async(playlist: Playlist): Promise<Song[]> =
 }
 
 export const savePlaylist = async(playlist: Playlist) => {
-    const trans = playlists.transaction("playlists", "readwrite");
+    const trans = database.transaction(["playlists"], "readwrite");
     const store = trans.objectStore("playlists");
 
     store.put({
@@ -344,7 +316,7 @@ export const savePlaylist = async(playlist: Playlist) => {
 }
 
 export const createPlaylist = async(playlistName: string): Promise<number> => {
-    const trans = playlists.transaction(["playlists"], "readwrite");
+    const trans = database.transaction(["playlists"], "readwrite");
     const store = trans.objectStore("playlists");
 
     const key = store.add({
@@ -362,7 +334,7 @@ export const createPlaylist = async(playlistName: string): Promise<number> => {
 }
 
 export const deletePlaylist = async(id: number) => {
-    const trans = playlists.transaction(["playlists"], "readwrite");
+    const trans = database.transaction(["playlists"], "readwrite");
     const store = trans.objectStore("playlists");
 
     store.delete(id);
