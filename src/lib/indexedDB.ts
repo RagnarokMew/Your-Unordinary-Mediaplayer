@@ -60,11 +60,10 @@ export const saveSong = async(audio: ArrayBuffer, songName: string, songArtist: 
         name: songName,
         artist: songArtist,
         audio,
-        likes: 0,
+        listenTime: 0,
         listens: 0,
         effects: {
             biquad: "allpass",
-            compressor: false,
             panning: 0
         }
     });
@@ -121,7 +120,7 @@ export const getAllSongs = async(): Promise<Song[]> => {
                 songsList.push({
                     id: cursor.key as number,
                     audio: cursor.value.audio as ArrayBuffer,
-                    likes: cursor.value.likes as number,
+                    listenTime: cursor.value.listenTime as number,
                     listens: cursor.value.listens as number,
                     name: cursor.value.name as string,
                     effects: cursor.value.effects,
@@ -186,8 +185,8 @@ export const saveSongData = async(song: Song) => {
         name: song.name,
         audio: song.audio,
         listens: song.listens ?? 0,
-        likes: song.likes ?? 0,
-        effects: song.effects ?? { biquad: "allpass", panning: 0, compressor: false },
+        listenTime: song.listenTime ?? 0,
+        effects: song.effects ?? { biquad: "allpass", panning: 0 },
     }, song.id)
 
     trans.onerror = () => console.warn(`Encountered an error while saving song data!`);
@@ -284,7 +283,7 @@ export const getSongsFromPlaylist = async(playlist: Playlist): Promise<Song[]> =
                     songArray.push({
                         id: cursor.key as number,
                         audio: cursor.value.audio,
-                        likes: cursor.value.likes,
+                        listenTime: cursor.value.listenTime,
                         listens: cursor.value.listens,
                         name: cursor.value.name,
                         effects: cursor.value.effects,
