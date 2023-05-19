@@ -26,13 +26,12 @@
                 songs.push({
                     audio: buffer,
                     id: songId as number,
-                    likes: 0,
+                    listenTime: 0,
                     listens: 0,
                     name: songName,
                     artist: artistName,
                     effects: {
                         biquad: "allpass",
-                        compressor: false,
                         panning: 0,
                     }
                 })
