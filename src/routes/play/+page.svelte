@@ -68,7 +68,6 @@
         if (!track) {
             track = audioContext.createMediaElementSource(audio);
             track.connect(panner).connect(biquad).connect(audioContext.destination);
-            time = 0;
             audio.currentTime = time;
             playStart = new Date();
         }
