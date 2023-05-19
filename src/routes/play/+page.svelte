@@ -15,6 +15,7 @@
 
     let playStart: Date = new Date();
     let currentPlayTime = 0;
+    let totalPlayTime = 0;
     let clickedPlay = false;
 
     setTimeout(() => {
@@ -136,6 +137,7 @@
         songs[currentSong].effects.panning = panning;
         if (clickedPlay === true) songs[currentSong].listens++;
         songs[currentSong].listenTime += currentPlayTime;
+        totalPlayTime += currentPlayTime;
     }
 
     const toggleAddToPlaylist = () => {
@@ -201,6 +203,7 @@
             id: id,
             name: playlistNameInputValue,
             songIds: [],
+            listenTime: 0,
         } satisfies Playlist);
         playlists = playlists;
         creatingNewPlaylist = false;
@@ -208,7 +211,9 @@
 
     const changePlaylist = async(playlistIndex: number) => {
         updateSongData();
-        saveSongData(songs[currentSong]);
+        await saveSongData(songs[currentSong]);
+        playlists[currentPlaylist].listenTime += totalPlayTime;
+        savePlaylist(playlists[currentPlaylist]);
         songs = await getSongsFromPlaylist(playlists[playlistIndex]);
         currentPlaylist = playlistIndex;
         currentSong = 0;
@@ -220,9 +225,12 @@
         playlists = playlists;
     }
 
-    onDestroy(() => {
+    onDestroy(async() => {
+        if (songs.length === 0) return;
         updateSongData();
-        saveSongData(songs[currentSong]);
+        await saveSongData(songs[currentSong]);
+        playlists[currentPlaylist].listenTime += totalPlayTime;
+        await savePlaylist(playlists[currentPlaylist]);
     })
 
 </script>
