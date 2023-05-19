@@ -28,6 +28,7 @@ const initDB = async() => {
                 name: "Default",
                 songIds: [],
                 id: 1,
+                listenTime: 0,
             } satisfies Playlist);
         }
         else {
@@ -209,7 +210,8 @@ export const getPlaylist = async(playlistName: string): Promise<Playlist> => {
                     resolve({
                         id: cursor.key as number,
                         songIds: cursor.value.songIds,
-                        name: cursor.value.name
+                        name: cursor.value.name,
+                        listenTime: cursor.value.listenTime
                     } satisfies Playlist)
                 }
                 cursor.continue();
@@ -249,7 +251,8 @@ export const getAllPlaylists = async(): Promise<Playlist[]> => {
                 playlistArray.push({
                     name: cursor.value.name,
                     songIds: cursor.value.songIds,
-                    id: cursor.key as number
+                    id: cursor.key as number,
+                    listenTime: cursor.value.listenTime
                 } satisfies Playlist);
                 cursor.continue();
             }
@@ -308,6 +311,7 @@ export const savePlaylist = async(playlist: Playlist) => {
         name: playlist.name,
         songIds: playlist.songIds,
         id: playlist.id,
+        listenTime: playlist.listenTime,
     }, playlist.id)
 
     trans.onerror = () => console.warn(`Encountered an error while saving playlist data!`);
@@ -321,6 +325,7 @@ export const createPlaylist = async(playlistName: string): Promise<number> => {
     const key = store.add({
         name: playlistName,
         songIds: [],
+        listenTime: 0,
     });
 
     return new Promise(function(resolve, reject){

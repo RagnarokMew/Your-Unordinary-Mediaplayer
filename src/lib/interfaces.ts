@@ -27,4 +27,5 @@ export interface Playlist {
     songIds: number[];
     name: string;
     id: number;
+    listenTime: number;
 }
