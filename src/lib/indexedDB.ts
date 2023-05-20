@@ -1,5 +1,5 @@
 
-import type { Playlist, Song } from "./interfaces";
+import type { Playlist, Song, SongData } from "./interfaces";
 
 let database: IDBDatabase;
 
@@ -88,14 +88,13 @@ export const deleteSong = async (id: number) => {
     trans.onerror = () => console.warn(`Failed to delete the song with id: ${id}`);
 }
 
-export const getSong = async(name: string) => {
+export const getSong = async(id: number): Promise<Song> => {
     if (!database) {
         await initDB();
     }
     const trans = database.transaction(["songs"], "readonly");
     const store = trans.objectStore("songs");
-    const nameIndex = store.index("name");
-    const request = nameIndex.get(name);
+    const request = store.get(id);
 
     return new Promise(function(resolve, reject) {
         trans.oncomplete = () => {
@@ -299,6 +298,40 @@ export const getSongsFromPlaylist = async(playlist: Playlist): Promise<Song[]> =
                 }
             }
             resolve(songArray);
+        }
+    })
+}
+
+export const getAllSongsData = async(): Promise<SongData[]> => {
+    if (!database) {
+        await initDB();
+    }
+
+    const trans = database.transaction(["songs"], "readonly");
+    const store = trans.objectStore("songs");
+
+    return new Promise(function(resolve, reject) {
+        let songsList: SongData[] = [];
+        store.openCursor().onsuccess = (e) => {
+            const cursor = (e.target as any).result as IDBCursorWithValue;
+            if (cursor != undefined) {
+                songsList.push({
+                    id: cursor.key as number,
+                    listenTime: cursor.value.listenTime as number,
+                    listens: cursor.value.listens as number,
+                    name: cursor.value.name as string,
+                    effects: cursor.value.effects,
+                    artist: cursor.value.artist as string,
+                } satisfies SongData);
+                cursor.continue();
+            }
+
+            resolve(songsList);
+        }
+
+        trans.onerror = () => {
+            console.warn("Could not get all songs!");
+            reject("Could not get all songs!");
         }
     })
 }
