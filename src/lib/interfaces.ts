@@ -29,3 +29,14 @@ export interface Playlist {
     id: number;
     listenTime: number;
 }
+
+export interface Settings {
+    mainLightColour: string;
+    secondaryLightColour: string;
+    accentLightColour: string;
+    mainDarkColour: string;
+    secondaryDarkColour: string;
+    accentDarkColour: string;
+    forwardTime: number;
+    backwardTime: number;
+}
