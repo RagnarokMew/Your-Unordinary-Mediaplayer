@@ -10,10 +10,9 @@ export interface Review {
     rating: number;
 }
 
-export interface Song {
+export interface SongData {
     artist?: string;
     name: string;
-    audio: ArrayBuffer;
     listens: number;
     listenTime: number;
     id: number;
@@ -21,6 +20,10 @@ export interface Song {
         biquad: BiquadFilterType;
         panning: number;
     }
+}
+
+export interface Song extends SongData {
+    audio: ArrayBuffer;
 }
 
 export interface Playlist {
