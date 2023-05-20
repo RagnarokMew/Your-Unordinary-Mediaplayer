@@ -9,10 +9,10 @@
 
     //peak inefficiency:
     songs.sort((a, b) => b.listens - a.listens);
-    const mostListenedByAmount = songs.slice(0, 5);
+    const mostListenedByAmount = songs.filter(song => song.listenTime > 0).slice(0, 10);
 
     songs.sort((a, b) => b.listenTime - a.listenTime);
-    const mostListenedByTime = songs.slice(0, 5);
+    const mostListenedByTime = songs.filter(song => song.listenTime > 0).slice(0, 10);
 
     let songsCanvas: HTMLCanvasElement;
     let playlistsCanvas: HTMLCanvasElement;
@@ -70,7 +70,8 @@
                 datasets: [
                     {
                         label: "Listen time of songs in hours",
-                        data: playlists.map(playlist => playlist.listenTime / 3600)
+                        data: playlists.filter(playlist => playlist.listenTime > 0)
+                                        .map(playlist => playlist.listenTime / 3600)
                     }
                 ]
             },
@@ -78,7 +79,7 @@
                 plugins: {
                     title: {
                         display: true,
-                        text: "Song distribution among playlists"
+                        text: "Time spent listening to music by playlists"
                     },
                 }
             }
@@ -118,7 +119,7 @@
     <br>
     <strong><p>Songs sorted by listen count:</p></strong>
     {#each songs as song, index}
-        <p>{song.name} by {song.artist} is #{index + 1} with {song.listens} and {song.listenTime}s of play time</p>
+        <p>{song.name} by {song.artist} is #{index + 1} with {song.listens} listen and {song.listenTime}s of play time</p>
     {/each}
     <canvas bind:this={songsCanvas}></canvas>
     <canvas bind:this={playlistsCanvas}></canvas>
