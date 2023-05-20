@@ -1,16 +1,26 @@
 <script lang="ts">
     import type { PageData } from "./$types";
 	import { goto } from "$app/navigation";
-	import { createPlaylist, getSongsFromPlaylist, savePlaylist, saveSongData } from "$lib/indexedDB";
+	import { createPlaylist, deletePlaylist, getSongsFromPlaylist, savePlaylist, saveSongData } from "$lib/indexedDB";
 	import Song from "./Song.svelte";
 	import type { Playlist } from "$lib/interfaces";
+	import { onDestroy } from "svelte";
 
     export let data: PageData;
 
-    const playlists = data.post.playlists;
+    let playlists = data.post.playlists;
     let currentPlaylist = 0;
     let songs = data.post.songs;
     let currentSong = 0;
+
+    let playStart: Date = new Date();
+    let currentPlayTime = 0;
+    let totalPlayTime = 0;
+    let clickedPlay = false;
+
+    setTimeout(() => {
+        songs[0] = songs[0]; //to make the songs render (temporary fix, hopefully)
+    }, 100);
 
     if (playlists[currentPlaylist].songIds?.length === 0 || !playlists[currentPlaylist].songIds){
         alert("Please upload a song!")
@@ -46,18 +56,32 @@
     let addingToPlaylist = false;
     let changingPlaylsit = false;
     let volumeRange : HTMLElement;
+    let creatingNewPlaylist = false;
+    let playlistNameInputValue: string;
+
+    if (songs.length > 0) {
+        biquadIndex = biquadFilters.indexOf(songs[currentSong].effects.biquad);
+        panning = songs[currentSong].effects.panning;
+        panner.pan.value = panning;
+    }
 
     const playSong = () => {
         if (!track) {
             track = audioContext.createMediaElementSource(audio);
             track.connect(panner).connect(biquad).connect(audioContext.destination);
+            audio.currentTime = time;
+            playStart = new Date();
         }
 
         if (audio.paused) {
             audio.play();
+            playStart = new Date();
+            clickedPlay = true;
         }
         else {
             audio.pause();
+            const playEnd = new Date();
+            currentPlayTime += Math.floor( (playEnd.getTime() - (playStart?.getTime() ?? Date.now())) / 1000);
         }
     }
 
@@ -91,25 +115,54 @@
     const updateVolume = () => audio.volume = volume;
 
     const nextSong = () => {
+        updateSongData();
         saveSongData(songs[currentSong]);
+
+        playStart = new Date();
         currentSong++;
+        currentPlayTime = 0;
+        clickedPlay = false;
         currentSong = currentSong % songs.length;
-        if (songs.length > 0)
-            songs[currentSong].listens++;
+        if (songs.length > 0) {
+            biquadIndex = biquadFilters.indexOf(songs[currentSong].effects.biquad);
+            panning = songs[currentSong].effects.panning;
+            updatePanning();
+        }
     }
 
     const prevSong = () => {
+        updateSongData();
         saveSongData(songs[currentSong]);
+
+        playStart = new Date();
         currentSong--;
+        currentPlayTime = 0;
+        clickedPlay = false;
         if (currentSong < 0) {
             currentSong = songs.length - 1;
         }
         if (songs.length > 0)
-            songs[currentSong].listens++;
+        {
+            biquadIndex = biquadFilters.indexOf(songs[currentSong].effects.biquad);
+            panning = songs[currentSong].effects.panning;
+            updatePanning();
+        }
     }
 
-    const toggleAddToPlaylist = () => addingToPlaylist = !addingToPlaylist;
+    const updateSongData = () => {
+        songs[currentSong].effects.biquad = biquadFilters[biquadIndex];
+        songs[currentSong].effects.panning = panning;
+        if (clickedPlay === true) songs[currentSong].listens++;
+        songs[currentSong].listenTime += currentPlayTime;
+        totalPlayTime += currentPlayTime;
+    }
+
+    const toggleAddToPlaylist = () => {
+        addingToPlaylist = !addingToPlaylist;
+        creatingNewPlaylist = false;
+    }
     const toggleChangingPlaylist = () => changingPlaylsit = !changingPlaylsit;
+    const toggleCreatingNewPlaylist = () => creatingNewPlaylist = !creatingNewPlaylist;
 
     const updatePanning = () => {
         panner.pan.value = panning;
@@ -117,10 +170,19 @@
 
     const songChosen = (e: CustomEvent) => {
         const songIndex = e.detail.songIndex as number;
+        updateSongData();
         saveSongData(songs[currentSong]);
+
+        playStart = new Date();
         currentSong = songIndex;
+        currentPlayTime = 0;
+        clickedPlay = false;
         if (songs.length > 0)
-            songs[currentSong].listens++;
+        {
+            biquadIndex = biquadFilters.indexOf(songs[currentSong].effects.biquad);
+            panning = songs[currentSong].effects.panning;
+            updatePanning();
+        }
     }
 
     const addToPlaylist = (playlistIndex: number) => {
@@ -148,19 +210,45 @@
     }
 
     const createNewPlaylist = async() => {
-        const id = await createPlaylist("amogus");
+        if (playlistNameInputValue.length === 0) {
+            alert("Please insert a name for the playlist!");
+            return;
+        }
+        const id = await createPlaylist(playlistNameInputValue);
+        console.log("Created a new playlist!");
         playlists.push({
             id: id,
-            name: "amogus",
+            name: playlistNameInputValue,
             songIds: [],
+            listenTime: 0,
         } satisfies Playlist);
+        playlists = playlists;
+        creatingNewPlaylist = false;
     }
 
     const changePlaylist = async(playlistIndex: number) => {
+        updateSongData();
+        await saveSongData(songs[currentSong]);
+        playlists[currentPlaylist].listenTime += totalPlayTime;
+        savePlaylist(playlists[currentPlaylist]);
         songs = await getSongsFromPlaylist(playlists[playlistIndex]);
         currentPlaylist = playlistIndex;
         currentSong = 0;
     }
+
+    const deletePlaylistFromDb = async (playlistIndex: number) => {
+        await deletePlaylist(playlists[playlistIndex].id);
+        playlists.splice(playlistIndex, 1);
+        playlists = playlists;
+    }
+
+    onDestroy(async() => {
+        if (songs.length === 0) return;
+        updateSongData();
+        await saveSongData(songs[currentSong]);
+        playlists[currentPlaylist].listenTime += totalPlayTime;
+        await savePlaylist(playlists[currentPlaylist]);
+    })
 
 </script>
 
@@ -175,16 +263,26 @@
             {#each playlists as playlist, index}
                 <button on:click={() => addToPlaylist(index)} class="bg-red-500 p-2 m-2">{playlist.name}</button>
             {/each}
-            <button on:click={createNewPlaylist} class="bg-red-500 p-2 m-2">Create new playlist</button>
+            <button on:click={toggleCreatingNewPlaylist} class="bg-red-500 p-2 m-2">Create new playlist</button>
         </div>
     {/if}
 
     {#if changingPlaylsit}
         <div class="absolute inset-y-52 inset-x-52 w-96 h-4">
             {#each playlists as playlist, index}
-                <button on:click={() => changePlaylist(index)} class="bg-green-500 p-2 m-2">{playlist.name}</button>
+                <div class="flex flex-row">
+                    <button on:click={() => deletePlaylistFromDb(index)}>X</button>
+                    <button on:click={() => changePlaylist(index)} class="bg-green-500 p-2 m-2">{playlist.name}</button>
+                </div>
             {/each}
-            <button on:click={createNewPlaylist} class="bg-green-500 p-2 m-2">Create new playlist</button>
+        </div>
+    {/if}
+
+    {#if creatingNewPlaylist}
+        <div class="absolute inset-y-64 inset-x-64 flex flex-col justify-center w-64 h-28 bg-blue-450 p-2">
+            <label for="playlistName">Playlist name:</label>
+            <input bind:value={playlistNameInputValue} name="playlistName" type="text">
+            <button on:click={createNewPlaylist} type="submit">Create</button>
         </div>
     {/if}
 

@@ -1,98 +1,70 @@
 
 import type { Playlist, Song } from "./interfaces";
 
-let songs: IDBDatabase;
-let playlists: IDBDatabase;
+let database: IDBDatabase;
 
 const initDB = async() => {
-    const songsCreate = window.indexedDB.open("songs", 1);
-    const playlistsCreate = window.indexedDB.open("playlists", 1);
+    const databaseCreate = window.indexedDB.open("database", 1);
 
-    songsCreate.onblocked = () => {
+    databaseCreate.onblocked = () => {
         console.warn("Unable to access the songs database!")
     }
 
-    songsCreate.onerror = () => {
+    databaseCreate.onerror = () => {
         console.warn("Encountered an error while accessing the songs database!")
     }
 
-    songsCreate.onupgradeneeded = () => {
-        const db = songsCreate.result;
-        if (songsCreate.result.version === 1) {
-            const store = db.createObjectStore("songs", { autoIncrement: true });
-            store.createIndex("artist", "artist", { unique: false })
-            store.createIndex("name", "name", { unique: false })
+    databaseCreate.onupgradeneeded = () => {
+        const db = databaseCreate.result;
+        if (databaseCreate.result.version === 1) {
+            const songsStore = db.createObjectStore("songs", { autoIncrement: true });
+            songsStore.createIndex("artist", "artist", { unique: false })
+            songsStore.createIndex("name", "name", { unique: false })
+
+            const playlistsStore = db.createObjectStore("playlists", { autoIncrement: true });
+            playlistsStore.createIndex("artist", "artist", { unique: false })
+            playlistsStore.createIndex("name", "name", { unique: false })
+            playlistsStore.add({
+                name: "Default",
+                songIds: [],
+                id: 1,
+                listenTime: 0,
+            } satisfies Playlist);
         }
         else {
             console.warn(`Unknown songs database version: ${db.version}`);
         }
     }
 
-    playlistsCreate.onblocked = () => {
-        console.warn("Unable to access the playlists database!")
-    }
-
-    playlistsCreate.onerror = () => {
-        console.warn("Encountered an error while accessing the playlists database!")
-    }
-
-    playlistsCreate.onupgradeneeded = () => {
-        const db = playlistsCreate.result;
-        if (playlistsCreate.result.version === 1) {
-            const store = db.createObjectStore("playlists", { autoIncrement: true });
-            store.createIndex("artist", "artist", { unique: false })
-            store.createIndex("name", "name", { unique: false })
-            store.add({
-                name: "Default",
-                songIds: [],
-                id: 1,
-            } satisfies Playlist);
-        }
-        else {
-            console.warn(`Unknown playlists database version: ${db.version}`);
-        }
-    }
 
     await new Promise((resolve, reject) => {
-        songsCreate.onsuccess = () => {
-            songs = songsCreate.result;
-            songs.onversionchange = () => {
+        databaseCreate.onsuccess = () => {
+            database = databaseCreate.result;
+            database.onversionchange = () => {
                 console.log("Closing the songs database...")
-                songs.close();
+                database.close();
             }
-            resolve(songs);
-        };
-    })
-
-    await new Promise((resolve, reject) => {
-        playlistsCreate.onsuccess = () => {
-            playlists = playlistsCreate.result;
-            playlists.onversionchange = () => {
-                console.log("Closing the playlists database...")
-                playlists.close();
-            }
-            resolve(playlists);
+            resolve(database);
         };
     })
 }
 
 
 export const saveSong = async(audio: ArrayBuffer, songName: string, songArtist: string = "User"): Promise<IDBValidKey> => {
-    if (!songs) {
+    if (!database) {
         await initDB();
     }
 
-    const trans = songs.transaction(["songs"], "readwrite");
+    const trans = database.transaction(["songs"], "readwrite");
     const store = trans.objectStore("songs");
     const req = store.put({
         name: songName,
         artist: songArtist,
         audio,
-        likes: 0,
+        listenTime: 0,
         listens: 0,
         effects: {
             biquad: "allpass",
-            compressor: false,
             panning: 0
         }
     });
@@ -108,11 +80,19 @@ export const saveSong = async(audio: ArrayBuffer, songName: string, songArtist: 
     })
 }
 
+export const deleteSong = async (id: number) => {
+    const trans = database.transaction(["songs"], "readwrite");
+    const store = trans.objectStore("songs");
+
+    store.delete(id);
+    trans.onerror = () => console.warn(`Failed to delete the song with id: ${id}`);
+}
+
 export const getSong = async(name: string) => {
-    if (!songs) {
+    if (!database) {
         await initDB();
     }
-    const trans = songs.transaction("songs", "readonly");
+    const trans = database.transaction(["songs"], "readonly");
     const store = trans.objectStore("songs");
     const nameIndex = store.index("name");
     const request = nameIndex.get(name);
@@ -125,12 +105,12 @@ export const getSong = async(name: string) => {
     })
 }
 
-export const getAllSongs = async() => {
-    if (!songs) {
+export const getAllSongs = async(): Promise<Song[]> => {
+    if (!database) {
         await initDB();
     }
 
-    const trans = songs.transaction(["songs"], "readonly");
+    const trans = database.transaction(["songs"], "readonly");
     const store = trans.objectStore("songs");
 
     return new Promise(function(resolve, reject) {
@@ -141,7 +121,7 @@ export const getAllSongs = async() => {
                 songsList.push({
                     id: cursor.key as number,
                     audio: cursor.value.audio as ArrayBuffer,
-                    likes: cursor.value.likes as number,
+                    listenTime: cursor.value.listenTime as number,
                     listens: cursor.value.listens as number,
                     name: cursor.value.name as string,
                     effects: cursor.value.effects,
@@ -152,15 +132,20 @@ export const getAllSongs = async() => {
 
             resolve(songsList);
         }
+
+        trans.onerror = () => {
+            console.warn("Could not get all songs!");
+            reject("Could not get all songs!");
+        }
     })
 }
 
 export const getAllSongsWithName = async(name: string) => {
-    if (!songs) {
+    if (!database) {
         await initDB();
     }
 
-    const trans = songs.transaction("songs", "readonly");
+    const trans = database.transaction(["songs"], "readonly");
     const store = trans.objectStore("songs");
     const nameIndex = store.index("name");
     const request = nameIndex.getAll(name);
@@ -174,11 +159,11 @@ export const getAllSongsWithName = async(name: string) => {
 }
 
 export const getAllSongsFromArtist = async(name: string) => {
-    if (!songs) {
+    if (!database) {
         await initDB();
     }
 
-    const trans = songs.transaction("songs", "readonly");
+    const trans = database.transaction(["songs"], "readonly");
     const store = trans.objectStore("songs");
     const artistIndex = store.index("artist");
     const request = artistIndex.getAll(name);
@@ -193,7 +178,7 @@ export const getAllSongsFromArtist = async(name: string) => {
 
 export const saveSongData = async(song: Song) => {
 
-    const trans = songs.transaction("songs", "readwrite");
+    const trans = database.transaction(["songs"], "readwrite");
     const store = trans.objectStore("songs");
 
     store.put({
@@ -201,8 +186,8 @@ export const saveSongData = async(song: Song) => {
         name: song.name,
         audio: song.audio,
         listens: song.listens ?? 0,
-        likes: song.likes ?? 0,
-        effects: song.effects ?? { biquad: "allpass", panning: 0, compressor: false },
+        listenTime: song.listenTime ?? 0,
+        effects: song.effects ?? { biquad: "allpass", panning: 0 },
     }, song.id)
 
     trans.onerror = () => console.warn(`Encountered an error while saving song data!`);
@@ -210,11 +195,11 @@ export const saveSongData = async(song: Song) => {
 }
 
 export const getPlaylist = async(playlistName: string): Promise<Playlist> => {
-    if (!playlists) {
+    if (!database) {
         await initDB();
     }
 
-    const trans = playlists.transaction(["playlists"], "readonly");
+    const trans = database.transaction(["playlists"], "readonly");
 
     return new Promise(function(resolve, reject) {
         trans.objectStore("playlists").index("name").openCursor().onsuccess = (e) => {
@@ -225,7 +210,8 @@ export const getPlaylist = async(playlistName: string): Promise<Playlist> => {
                     resolve({
                         id: cursor.key as number,
                         songIds: cursor.value.songIds,
-                        name: cursor.value.name
+                        name: cursor.value.name,
+                        listenTime: cursor.value.listenTime
                     } satisfies Playlist)
                 }
                 cursor.continue();
@@ -235,11 +221,11 @@ export const getPlaylist = async(playlistName: string): Promise<Playlist> => {
 }
 
 export const getPlaylistWithId = async(id: number): Promise<Playlist> => {
-    if (!playlists) {
+    if (!database) {
         await initDB();
     }
 
-    const trans = playlists.transaction(["playlists"], "readonly");
+    const trans = database.transaction(["playlists"], "readonly");
     const playlist: IDBRequest<Playlist> = trans.objectStore("playlists").get(id);
 
     return new Promise(function(resolve, reject) {
@@ -250,11 +236,11 @@ export const getPlaylistWithId = async(id: number): Promise<Playlist> => {
 }
 
 export const getAllPlaylists = async(): Promise<Playlist[]> => {
-    if (!playlists) {
+    if (!database) {
         await initDB();
     }
 
-    const trans = playlists.transaction(["playlists"], "readonly");
+    const trans = database.transaction(["playlists"], "readonly");
     const playlistsStore = trans.objectStore("playlists"); 
 
     return new Promise(function(resolve, reject)  {
@@ -265,7 +251,8 @@ export const getAllPlaylists = async(): Promise<Playlist[]> => {
                 playlistArray.push({
                     name: cursor.value.name,
                     songIds: cursor.value.songIds,
-                    id: cursor.key as number
+                    id: cursor.key as number,
+                    listenTime: cursor.value.listenTime
                 } satisfies Playlist);
                 cursor.continue();
             }
@@ -276,11 +263,11 @@ export const getAllPlaylists = async(): Promise<Playlist[]> => {
 }
 
 export const getSongsFromPlaylist = async(playlist: Playlist): Promise<Song[]> => {
-    if (!playlists) {
+    if (!database) {
         await initDB();
     }
 
-    const trans = songs.transaction(["songs"], "readonly");
+    const trans = database.transaction(["songs"], "readonly");
     const songsStore = trans.objectStore("songs");
 
     return new Promise(function(resolve, reject) {
@@ -299,7 +286,7 @@ export const getSongsFromPlaylist = async(playlist: Playlist): Promise<Song[]> =
                     songArray.push({
                         id: cursor.key as number,
                         audio: cursor.value.audio,
-                        likes: cursor.value.likes,
+                        listenTime: cursor.value.listenTime,
                         listens: cursor.value.listens,
                         name: cursor.value.name,
                         effects: cursor.value.effects,
@@ -317,13 +304,14 @@ export const getSongsFromPlaylist = async(playlist: Playlist): Promise<Song[]> =
 }
 
 export const savePlaylist = async(playlist: Playlist) => {
-    const trans = playlists.transaction("playlists", "readwrite");
+    const trans = database.transaction(["playlists"], "readwrite");
     const store = trans.objectStore("playlists");
 
     store.put({
         name: playlist.name,
         songIds: playlist.songIds,
         id: playlist.id,
+        listenTime: playlist.listenTime,
     }, playlist.id)
 
     trans.onerror = () => console.warn(`Encountered an error while saving playlist data!`);
@@ -331,18 +319,28 @@ export const savePlaylist = async(playlist: Playlist) => {
 }
 
 export const createPlaylist = async(playlistName: string): Promise<number> => {
-    const trans = playlists.transaction(["playlists"], "readwrite");
+    const trans = database.transaction(["playlists"], "readwrite");
     const store = trans.objectStore("playlists");
 
     const key = store.add({
         name: playlistName,
         songIds: [],
+        listenTime: 0,
     });
 
     return new Promise(function(resolve, reject){
         trans.oncomplete = (e: any) => {
-            return key.result;
+            resolve(key.result as number);
         }
+        trans.onerror = () => reject("Transaction failed!");
     })
     
+}
+
+export const deletePlaylist = async(id: number) => {
+    const trans = database.transaction(["playlists"], "readwrite");
+    const store = trans.objectStore("playlists");
+
+    store.delete(id);
+    trans.onerror = () => console.warn(`Failed to delete the playlist with id ${id}`);
 }

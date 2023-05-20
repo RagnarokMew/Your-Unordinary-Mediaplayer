@@ -1,5 +1,9 @@
 <script lang="ts">
-    import { getPlaylistWithId, savePlaylist, saveSong } from "$lib/indexedDB";
+    import type { PageData } from "./$types";
+    import { deleteSong, getPlaylistWithId, savePlaylist, saveSong } from "$lib/indexedDB";
+
+    export let data: PageData;
+    let songs = data.post.songs;
 
     let artistName: string;
     let songName: string;
@@ -19,28 +23,61 @@
                 const defaultPlaylist = await getPlaylistWithId(1);
                 defaultPlaylist.songIds.push(songId as number);
                 await savePlaylist(defaultPlaylist);
+                songs.push({
+                    audio: buffer,
+                    id: songId as number,
+                    listenTime: 0,
+                    listens: 0,
+                    name: songName,
+                    artist: artistName,
+                    effects: {
+                        biquad: "allpass",
+                        panning: 0,
+                    }
+                })
+                songs = songs;
             }
         }
         
     }
+
+    const removeSong = async (id: number, songIndex: number) => {
+        await deleteSong(id);
+        songs.splice(songIndex, 1);
+        songs = songs;
+        console.log("Removed the song successfully!");
+        //TODO: wrap in a try-catch block
+    }
+
 </script>
 
 
-<main class="flex flex-col justify-evenly h-64 p-5">
-    <h1>helo upload here pls</h1>
-
-    <div>
-        <label for="audio">audio file:</label>
-        <input bind:this={fileInput} on:change={uploadFile} type="file" name="audio">
-    </div>
-
-    <div>
-        <label for="artist">artist name:</label>
-        <input bind:value={artistName} type="text" name="artist" class="bg-rose-200">
-    </div>
+<main class="grid grid-cols-2 w-full h-[100vh]">
     
-    <div>
-        <label for="name">song name:</label>
-        <input bind:value={songName} type="text" name="name" class="bg-rose-200">
+    <div class="col-span-1 flex flex-col items-center justify-evenly h-64 p-5">
+        <h1 class="p-4">Song uploading</h1>
+        <div>
+            <label for="audio">audio file:</label>
+            <input bind:this={fileInput} type="file" name="audio">
+        </div>
+        <div>
+            <label for="artist">artist name:</label>
+            <input bind:value={artistName} type="text" name="artist" class="bg-rose-200">
+        </div>
+        
+        <div>
+            <label for="name">song name:</label>
+            <input bind:value={songName} type="text" name="name" class="bg-rose-200">
+        </div>
+        <button on:click={uploadFile} type="submit">Submit</button>
+    </div>
+
+    <div class="col-start-2 col-end-3 flex flex-col items-center justify-start m-5">
+        {#each songs as song, songIndex}
+            <div class="flex flex-row p-1">
+                <button on:click={() => removeSong(song.id, songIndex)}>X</button>
+                <p>{song.name} by {song.artist}</p>
+            </div>
+        {/each}
     </div>
 </main>

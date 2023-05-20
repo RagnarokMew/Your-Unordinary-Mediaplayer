@@ -15,12 +15,11 @@ export interface Song {
     name: string;
     audio: ArrayBuffer;
     listens: number;
-    likes: number;
+    listenTime: number;
     id: number;
-    effects?: {
+    effects: {
         biquad: BiquadFilterType;
-        panning: number
-        compressor: boolean
+        panning: number;
     }
 }
 
@@ -28,4 +27,5 @@ export interface Playlist {
     songIds: number[];
     name: string;
     id: number;
+    listenTime: number;
 }
