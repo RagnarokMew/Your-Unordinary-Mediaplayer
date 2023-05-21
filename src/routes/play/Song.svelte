@@ -15,7 +15,9 @@
     }
 </script>
 
-<main class="flex flex-col bg-slate-400 m-2 p-1">
+<main class="flex flex-col bg-white dark:bg-gray-600 dark:text-gray-200 m-2 p-1 rounded-lg">
     <!-- svelte-ignore a11y-click-events-have-key-events -->
-    <button on:click={onClick} >{songName} by {songArtist}</button>
+    <button on:click={onClick} class="break-all">
+        <span class="font-bold"> {songName} </span> by <span class="font-semibold italic"> {songArtist} </span>
+    </button>
 </main>
