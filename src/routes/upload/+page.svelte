@@ -77,7 +77,7 @@
 
     <div class="col-span-2 w-1/2 h-2/3 flex flex-col justify-center items-center dark:bg-gray-800 bg-rose-100 dark:text-gray-100 rounded-lg p-5">
         <p class="font-extrabold text-xl col-span-3 flex justify-center items-center mb-2">Your Library</p>
-        <div class="w-full h-full grid grid-cols-3 overflow-y-scroll gap-3 p-2 border-2 rounded-md border-white dark:border-gray-600">
+        <div class="w-full h-[70vh] grid grid-cols-3 overflow-y-scroll gap-3 p-2 border-2 rounded-md border-white dark:border-gray-600">
             {#each songs as song, songIndex}
                 <div class="flex flex-grow-0 flex-row items-center justify-start px-4 py-1 gap-2 bg-white dark:bg-gray-600 dark:text-gray-200 rounded-lg">
                     <button on:click={() => removeSong(song.id, songIndex)}>
