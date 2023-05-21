@@ -382,10 +382,15 @@
     </div>
 
     <!-- Right panel -->
-    <div class="row-start-2 row-end-3 col-start-3 col-end-4 bg-rose-200 dark:bg-gray-700">
-        {#each songs as song, index}
-            <Song on:playsong={songChosen} songArtist={song.artist ?? "Nobody"} songName={song.name} songIndex={index} songId={song.id} />
-        {/each}
+    <div class="row-start-2 row-end-3 col-start-3 col-end-4 bg-rose-200 dark:bg-gray-700 py-4 px-2">
+        <div class="flex justify-center items-center p-2">
+            PlaylistName
+        </div>
+        <div class="overflow-y-scroll h-[70vh]">
+            {#each songs as song, index}
+                <Song on:playsong={songChosen} songArtist={song.artist ?? "Nobody"} songName={song.name} songIndex={index} songId={song.id} />
+            {/each}
+        </div>
     </div>
 
     <!-- Bottom panel -->
