@@ -52,32 +52,44 @@
 </script>
 
 
-<main class="grid grid-cols-2 w-full h-[100vh]">
+<main class="grid grid-cols-3 place-items-center h-screen w-full">
     
-    <div class="col-span-1 flex flex-col items-center justify-evenly h-64 p-5">
-        <h1 class="p-4">Song uploading</h1>
-        <div>
-            <label for="audio">audio file:</label>
-            <input bind:this={fileInput} type="file" name="audio">
+    <div class="col-span-1 w-1/2 flex flex-col items-center justify-evenly gap-5 p-5 rounded-lg dark:bg-gray-800 bg-rose-100 dark:text-gray-100">
+        <h1 class="p-4 font-extrabold text-xl">Add a song</h1>
+        <div class="flex flex-col">
+            <label for="audio" class="bg-sky-400 hover:bg-sky-500 active:bg-sky-600 p-4 rounded-md text-white text-xl flex flex-row gap-4 items-center">
+                <img src="Icons/cloud-upload.svg" alt="" class="w-8 h-8">
+                <span class="font-bold">Upload Audio</span>
+            </label>
+            <input bind:this={fileInput} type="file" name="audio" id="audio" class="hidden">
         </div>
-        <div>
-            <label for="artist">artist name:</label>
-            <input bind:value={artistName} type="text" name="artist" class="bg-rose-200">
+        <div class="flex flex-col">
+            <label for="artist">Artist name:</label>
+            <input bind:value={artistName} type="text" name="artist" class="p-1 rounded-md dark:bg-gray-600 dark:text-gray-200 mb-3 outline-none">
         </div>
         
-        <div>
-            <label for="name">song name:</label>
-            <input bind:value={songName} type="text" name="name" class="bg-rose-200">
+        <div class="flex flex-col">
+            <label for="name">Song name:</label>
+            <input bind:value={songName} type="text" name="name" class="p-1 rounded-md dark:bg-gray-600 dark:text-gray-200 mb-3 outline-none">
         </div>
-        <button on:click={uploadFile} type="submit">Submit</button>
+        <button on:click={uploadFile} type="submit" class="bg-blue-400 hover:bg-blue-450 active:bg-blue-600 p-1 px-4 rounded-md ml-2 text-white font-semibold">Submit</button>
     </div>
 
-    <div class="col-start-2 col-end-3 flex flex-col items-center justify-start m-5">
-        {#each songs as song, songIndex}
-            <div class="flex flex-row p-1">
-                <button on:click={() => removeSong(song.id, songIndex)}>X</button>
-                <p>{song.name} by {song.artist}</p>
-            </div>
-        {/each}
+    <div class="col-span-2 w-1/2 h-2/3 flex flex-col justify-center items-center dark:bg-gray-800 bg-rose-100 dark:text-gray-100 rounded-lg p-5">
+        <p class="font-extrabold text-xl col-span-3 flex justify-center items-center mb-2">Your Library</p>
+        <div class="w-full h-full grid grid-cols-3 overflow-y-scroll gap-3 p-2 border-2 rounded-md border-white dark:border-gray-600">
+            {#each songs as song, songIndex}
+                <div class="flex flex-grow-0 flex-row items-center justify-start px-4 py-1 gap-2 bg-white dark:bg-gray-600 dark:text-gray-200 rounded-lg">
+                    <button on:click={() => removeSong(song.id, songIndex)}>
+                        <img src="Icons/close-circle.svg" alt=" X " class="w-5 h-5">
+                    </button>
+                
+                    <p class="break-all w-10/12">
+                        <span class="font-bold"> {song.name} </span> by <span class="font-semibold italic"> {song.artist} </span>
+                    </p>
+                </div>
+            {/each}
+        </div>
+        
     </div>
 </main>
