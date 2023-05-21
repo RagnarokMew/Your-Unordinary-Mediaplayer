@@ -27,6 +27,10 @@
         goto("/upload");
     }
 
+    //UI-related stuff
+    let volumeRange : HTMLElement;
+    let isPlaying : boolean = false;
+
     //Audio-related stuff
 
     const audioContext = new AudioContext();
@@ -55,7 +59,6 @@
     }
     let addingToPlaylist = false;
     let changingPlaylsit = false;
-    let volumeRange : HTMLElement;
     let creatingNewPlaylist = false;
     let playlistNameInputValue: string;
 
@@ -77,11 +80,15 @@
             audio.play();
             playStart = new Date();
             clickedPlay = true;
+
+            isPlaying = true;
         }
         else {
             audio.pause();
             const playEnd = new Date();
             currentPlayTime += Math.floor( (playEnd.getTime() - (playStart?.getTime() ?? Date.now())) / 1000);
+
+            isPlaying = false;
         }
     }
 
@@ -118,6 +125,9 @@
         updateSongData();
         saveSongData(songs[currentSong]);
 
+        //until Autoplay is added
+        isPlaying = false;
+
         playStart = new Date();
         currentSong++;
         currentPlayTime = 0;
@@ -133,6 +143,9 @@
     const prevSong = () => {
         updateSongData();
         saveSongData(songs[currentSong]);
+
+        //until Autoplay is added
+        isPlaying = false;
 
         playStart = new Date();
         currentSong--;
@@ -293,13 +306,15 @@
 
         <p>{songs[currentSong]?.name ?? "Nothing"} by {songs[currentSong]?.artist ?? "Nobody"}</p>
 
-        <div class="flex flex-col">
+        <div class="flex flex-col w-2/3">
             <label for="time">Time:</label>
-            <input bind:this={timeInput} on:change={seekSong} bind:value={time} type="range" min="0" max={audioLength} name="time">
+            <input bind:this={timeInput} on:change={seekSong} bind:value={time} type="range" min="0" max={audioLength} name="time" id="time" 
+            class="w-full h-3 appearance-none outline-none overflow-hidden drop-shadow-sm shadow-gray-700 dark:shadow-rose-200 dark:bg-gray-700 bg-rose-200 rounded-xl
+            ">
         </div>
 
         <!-- Controls -->
-        <div class="flex flex-row items-center justify-between bg-rose-200 dark:bg-gray-700 w-2/3 h-1/6 px-6">
+        <div class="flex flex-row items-center justify-between bg-rose-200 dark:bg-gray-700 rounded-xl w-2/3 h-1/6 px-6">
             
             <div class="controls-left flex flex-row items-center justify-evenly gap-10">
                 <button on:click={prevSong}>
@@ -309,7 +324,11 @@
                     <img src="Icons/play-back.svg" alt="Rewind" class="w-10 h-10">
                 </button>
                 <button on:click={playSong}>
-                    <img src="Icons/play.svg" alt="Play/Pause" class="w-10 h-10">
+                    {#if isPlaying}
+                        <img src="Icons/pause.svg" alt="Play/Pause" class="w-10 h-10">
+                    {:else}
+                        <img src="Icons/play.svg" alt="Play/Pause" class="w-10 h-10">
+                    {/if}
                 </button>
                 <button on:click={forwardSeconds}>
                     <img src="Icons/play-forward.svg" alt="Previous" class="w-10 h-10">
@@ -355,16 +374,85 @@
     </div>
 
     <!-- Bottom panel -->
-    <div class="flex flex-row gap-5 row-start-3 row-end-4 col-start-2 col-end-3 bg-rose-200 dark:bg-gray-700 m-4 w-2/3 h-2/3 self-center justify-self-center">
+    <div class="flex flex-row gap-5 row-start-3 row-end-4 col-start-2 col-end-3 bg-rose-200 dark:bg-gray-700 rounded-lg px-4 py-1 m-4 w-2/3 h-2/3 self-center justify-self-center justify-evenly">
         <div class="flex flex-col">
             <label for="stereo">Panning:</label>
-            <input on:change={updatePanning} bind:value={panning} type="range" min="-1" max="1" step="0.1" name="stereo">
+            <input on:change={updatePanning} bind:value={panning} type="range" min="-1" max="1" step="0.1" name="stereo"
+            class="h-3 appearance-none outline-none overflow-hidden rounded-xl drop-shadow-sm shadow-gray-700 dark:shadow-rose-200">
         </div>
 
         <div class="flex flex-col">
             <label for="biquad">Biquad: {biquadFilters[biquadIndex]}</label>
-            <input bind:value={biquadIndex} type="range" min="0" max={biquadFilters.length - 1} step="1" name="Biquad">
+            <input bind:value={biquadIndex} type="range" min="0" max={biquadFilters.length - 1} step="1" name="Biquad"
+            class="h-3 appearance-none outline-none overflow-hidden rounded-xl drop-shadow-sm shadow-gray-700 dark:shadow-rose-200">
         </div>
     </div>
 
 </main>
+<style>
+    #time::-webkit-slider-thumb
+    {
+        outline: none;
+        cursor: pointer;
+        border: 0;
+        height: 12px;
+        width: 0px;
+
+        box-shadow: -50vw 0 0 50vw var(--time-range-colour);
+        background-color: var(--time-range-colour);
+    }
+
+    #time::-moz-range-thumb
+    {
+        outline: none;
+        cursor: pointer;
+        border: 0;
+        height: 12px;
+        width: 0px;
+
+        box-shadow: -50vw 0 0 50vw var(--time-range-colour);
+        background-color: var(--time-range-colour);
+    }
+
+    #time::-ms-thumb
+    {
+        outline: none;
+        cursor: pointer;
+        border: 0;
+        height: 12px;
+        width: 0px;
+
+        box-shadow: -50vw 0 0 49vw var(--time-range-colour);
+        background-color: var(--time-range-colour);
+    }
+
+    input[type="range"]::-webkit-slider-thumb
+    {
+        height: 16px;
+        width: 16px;
+        border: 0;
+
+        box-shadow: -192px 0 0 180px var(--modifier-range-colour);
+        background-color: #777777;
+    }
+
+    input[type="range"]::-moz-range-thumb
+    {
+        height: 16px;
+        width: 16px;
+        border: 0;
+
+        box-shadow: -192px 0 0 180px var(--modifier-range-colour);
+        background-color: #777777;
+    }
+
+    input[type="range"]::-ms-thumb
+    {
+        height: 16px;
+        width: 16px;
+        border: 0;
+
+        box-shadow: -192px 0 0 180px var(--modifier-range-colour);
+        background-color: #777777;
+    }
+</style>
