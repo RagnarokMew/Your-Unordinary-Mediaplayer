@@ -8,3 +8,9 @@
         @apply dark:bg-primary-dark bg-slate-300;
     }
 }
+
+:root
+{
+    --time-range-colour: #43e0e6;;
+    --modifier-range-colour: #0098be;
+}
