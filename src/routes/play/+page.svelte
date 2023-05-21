@@ -267,7 +267,7 @@
 
 
 <main class="grid grid-cols-[1fr,5fr,1fr] grid-rows-[1fr,5fr,1fr] w-full h-screen">
-    <h1 class="row-span-1 col-start-2 col-end-3 font-bold text-xl self-center justify-self-center text-center">
+    <h1 class="row-span-1 col-start-2 col-end-3 font-bold text-3xl py-3 self-center justify-self-center text-center">
         Media player
     </h1>
 
@@ -301,10 +301,24 @@
 
     <!-- Central panel -->
     <div class="flex flex-col justify-between items-center row-start-2 row-end-3 col-start-2 col-end-3 m-4 gap-2">
-        <img src="" alt="Placeholder" class="border w-[512px] h-[512px]">
+        <img src="" alt="Placeholder" class="border w-[400px] h-[400px]">
         <audio on:timeupdate={updateRange} bind:this={audio} src={url}>Audio</audio>
 
-        <p>{songs[currentSong]?.name ?? "Nothing"} by {songs[currentSong]?.artist ?? "Nobody"}</p>
+        <div class="flex flex-col justify-center items-center">
+            {#if songs[currentSong]?.name !== undefined}
+            <p class="font-bold text-2xl">
+                {songs[currentSong]?.name} 
+            </p>
+            <p class="text-lg">
+                by <span class="font-semibold">{songs[currentSong]?.artist ?? "Unknown artist"}</span>
+            </p>
+            {:else}
+            <p class="font-bold text-2xl">
+                No song selected
+            </p>
+            {/if}
+            
+        </div>
 
         <div class="flex flex-col w-2/3">
             <label for="time">Time:</label>
@@ -401,7 +415,7 @@
         box-shadow: -50vw 0 0 50vw var(--time-range-colour);
         background-color: var(--time-range-colour);
     }
-
+    
     #time::-moz-range-thumb
     {
         outline: none;
