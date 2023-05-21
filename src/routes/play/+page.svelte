@@ -364,7 +364,8 @@
                     {/if}
                 </button>
                 <div bind:this={volumeRange} class="flex flex-col hidden overflow-hidden">
-                    <input on:change={updateVolume} bind:value={volume} type="range" min="0" max="1" step="0.1" name="volume" class="h-10 w-20">
+                    <input on:change={updateVolume} bind:value={volume} type="range" min="0" max="1" step="0.1" name="volume" id="volume"
+                    class="h-2 w-20 rounded-xl">
                 </div>
             </div>
 
