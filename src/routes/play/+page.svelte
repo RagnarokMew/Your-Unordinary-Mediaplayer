@@ -25,6 +25,7 @@
     }
 
     onMount(async () => {
+        if (playlists[currentPlaylist].songIds?.length === 0 || !playlists[currentPlaylist].songIds) return;
         currentSong = await getSong(playlists[currentPlaylist].songIds[0]);
         $songsToPlay = [];
         for (const data of $songsData) {
