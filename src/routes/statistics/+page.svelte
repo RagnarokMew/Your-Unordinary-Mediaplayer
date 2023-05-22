@@ -3,10 +3,16 @@
 	import type { PageData } from "./$types";
     import { Chart } from "chart.js/auto"
 	import { songsData } from "$lib/stores";
+	import { goto } from "$app/navigation";
 
     export let data: PageData;
     const songs = $songsData;
     const playlists = data.post.playlists.sort((a, b) => b.songIds.length - a.songIds.length);
+
+    if ($songsData.length === 0) {
+        alert("Please upload a song!")
+        goto("/upload");
+    }
 
     //peak inefficiency:
     songs.sort((a, b) => b.listens - a.listens);
