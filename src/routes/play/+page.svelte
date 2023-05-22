@@ -1,37 +1,48 @@
 <script lang="ts">
-	import type { PageData } from './$types';
-	import { goto } from '$app/navigation';
-	import {
-		createPlaylist,
-		deletePlaylist,
-		getSongsFromPlaylist,
-		savePlaylist,
-		saveSongData
-	} from '$lib/indexedDB';
-	import Song from './Song.svelte';
-	import type { Playlist } from '$lib/interfaces';
-	import { onDestroy } from 'svelte';
+    import type { PageData } from "./$types";
+	import { goto } from "$app/navigation";
+	import { createPlaylist, deletePlaylist, getSong, getSongsFromPlaylist, savePlaylist, saveSongData } from "$lib/indexedDB";
+	import type { Playlist, Song as Song_T } from "$lib/interfaces";
+	import { onDestroy, onMount } from "svelte";
+	import { songsData, songsToPlay } from "$lib/stores";
+    import Song from "./Song.svelte";
+    import { createAvatar } from "@dicebear/core"
+    import * as shapes from "@dicebear/shapes"
 
 	export let data: PageData;
 
-	let playlists = data.post.playlists;
-	let currentPlaylist = 0;
-	let songs = data.post.songs;
-	let currentSong = 0;
+    let playlists = data.post.playlists;
+    let currentPlaylist = 0;
+    let currentSongIndex = 0;
+    let currentSong: Song_T;
 
-	let playStart: Date = new Date();
-	let currentPlayTime = 0;
-	let totalPlayTime = 0;
-	let clickedPlay = false;
-
-	setTimeout(() => {
-		songs[0] = songs[0]; //to make the songs render (temporary fix, hopefully)
-	}, 100);
+    let playStart: Date = new Date();
+    let currentPlayTime = 0;
+    let totalPlayTime = 0;
+    let clickedPlay = false;
+    let img: string = "";
 
 	if (playlists[currentPlaylist].songIds?.length === 0 || !playlists[currentPlaylist].songIds) {
 		alert('Please upload a song!');
 		goto('/upload');
 	}
+
+    onMount(async () => {
+        if (playlists[currentPlaylist].songIds?.length === 0 || !playlists[currentPlaylist].songIds) return;
+        currentSong = await getSong(playlists[currentPlaylist].songIds[0]);
+        $songsToPlay = [];
+        for (const data of $songsData) {
+            for (const id of playlists[currentPlaylist].songIds) {
+                if (data.id === id) {
+                    $songsToPlay.push(data);
+                    break;
+                }
+            }
+        }
+        $songsToPlay = $songsToPlay;
+
+        generateImage();
+    })
 
 	//UI-related stuff
 	let volumeRange: HTMLElement;
@@ -63,10 +74,10 @@
 	let volume: number = 0.5;
 	let panning: number = 0;
 
-	$: biquad.type = biquadFilters[biquadIndex];
-	$: audioLength = audio?.duration;
-	$: blob = new Blob([songs[currentSong]?.audio ?? ''], { type: 'audio/mp3' });
-	let url: string;
+    $: biquad.type = biquadFilters[biquadIndex];
+    $: audioLength = audio?.duration;
+    $: blob = new Blob([currentSong?.audio ?? ""], { type: "audio/mp3" });
+    let url: string;
 
 	$: {
 		URL.revokeObjectURL(url);
@@ -77,11 +88,11 @@
 	let creatingNewPlaylist = false;
 	let playlistNameInputValue: string;
 
-	if (songs.length > 0) {
-		biquadIndex = biquadFilters.indexOf(songs[currentSong].effects.biquad);
-		panning = songs[currentSong].effects.panning;
-		panner.pan.value = panning;
-	}
+    if ($songsData.length > 0) {
+        biquadIndex = biquadFilters.indexOf($songsData[currentSongIndex].effects.biquad);
+        panning = $songsData[currentSongIndex].effects.panning;
+        panner.pan.value = panning;
+    }
 
 	const playSong = () => {
 		if (!track) {
@@ -137,53 +148,60 @@
 
 	const updateVolume = () => (audio.volume = volume);
 
-	const nextSong = () => {
+	const nextSong = async() => {
 		updateSongData();
-		saveSongData(songs[currentSong]);
+		saveSongData(currentSong);
 
 		//until Autoplay is added
 		isPlaying = false;
 
-		playStart = new Date();
-		currentSong++;
-		currentPlayTime = 0;
-		clickedPlay = false;
-		currentSong = currentSong % songs.length;
-		if (songs.length > 0) {
-			biquadIndex = biquadFilters.indexOf(songs[currentSong].effects.biquad);
-			panning = songs[currentSong].effects.panning;
-			updatePanning();
-		}
-	};
+        playStart = new Date();
+        currentSongIndex++;
+        currentPlayTime = 0;
+        clickedPlay = false;
+        currentSongIndex = currentSongIndex % $songsData.length;
+        currentSong = await getSong($songsData[currentSongIndex].id);
+        if ($songsData.length > 0) {
+            biquadIndex = biquadFilters.indexOf($songsData[currentSongIndex].effects.biquad);
+            panning = $songsData[currentSongIndex].effects.panning;
+            updatePanning();
+        }
 
-	const prevSong = () => {
+        generateImage();
+    }
+
+	const prevSong = async() => {
 		updateSongData();
-		saveSongData(songs[currentSong]);
+		saveSongData(currentSong);
 
 		//until Autoplay is added
 		isPlaying = false;
 
-		playStart = new Date();
-		currentSong--;
-		currentPlayTime = 0;
-		clickedPlay = false;
-		if (currentSong < 0) {
-			currentSong = songs.length - 1;
-		}
-		if (songs.length > 0) {
-			biquadIndex = biquadFilters.indexOf(songs[currentSong].effects.biquad);
-			panning = songs[currentSong].effects.panning;
-			updatePanning();
-		}
-	};
+        playStart = new Date();
+        currentSongIndex--;
+        currentPlayTime = 0;
+        clickedPlay = false;
+        currentSong = await getSong($songsData[currentSongIndex].id);
+        if (currentSongIndex < 0) {
+            currentSongIndex = $songsData.length - 1;
+        }
+        if ($songsData.length > 0)
+        {
+            biquadIndex = biquadFilters.indexOf($songsData[currentSongIndex].effects.biquad);
+            panning = $songsData[currentSongIndex].effects.panning;
+            updatePanning();
+        }
 
-	const updateSongData = () => {
-		songs[currentSong].effects.biquad = biquadFilters[biquadIndex];
-		songs[currentSong].effects.panning = panning;
-		if (clickedPlay === true) songs[currentSong].listens++;
-		songs[currentSong].listenTime += currentPlayTime;
-		totalPlayTime += currentPlayTime;
-	};
+        generateImage();
+    }
+
+    const updateSongData = () => {
+        $songsData[currentSongIndex].effects.biquad = biquadFilters[biquadIndex];
+        $songsData[currentSongIndex].effects.panning = panning;
+        if (clickedPlay === true) $songsData[currentSongIndex].listens++;
+        $songsData[currentSongIndex].listenTime += currentPlayTime;
+        totalPlayTime += currentPlayTime;
+    }
 
 	const toggleAddToPlaylist = () => {
 		addingToPlaylist = !addingToPlaylist;
@@ -202,47 +220,47 @@
 		panner.pan.value = panning;
 	};
 
-	const songChosen = (e: CustomEvent) => {
-		const songIndex = e.detail.songIndex as number;
-		updateSongData();
-		saveSongData(songs[currentSong]);
+    const songChosen = async(e: CustomEvent) => {
+        const songIndex = e.detail.songIndex as number;
+        updateSongData();
+        saveSongData(currentSong);
 
-		playStart = new Date();
-		currentSong = songIndex;
-		currentPlayTime = 0;
-		clickedPlay = false;
-		if (songs.length > 0) {
-			biquadIndex = biquadFilters.indexOf(songs[currentSong].effects.biquad);
-			panning = songs[currentSong].effects.panning;
-			updatePanning();
-		}
-	};
+        playStart = new Date();
+        currentSongIndex = songIndex;
+        currentPlayTime = 0;
+        clickedPlay = false;
+        currentSong = await getSong($songsData[currentSongIndex].id);
+        if ($songsData.length > 0)
+        {
+            biquadIndex = biquadFilters.indexOf($songsData[currentSongIndex].effects.biquad);
+            panning = $songsData[currentSongIndex].effects.panning;
+            updatePanning();
+        }
 
-	const addToPlaylist = (playlistIndex: number) => {
-		let foundSong = false;
-		for (let i = 0; i < playlists[playlistIndex].songIds.length; i++) {
-			if (songs[currentSong].id === playlists[playlistIndex].songIds[i]) {
-				foundSong = true;
-				break;
-			}
-		}
+        generateImage();
+    }
 
-		if (foundSong) {
-			//remove the song from the playlist
-			console.log(`Removed ${songs[currentSong].name} from ${playlists[playlistIndex].name}`);
-			playlists[playlistIndex].songIds = playlists[playlistIndex].songIds.filter(
-				(songId) => songId !== songs[currentSong].id
-			);
-			savePlaylist(playlists[playlistIndex]);
-			songs = songs;
-		} else {
-			//save the song to the playlist
-			console.log(`Added ${songs[currentSong].name} to ${playlists[playlistIndex].name}`);
-			playlists[playlistIndex].songIds.push(songs[currentSong].id);
-			savePlaylist(playlists[playlistIndex]);
-			songs = songs;
-		}
-	};
+    const addToPlaylist = (playlistIndex: number) => {
+        let foundSong = false;
+        for (let i = 0; i < playlists[playlistIndex].songIds.length; i++) {
+            if ($songsData[currentSongIndex].id === playlists[playlistIndex].songIds[i]) {
+                foundSong = true;
+                break;
+            }
+        }
+
+        if (foundSong) { //remove the song from the playlist
+            console.log(`Removed ${$songsData[currentSongIndex].name} from ${playlists[playlistIndex].name}`)
+            playlists[playlistIndex].songIds = playlists[playlistIndex].songIds.filter(songId => songId !== $songsData[currentSongIndex].id);
+            savePlaylist(playlists[playlistIndex]);
+            $songsData = $songsData;
+        }
+        else { //save the song to the playlist
+            console.log(`Added ${$songsData[currentSongIndex].name} to ${playlists[playlistIndex].name}`)
+            playlists[playlistIndex].songIds.push($songsData[currentSongIndex].id)
+            savePlaylist(playlists[playlistIndex]);
+            $songsData = $songsData;
+        }
 
 	const createNewPlaylist = async () => {
 		if (playlistNameInputValue.length === 0) {
@@ -261,29 +279,53 @@
 		creatingNewPlaylist = false;
 	};
 
-	const changePlaylist = async (playlistIndex: number) => {
-		updateSongData();
-		await saveSongData(songs[currentSong]);
-		playlists[currentPlaylist].listenTime += totalPlayTime;
-		savePlaylist(playlists[currentPlaylist]);
-		songs = await getSongsFromPlaylist(playlists[playlistIndex]);
-		currentPlaylist = playlistIndex;
-		currentSong = 0;
-	};
+    const changePlaylist = async(playlistIndex: number) => {
+        updateSongData();
+        await saveSongData(currentSong);
+        playlists[currentPlaylist].listenTime += totalPlayTime;
+        savePlaylist(playlists[currentPlaylist]);
+        $songsData = await getSongsFromPlaylist(playlists[playlistIndex]);
+        currentPlaylist = playlistIndex;
+        currentSongIndex = 0;
+        currentSong = await getSong($songsData[currentSongIndex].id);
 
-	const deletePlaylistFromDb = async (playlistIndex: number) => {
-		await deletePlaylist(playlists[playlistIndex].id);
-		playlists.splice(playlistIndex, 1);
-		playlists = playlists;
-	};
+        $songsToPlay = [];
+        for (const data of $songsData) {
+            for (const id of playlists[currentPlaylist].songIds) {
+                if (data.id === id) {
+                    $songsToPlay.push(data);
+                    break;
+                }
+            }
+        }
+        $songsToPlay = $songsToPlay;
 
-	onDestroy(async () => {
-		if (songs.length === 0) return;
-		updateSongData();
-		await saveSongData(songs[currentSong]);
-		playlists[currentPlaylist].listenTime += totalPlayTime;
-		await savePlaylist(playlists[currentPlaylist]);
-	});
+        generateImage();
+    }
+
+    const deletePlaylistFromDb = async (playlistIndex: number) => {
+        await deletePlaylist(playlists[playlistIndex].id);
+        playlists.splice(playlistIndex, 1);
+        playlists = playlists;
+    }
+
+    const generateImage = () => {
+        const shape = createAvatar(shapes, {
+            seed: Math.random().toString(),
+            backgroundType: ["gradientLinear"],
+            radius: 15,
+        });
+        img = shape.toDataUriSync();
+    }
+
+    onDestroy(async() => {
+        if ($songsData.length === 0) return;
+        updateSongData();
+        await saveSongData(currentSong);
+        playlists[currentPlaylist].listenTime += totalPlayTime;
+        await savePlaylist(playlists[currentPlaylist]);
+    })
+
 </script>
 
 <main class="grid grid-cols-[5fr,1fr] grid-rows-[1fr,5fr,1fr] w-full h-screen relative">
@@ -344,16 +386,16 @@
 	<div
 		class="flex flex-col justify-between items-center row-start-2 row-end-3 col-start-1 col-end-2 m-4 gap-2"
 	>
-		<img src="" alt="Placeholder" class="border w-[400px] h-[400px]" />
+		<img src={img} alt="Placeholder" class="border-0 w-[400px] h-[400px]" />
 		<audio on:timeupdate={updateRange} bind:this={audio} src={url}>Audio</audio>
 
 		<div class="flex flex-col justify-center items-center">
-			{#if songs[currentSong]?.name !== undefined}
+			{#if songsData[currentSongIndex]?.name !== undefined}
 				<p class="font-bold text-2xl">
-					{songs[currentSong]?.name}
+					{$songsData[currentSongIndex]?.name}
 				</p>
 				<p class="text-lg">
-					by <span class="font-semibold">{songs[currentSong]?.artist ?? 'Unknown artist'}</span>
+					by <span class="font-semibold">{$songsData[currentSongIndex]?.artist ?? 'Unknown artist'}</span>
 				</p>
 			{:else}
 				<p class="font-bold text-2xl">No song selected</p>
@@ -447,7 +489,7 @@
 			{playlists[currentPlaylist]?.name ?? 'No Playlist'}
 		</div>
 		<div class="overflow-y-scroll h-[70vh]">
-			{#each songs as song, index}
+			{#each $songsToPlay as song, index}
 				<Song
 					on:playsong={songChosen}
 					songArtist={song.artist ?? 'Nobody'}

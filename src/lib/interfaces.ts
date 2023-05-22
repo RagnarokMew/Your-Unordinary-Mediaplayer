@@ -10,10 +10,9 @@ export interface Review {
     rating: number;
 }
 
-export interface Song {
+export interface SongData {
     artist?: string;
     name: string;
-    audio: ArrayBuffer;
     listens: number;
     listenTime: number;
     id: number;
@@ -23,9 +22,24 @@ export interface Song {
     }
 }
 
+export interface Song extends SongData {
+    audio: ArrayBuffer;
+}
+
 export interface Playlist {
     songIds: number[];
     name: string;
     id: number;
     listenTime: number;
+}
+
+export interface Settings {
+    mainLightColour: string;
+    secondaryLightColour: string;
+    accentLightColour: string;
+    mainDarkColour: string;
+    secondaryDarkColour: string;
+    accentDarkColour: string;
+    forwardTime: number;
+    backwardTime: number;
 }

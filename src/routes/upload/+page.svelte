@@ -1,9 +1,6 @@
 <script lang="ts">
-    import type { PageData } from "./$types";
     import { deleteSong, getPlaylistWithId, savePlaylist, saveSong } from "$lib/indexedDB";
-
-    export let data: PageData;
-    let songs = data.post.songs;
+	import { songsData } from "$lib/stores";
 
     let artistName: string;
     let songName: string;
@@ -23,8 +20,7 @@
                 const defaultPlaylist = await getPlaylistWithId(1);
                 defaultPlaylist.songIds.push(songId as number);
                 await savePlaylist(defaultPlaylist);
-                songs.push({
-                    audio: buffer,
+                $songsData.push({
                     id: songId as number,
                     listenTime: 0,
                     listens: 0,
@@ -35,7 +31,7 @@
                         panning: 0,
                     }
                 })
-                songs = songs;
+                $songsData = $songsData;
             }
         }
         
@@ -43,8 +39,8 @@
 
     const removeSong = async (id: number, songIndex: number) => {
         await deleteSong(id);
-        songs.splice(songIndex, 1);
-        songs = songs;
+        $songsData.splice(songIndex, 1);
+        $songsData = $songsData;
         console.log("Removed the song successfully!");
         //TODO: wrap in a try-catch block
     }
@@ -78,7 +74,7 @@
     <div class="col-span-2 w-1/2 h-2/3 flex flex-col justify-center items-center dark:bg-gray-800 bg-rose-100 dark:text-gray-100 rounded-lg p-5">
         <p class="font-extrabold text-xl col-span-3 flex justify-center items-center mb-2">Your Library</p>
         <div class="w-full h-[70vh] grid grid-cols-3 overflow-y-scroll gap-3 p-2 border-2 rounded-md border-white dark:border-gray-600">
-            {#each songs as song, songIndex}
+            {#each $songsData as song, songIndex}
                 <div class="flex flex-grow-0 flex-row items-center justify-start px-4 py-1 gap-2 bg-white dark:bg-gray-600 dark:text-gray-200 rounded-lg">
                     <button on:click={() => removeSong(song.id, songIndex)}>
                         <img src="Icons/close-circle.svg" alt=" X " class="w-5 h-5">

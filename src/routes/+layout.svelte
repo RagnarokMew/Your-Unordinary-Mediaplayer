@@ -26,7 +26,7 @@
         <a href="/statistics"> <img src="/Icons/pie-chart.svg" class="w-10 h-10" alt="Statistics"> </a>
         <a href="/forum"> <img src="/Icons/people.svg" class="w-10 h-10" alt="Forum"> </a>
         <a href="#"> <img src="/Icons/person.svg" class="w-10 h-10" alt="Account"> </a>
-        <a href="#"> <img src="/Icons/settings.svg" class="w-10 h-10" alt="Settings"> </a>
+        <a href="/settings"> <img src="/Icons/settings.svg" class="w-10 h-10" alt="Settings"> </a>
     </nav>
 
     <slot />
