@@ -1,7 +1,7 @@
 import { writable } from "svelte/store";
-import type { Playlist, Settings, Song } from "./interfaces";
+import type { Playlist, Settings, SongData } from "./interfaces";
 
-const songs = writable<Song[]>(new Array<Song>());
+const songsData = writable<SongData[]>(new Array<SongData>());
 const playlists = writable<Playlist[]>(new Array<Playlist>());
 const settings = writable<Settings>({
     mainLightColour: "#fecdd3",
@@ -13,5 +13,6 @@ const settings = writable<Settings>({
     forwardTime: 15,
     backwardTime: 15,
 });
+const songsToPlay = writable<SongData[]>(new Array<SongData>());
 
-export {songs, playlists, settings};
+export {songsData, playlists, settings, songsToPlay};
