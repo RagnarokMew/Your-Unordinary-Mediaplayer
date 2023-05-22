@@ -2,10 +2,11 @@
 	import { onMount } from "svelte";
 	import type { PageData } from "./$types";
     import { Chart } from "chart.js/auto"
+	import { songsData } from "$lib/stores";
 
     export let data: PageData;
-    const songs = data.post.songs;
-    const playlists = data.post.playlists.sort((a, b) => b.songIds.length - a.songIds.length)
+    const songs = $songsData;
+    const playlists = data.post.playlists.sort((a, b) => b.songIds.length - a.songIds.length);
 
     //peak inefficiency:
     songs.sort((a, b) => b.listens - a.listens);
