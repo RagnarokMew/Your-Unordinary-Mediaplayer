@@ -6,6 +6,8 @@
 	import { onDestroy, onMount } from "svelte";
 	import { songsData, songsToPlay } from "$lib/stores";
     import Song from "./Song.svelte";
+    import { createAvatar } from "@dicebear/core"
+    import * as shapes from "@dicebear/shapes"
 
     export let data: PageData;
 
@@ -18,6 +20,7 @@
     let currentPlayTime = 0;
     let totalPlayTime = 0;
     let clickedPlay = false;
+    let img: string = "";
 
     if (playlists[currentPlaylist].songIds?.length === 0 || !playlists[currentPlaylist].songIds){
         alert("Please upload a song!")
@@ -37,6 +40,8 @@
             }
         }
         $songsToPlay = $songsToPlay;
+
+        generateImage();
     })
 
     //Audio-related stuff
@@ -123,6 +128,8 @@
             panning = $songsData[currentSongIndex].effects.panning;
             updatePanning();
         }
+
+        generateImage();
     }
 
     const prevSong = async() => {
@@ -143,6 +150,8 @@
             panning = $songsData[currentSongIndex].effects.panning;
             updatePanning();
         }
+
+        generateImage();
     }
 
     const updateSongData = () => {
@@ -180,6 +189,8 @@
             panning = $songsData[currentSongIndex].effects.panning;
             updatePanning();
         }
+
+        generateImage();
     }
 
     const addToPlaylist = (playlistIndex: number) => {
@@ -243,12 +254,23 @@
             }
         }
         $songsToPlay = $songsToPlay;
+
+        generateImage();
     }
 
     const deletePlaylistFromDb = async (playlistIndex: number) => {
         await deletePlaylist(playlists[playlistIndex].id);
         playlists.splice(playlistIndex, 1);
         playlists = playlists;
+    }
+
+    const generateImage = () => {
+        const shape = createAvatar(shapes, {
+            seed: Math.random().toString(),
+            backgroundType: ["gradientLinear"],
+            radius: 15,
+        });
+        img = shape.toDataUriSync();
     }
 
     onDestroy(async() => {
@@ -297,7 +319,7 @@
 
     <!-- Central panel -->
     <div class="flex flex-col justify-between items-center row-start-2 row-end-3 col-start-2 col-end-3 m-4 gap-2">
-        <img src="" alt="Placeholder" class="border w-[512px] h-[512px]">
+        <img src={img} alt="Placeholder" class="border-0 w-[512px] h-[512px]">
         <audio on:timeupdate={updateRange} bind:this={audio} src={url}>Audio</audio>
 
         <p>{$songsData[currentSongIndex]?.name ?? "Nothing"} by {$songsData[currentSongIndex]?.artist ?? "Nobody"}</p>
