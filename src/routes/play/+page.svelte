@@ -443,7 +443,7 @@
 	<div
 		class="row-start-2 row-end-3 col-start-2 col-end-3 bg-rose-200 dark:bg-gray-700 py-4 px-2 rounded-tl-3xl rounded-bl-3xl"
 	>
-		<div class="flex justify-center items-center p-2">
+		<div class="flex justify-center items-center p-2 text-xl font-semibold break-all">
 			{playlists[currentPlaylist]?.name ?? 'No Playlist'}
 		</div>
 		<div class="overflow-y-scroll h-[70vh]">
