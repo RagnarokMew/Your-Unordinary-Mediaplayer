@@ -267,7 +267,7 @@
 
 
 <main class="grid grid-cols-[5fr,1fr] grid-rows-[1fr,5fr,1fr] w-full h-screen">
-    <h1 class="row-span-1 col-start-2 col-end-3 font-bold text-3xl py-3 self-center justify-self-center text-center">
+    <h1 class="row-span-1 col-start-1 col-end-2 font-bold text-3xl py-3 self-center justify-self-center text-center">
         Media player
     </h1>
 
