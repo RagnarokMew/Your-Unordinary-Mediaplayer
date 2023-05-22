@@ -1,31 +1,42 @@
 <script lang="ts">
     import type { PageData } from "./$types";
 	import { goto } from "$app/navigation";
-	import { createPlaylist, deletePlaylist, getSongsFromPlaylist, savePlaylist, saveSongData } from "$lib/indexedDB";
-	import Song from "./Song.svelte";
-	import type { Playlist } from "$lib/interfaces";
-	import { onDestroy } from "svelte";
+	import { createPlaylist, deletePlaylist, getSong, getSongsFromPlaylist, savePlaylist, saveSongData } from "$lib/indexedDB";
+	import type { Playlist, Song as Song_T } from "$lib/interfaces";
+	import { onDestroy, onMount } from "svelte";
+	import { songsData, songsToPlay } from "$lib/stores";
+    import Song from "./Song.svelte";
 
     export let data: PageData;
 
     let playlists = data.post.playlists;
     let currentPlaylist = 0;
-    let songs = data.post.songs;
-    let currentSong = 0;
+    let currentSongIndex = 0;
+    let currentSong: Song_T;
 
     let playStart: Date = new Date();
     let currentPlayTime = 0;
     let totalPlayTime = 0;
     let clickedPlay = false;
 
-    setTimeout(() => {
-        songs[0] = songs[0]; //to make the songs render (temporary fix, hopefully)
-    }, 100);
-
     if (playlists[currentPlaylist].songIds?.length === 0 || !playlists[currentPlaylist].songIds){
         alert("Please upload a song!")
         goto("/upload");
     }
+
+    onMount(async () => {
+        currentSong = await getSong(playlists[currentPlaylist].songIds[0]);
+        $songsToPlay = [];
+        for (const data of $songsData) {
+            for (const id of playlists[currentPlaylist].songIds) {
+                if (data.id === id) {
+                    $songsToPlay.push(data);
+                    break;
+                }
+            }
+        }
+        $songsToPlay = $songsToPlay;
+    })
 
     //Audio-related stuff
 
@@ -46,7 +57,7 @@
 
     $: biquad.type = biquadFilters[biquadIndex];
     $: audioLength = audio?.duration;
-    $: blob = new Blob([songs[currentSong]?.audio ?? ""], { type: "audio/mp3" });
+    $: blob = new Blob([currentSong?.audio ?? ""], { type: "audio/mp3" });
     let url: string;
 
     $: {
@@ -58,9 +69,9 @@
     let creatingNewPlaylist = false;
     let playlistNameInputValue: string;
 
-    if (songs.length > 0) {
-        biquadIndex = biquadFilters.indexOf(songs[currentSong].effects.biquad);
-        panning = songs[currentSong].effects.panning;
+    if ($songsData.length > 0) {
+        biquadIndex = biquadFilters.indexOf($songsData[currentSongIndex].effects.biquad);
+        panning = $songsData[currentSongIndex].effects.panning;
         panner.pan.value = panning;
     }
 
@@ -96,46 +107,48 @@
     }
     const updateVolume = () => audio.volume = volume;
 
-    const nextSong = () => {
+    const nextSong = async() => {
         updateSongData();
-        saveSongData(songs[currentSong]);
+        saveSongData(currentSong);
 
         playStart = new Date();
-        currentSong++;
+        currentSongIndex++;
         currentPlayTime = 0;
         clickedPlay = false;
-        currentSong = currentSong % songs.length;
-        if (songs.length > 0) {
-            biquadIndex = biquadFilters.indexOf(songs[currentSong].effects.biquad);
-            panning = songs[currentSong].effects.panning;
+        currentSongIndex = currentSongIndex % $songsData.length;
+        currentSong = await getSong($songsData[currentSongIndex].id);
+        if ($songsData.length > 0) {
+            biquadIndex = biquadFilters.indexOf($songsData[currentSongIndex].effects.biquad);
+            panning = $songsData[currentSongIndex].effects.panning;
             updatePanning();
         }
     }
 
-    const prevSong = () => {
+    const prevSong = async() => {
         updateSongData();
-        saveSongData(songs[currentSong]);
+        saveSongData(currentSong);
 
         playStart = new Date();
-        currentSong--;
+        currentSongIndex--;
         currentPlayTime = 0;
         clickedPlay = false;
-        if (currentSong < 0) {
-            currentSong = songs.length - 1;
+        currentSong = await getSong($songsData[currentSongIndex].id);
+        if (currentSongIndex < 0) {
+            currentSongIndex = $songsData.length - 1;
         }
-        if (songs.length > 0)
+        if ($songsData.length > 0)
         {
-            biquadIndex = biquadFilters.indexOf(songs[currentSong].effects.biquad);
-            panning = songs[currentSong].effects.panning;
+            biquadIndex = biquadFilters.indexOf($songsData[currentSongIndex].effects.biquad);
+            panning = $songsData[currentSongIndex].effects.panning;
             updatePanning();
         }
     }
 
     const updateSongData = () => {
-        songs[currentSong].effects.biquad = biquadFilters[biquadIndex];
-        songs[currentSong].effects.panning = panning;
-        if (clickedPlay === true) songs[currentSong].listens++;
-        songs[currentSong].listenTime += currentPlayTime;
+        $songsData[currentSongIndex].effects.biquad = biquadFilters[biquadIndex];
+        $songsData[currentSongIndex].effects.panning = panning;
+        if (clickedPlay === true) $songsData[currentSongIndex].listens++;
+        $songsData[currentSongIndex].listenTime += currentPlayTime;
         totalPlayTime += currentPlayTime;
     }
 
@@ -150,19 +163,20 @@
         panner.pan.value = panning;
     }
 
-    const songChosen = (e: CustomEvent) => {
+    const songChosen = async(e: CustomEvent) => {
         const songIndex = e.detail.songIndex as number;
         updateSongData();
-        saveSongData(songs[currentSong]);
+        saveSongData(currentSong);
 
         playStart = new Date();
-        currentSong = songIndex;
+        currentSongIndex = songIndex;
         currentPlayTime = 0;
         clickedPlay = false;
-        if (songs.length > 0)
+        currentSong = await getSong($songsData[currentSongIndex].id);
+        if ($songsData.length > 0)
         {
-            biquadIndex = biquadFilters.indexOf(songs[currentSong].effects.biquad);
-            panning = songs[currentSong].effects.panning;
+            biquadIndex = biquadFilters.indexOf($songsData[currentSongIndex].effects.biquad);
+            panning = $songsData[currentSongIndex].effects.panning;
             updatePanning();
         }
     }
@@ -170,23 +184,23 @@
     const addToPlaylist = (playlistIndex: number) => {
         let foundSong = false;
         for (let i = 0; i < playlists[playlistIndex].songIds.length; i++) {
-            if (songs[currentSong].id === playlists[playlistIndex].songIds[i]) {
+            if ($songsData[currentSongIndex].id === playlists[playlistIndex].songIds[i]) {
                 foundSong = true;
                 break;
             }
         }
 
         if (foundSong) { //remove the song from the playlist
-            console.log(`Removed ${songs[currentSong].name} from ${playlists[playlistIndex].name}`)
-            playlists[playlistIndex].songIds = playlists[playlistIndex].songIds.filter(songId => songId !== songs[currentSong].id);
+            console.log(`Removed ${$songsData[currentSongIndex].name} from ${playlists[playlistIndex].name}`)
+            playlists[playlistIndex].songIds = playlists[playlistIndex].songIds.filter(songId => songId !== $songsData[currentSongIndex].id);
             savePlaylist(playlists[playlistIndex]);
-            songs = songs;
+            $songsData = $songsData;
         }
         else { //save the song to the playlist
-            console.log(`Added ${songs[currentSong].name} to ${playlists[playlistIndex].name}`)
-            playlists[playlistIndex].songIds.push(songs[currentSong].id)
+            console.log(`Added ${$songsData[currentSongIndex].name} to ${playlists[playlistIndex].name}`)
+            playlists[playlistIndex].songIds.push($songsData[currentSongIndex].id)
             savePlaylist(playlists[playlistIndex]);
-            songs = songs;
+            $songsData = $songsData;
         }
 
     }
@@ -210,12 +224,24 @@
 
     const changePlaylist = async(playlistIndex: number) => {
         updateSongData();
-        await saveSongData(songs[currentSong]);
+        await saveSongData(currentSong);
         playlists[currentPlaylist].listenTime += totalPlayTime;
         savePlaylist(playlists[currentPlaylist]);
-        songs = await getSongsFromPlaylist(playlists[playlistIndex]);
+        $songsData = await getSongsFromPlaylist(playlists[playlistIndex]);
         currentPlaylist = playlistIndex;
-        currentSong = 0;
+        currentSongIndex = 0;
+        currentSong = await getSong($songsData[currentSongIndex].id);
+
+        $songsToPlay = [];
+        for (const data of $songsData) {
+            for (const id of playlists[currentPlaylist].songIds) {
+                if (data.id === id) {
+                    $songsToPlay.push(data);
+                    break;
+                }
+            }
+        }
+        $songsToPlay = $songsToPlay;
     }
 
     const deletePlaylistFromDb = async (playlistIndex: number) => {
@@ -225,9 +251,9 @@
     }
 
     onDestroy(async() => {
-        if (songs.length === 0) return;
+        if ($songsData.length === 0) return;
         updateSongData();
-        await saveSongData(songs[currentSong]);
+        await saveSongData(currentSong);
         playlists[currentPlaylist].listenTime += totalPlayTime;
         await savePlaylist(playlists[currentPlaylist]);
     })
@@ -273,7 +299,7 @@
         <img src="" alt="Placeholder" class="border w-[512px] h-[512px]">
         <audio on:timeupdate={updateRange} bind:this={audio} src={url}>Audio</audio>
 
-        <p>{songs[currentSong]?.name ?? "Nothing"} by {songs[currentSong]?.artist ?? "Nobody"}</p>
+        <p>{$songsData[currentSongIndex]?.name ?? "Nothing"} by {$songsData[currentSongIndex]?.artist ?? "Nobody"}</p>
 
         <!-- Controls -->
         <div class="flex flex-row items-center justify-evenly bg-rose-200 w-2/3 h-1/6">
@@ -295,7 +321,7 @@
 
     <!-- Right panel -->
     <div class="row-start-2 row-end-3 col-start-3 col-end-4 bg-rose-200">
-        {#each songs as song, index}
+        {#each $songsToPlay as song, index}
             <Song on:playsong={songChosen} songArtist={song.artist ?? "Nobody"} songName={song.name} songIndex={index} songId={song.id} />
         {/each}
     </div>
