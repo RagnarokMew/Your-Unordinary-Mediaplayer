@@ -1,9 +1,6 @@
 <script lang="ts">
-    import type { PageData } from "./$types";
     import { deleteSong, getPlaylistWithId, savePlaylist, saveSong } from "$lib/indexedDB";
-
-    export let data: PageData;
-    let songs = data.post.songs;
+	import { songsData } from "$lib/stores";
 
     let artistName: string;
     let songName: string;
@@ -23,8 +20,7 @@
                 const defaultPlaylist = await getPlaylistWithId(1);
                 defaultPlaylist.songIds.push(songId as number);
                 await savePlaylist(defaultPlaylist);
-                songs.push({
-                    audio: buffer,
+                $songsData.push({
                     id: songId as number,
                     listenTime: 0,
                     listens: 0,
@@ -35,7 +31,7 @@
                         panning: 0,
                     }
                 })
-                songs = songs;
+                $songsData = $songsData;
             }
         }
         
@@ -43,8 +39,8 @@
 
     const removeSong = async (id: number, songIndex: number) => {
         await deleteSong(id);
-        songs.splice(songIndex, 1);
-        songs = songs;
+        $songsData.splice(songIndex, 1);
+        $songsData = $songsData;
         console.log("Removed the song successfully!");
         //TODO: wrap in a try-catch block
     }
@@ -73,7 +69,7 @@
     </div>
 
     <div class="col-start-2 col-end-3 flex flex-col items-center justify-start m-5">
-        {#each songs as song, songIndex}
+        {#each $songsData as song, songIndex}
             <div class="flex flex-row p-1">
                 <button on:click={() => removeSong(song.id, songIndex)}>X</button>
                 <p>{song.name} by {song.artist}</p>
