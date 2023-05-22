@@ -99,7 +99,16 @@ export const getSong = async(id: number): Promise<Song> => {
     return new Promise(function(resolve, reject) {
         trans.oncomplete = () => {
             const result = request.result;
-            resolve(result);
+
+            resolve({
+                audio: result.audio,
+                effects: result.effects,
+                id: id,
+                listens: result.listens,
+                listenTime: result.listenTime,
+                name: result.name,
+                artist: result.artist
+            }satisfies Song);
         }
     })
 }
@@ -176,7 +185,6 @@ export const getAllSongsFromArtist = async(name: string) => {
 }
 
 export const saveSongData = async(song: Song) => {
-
     const trans = database.transaction(["songs"], "readwrite");
     const store = trans.objectStore("songs");
 
