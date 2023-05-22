@@ -266,7 +266,7 @@
 </script>
 
 
-<main class="grid grid-cols-[1fr,5fr,1fr] grid-rows-[1fr,5fr,1fr] w-full h-screen">
+<main class="grid grid-cols-[5fr,1fr] grid-rows-[1fr,5fr,1fr] w-full h-screen">
     <h1 class="row-span-1 col-start-2 col-end-3 font-bold text-3xl py-3 self-center justify-self-center text-center">
         Media player
     </h1>
@@ -300,7 +300,7 @@
     {/if}
 
     <!-- Central panel -->
-    <div class="flex flex-col justify-between items-center row-start-2 row-end-3 col-start-2 col-end-3 m-4 gap-2">
+    <div class="flex flex-col justify-between items-center row-start-2 row-end-3 col-start-1 col-end-2 m-4 gap-2">
         <img src="" alt="Placeholder" class="border w-[400px] h-[400px]">
         <audio on:timeupdate={updateRange} bind:this={audio} src={url}>Audio</audio>
 
@@ -382,7 +382,7 @@
     </div>
 
     <!-- Right panel -->
-    <div class="row-start-2 row-end-3 col-start-3 col-end-4 bg-rose-200 dark:bg-gray-700 py-4 px-2 rounded-tl-3xl rounded-bl-3xl">
+    <div class="row-start-2 row-end-3 col-start-2 col-end-3 bg-rose-200 dark:bg-gray-700 py-4 px-2 rounded-tl-3xl rounded-bl-3xl">
         <div class="flex justify-center items-center p-2">
             {playlists[currentPlaylist]?.name ?? "No Playlist"}
         </div>
@@ -394,7 +394,7 @@
     </div>
 
     <!-- Bottom panel -->
-    <div class="flex flex-row gap-5 row-start-3 row-end-4 col-start-2 col-end-3 bg-rose-200 dark:bg-gray-700 rounded-lg px-4 py-1 m-4 w-2/3 h-2/3 self-center justify-self-center justify-evenly">
+    <div class="flex flex-row gap-5 row-start-3 row-end-4 col-start-1 col-end-2 bg-rose-200 dark:bg-gray-700 rounded-lg px-4 py-1 m-4 w-2/3 h-2/3 self-center justify-self-center justify-evenly">
         <div class="flex flex-col">
             <label for="stereo">Panning:</label>
             <input on:change={updatePanning} bind:value={panning} type="range" min="-1" max="1" step="0.1" name="stereo"
