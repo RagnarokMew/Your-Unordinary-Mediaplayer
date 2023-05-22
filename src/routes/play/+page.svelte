@@ -294,7 +294,7 @@
 	</h1>
 
 	{#if addingToPlaylist || changingPlaylsit}
-		<div class="border-2 border-gray-500 bg-rose-200 h-3/4 w-1/2 rounded-2xl flex flex-col p-5 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+		<div class="bg-rose-200 dark:bg-gray-700 h-3/4 w-1/2 rounded-2xl flex flex-col p-5 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
             {#if creatingNewPlaylist}
 		        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col gap-2 justify-center items-center w-70 h-35 border-2 border-gray-500 bg-rose-200 p-2 rounded-2xl">
 			        <label for="playlistName">Playlist name:</label>
