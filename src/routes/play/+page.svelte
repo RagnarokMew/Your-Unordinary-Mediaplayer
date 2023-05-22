@@ -248,7 +248,6 @@
                 break;
             }
         }
-
         if (foundSong) { //remove the song from the playlist
             console.log(`Removed ${$songsData[currentSongIndex].name} from ${playlists[playlistIndex].name}`)
             playlists[playlistIndex].songIds = playlists[playlistIndex].songIds.filter(songId => songId !== $songsData[currentSongIndex].id);
@@ -261,6 +260,7 @@
             savePlaylist(playlists[playlistIndex]);
             $songsData = $songsData;
         }
+	}
 
 	const createNewPlaylist = async () => {
 		if (playlistNameInputValue.length === 0) {
@@ -325,7 +325,6 @@
         playlists[currentPlaylist].listenTime += totalPlayTime;
         await savePlaylist(playlists[currentPlaylist]);
     })
-
 </script>
 
 <main class="grid grid-cols-[5fr,1fr] grid-rows-[1fr,5fr,1fr] w-full h-screen relative">
@@ -390,7 +389,7 @@
 		<audio on:timeupdate={updateRange} bind:this={audio} src={url}>Audio</audio>
 
 		<div class="flex flex-col justify-center items-center">
-			{#if songsData[currentSongIndex]?.name !== undefined}
+			{#if $songsData[currentSongIndex]?.name !== undefined}
 				<p class="font-bold text-2xl">
 					{$songsData[currentSongIndex]?.name}
 				</p>
