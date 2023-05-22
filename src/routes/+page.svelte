@@ -2,6 +2,18 @@
     import "../app.css";
     import Footer from "../Components/Footer.svelte";
     import Review from "./Review.svelte";
+    import { songsData } from "$lib/stores";
+	import { getAllSongsData } from "$lib/indexedDB";
+	import { onMount } from "svelte";
+    
+
+    onMount(async () => {
+        if ($songsData.length === 0) {
+            $songsData = await getAllSongsData();
+        }
+    })
+
+
 </script>
 
 <main class="flex flex-col dark:bg-black dark:text-white">
