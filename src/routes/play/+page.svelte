@@ -88,9 +88,9 @@
 	let creatingNewPlaylist = false;
 	let playlistNameInputValue: string;
 
-    if ($songsData.length > 0) {
-        biquadIndex = biquadFilters.indexOf($songsData[currentSongIndex].effects.biquad);
-        panning = $songsData[currentSongIndex].effects.panning;
+    if ($songsToPlay.length > 0) {
+        biquadIndex = biquadFilters.indexOf($songsToPlay[currentSongIndex].effects.biquad);
+        panning = $songsToPlay[currentSongIndex].effects.panning;
         panner.pan.value = panning;
     }
 
@@ -159,11 +159,11 @@
         currentSongIndex++;
         currentPlayTime = 0;
         clickedPlay = false;
-        currentSongIndex = currentSongIndex % $songsData.length;
-        currentSong = await getSong($songsData[currentSongIndex].id);
-        if ($songsData.length > 0) {
-            biquadIndex = biquadFilters.indexOf($songsData[currentSongIndex].effects.biquad);
-            panning = $songsData[currentSongIndex].effects.panning;
+        currentSongIndex = currentSongIndex % $songsToPlay.length;
+        currentSong = await getSong($songsToPlay[currentSongIndex].id);
+        if ($songsToPlay.length > 0) {
+            biquadIndex = biquadFilters.indexOf($songsToPlay[currentSongIndex].effects.biquad);
+            panning = $songsToPlay[currentSongIndex].effects.panning;
             updatePanning();
         }
 
@@ -181,14 +181,14 @@
         currentSongIndex--;
         currentPlayTime = 0;
         clickedPlay = false;
-        currentSong = await getSong($songsData[currentSongIndex].id);
+        currentSong = await getSong($songsToPlay[currentSongIndex].id);
         if (currentSongIndex < 0) {
-            currentSongIndex = $songsData.length - 1;
+            currentSongIndex = $songsToPlay.length - 1;
         }
-        if ($songsData.length > 0)
+        if ($songsToPlay.length > 0)
         {
-            biquadIndex = biquadFilters.indexOf($songsData[currentSongIndex].effects.biquad);
-            panning = $songsData[currentSongIndex].effects.panning;
+            biquadIndex = biquadFilters.indexOf($songsToPlay[currentSongIndex].effects.biquad);
+            panning = $songsToPlay[currentSongIndex].effects.panning;
             updatePanning();
         }
 
@@ -197,13 +197,13 @@
 
     const updateSongData = () => {
         //Updating the data in the songsData store
-        $songsData[currentSongIndex].effects.biquad = biquadFilters[biquadIndex];
-        $songsData[currentSongIndex].effects.panning = panning;
+        $songsToPlay[currentSongIndex].effects.biquad = biquadFilters[biquadIndex];
+        $songsToPlay[currentSongIndex].effects.panning = panning;
         if (clickedPlay === true) {
-            $songsData[currentSongIndex].listens++;
+            $songsToPlay[currentSongIndex].listens++;
             currentSong.listens++;
         }
-        $songsData[currentSongIndex].listenTime += currentPlayTime;
+        $songsToPlay[currentSongIndex].listenTime += currentPlayTime;
         totalPlayTime += currentPlayTime;
 
         //Updating the data on the currentSong itself
@@ -238,11 +238,11 @@
         currentSongIndex = songIndex;
         currentPlayTime = 0;
         clickedPlay = false;
-        currentSong = await getSong($songsData[currentSongIndex].id);
-        if ($songsData.length > 0)
+        currentSong = await getSong($songsToPlay[currentSongIndex].id);
+        if ($songsToPlay.length > 0)
         {
-            biquadIndex = biquadFilters.indexOf($songsData[currentSongIndex].effects.biquad);
-            panning = $songsData[currentSongIndex].effects.panning;
+            biquadIndex = biquadFilters.indexOf($songsToPlay[currentSongIndex].effects.biquad);
+            panning = $songsToPlay[currentSongIndex].effects.panning;
             updatePanning();
         }
 
@@ -252,22 +252,22 @@
     const addToPlaylist = (playlistIndex: number) => {
         let foundSong = false;
         for (let i = 0; i < playlists[playlistIndex].songIds.length; i++) {
-            if ($songsData[currentSongIndex].id === playlists[playlistIndex].songIds[i]) {
+            if ($songsToPlay[currentSongIndex].id === playlists[playlistIndex].songIds[i]) {
                 foundSong = true;
                 break;
             }
         }
         if (foundSong) { //remove the song from the playlist
-            console.log(`Removed ${$songsData[currentSongIndex].name} from ${playlists[playlistIndex].name}`)
-            playlists[playlistIndex].songIds = playlists[playlistIndex].songIds.filter(songId => songId !== $songsData[currentSongIndex].id);
+            console.log(`Removed ${$songsToPlay[currentSongIndex].name} from ${playlists[playlistIndex].name}`)
+            playlists[playlistIndex].songIds = playlists[playlistIndex].songIds.filter(songId => songId !== $songsToPlay[currentSongIndex].id);
             savePlaylist(playlists[playlistIndex]);
-            $songsData = $songsData;
+            $songsToPlay = $songsToPlay;
         }
         else { //save the song to the playlist
-            console.log(`Added ${$songsData[currentSongIndex].name} to ${playlists[playlistIndex].name}`)
-            playlists[playlistIndex].songIds.push($songsData[currentSongIndex].id)
+            console.log(`Added ${$songsToPlay[currentSongIndex].name} to ${playlists[playlistIndex].name}`)
+            playlists[playlistIndex].songIds.push($songsToPlay[currentSongIndex].id)
             savePlaylist(playlists[playlistIndex]);
-            $songsData = $songsData;
+            $songsToPlay = $songsToPlay;
         }
 	}
 
@@ -295,7 +295,7 @@
         savePlaylist(playlists[currentPlaylist]);
         currentPlaylist = playlistIndex;
         currentSongIndex = 0;
-        currentSong = await getSong($songsData[currentSongIndex].id);
+        currentSong = await getSong(playlists[currentPlaylist].songIds[0]);
 
         $songsToPlay = [];
         for (const data of $songsData) {
@@ -327,7 +327,7 @@
     }
 
     onDestroy(async() => {
-        if ($songsData.length === 0) return;
+        if ($songsToPlay.length === 0) return;
         updateSongData();
         await saveSongData(currentSong);
         playlists[currentPlaylist].listenTime += totalPlayTime;
@@ -397,12 +397,12 @@
 		<audio on:timeupdate={updateRange} bind:this={audio} src={url}>Audio</audio>
 
 		<div class="flex flex-col justify-center items-center">
-			{#if $songsData[currentSongIndex]?.name !== undefined}
+			{#if $songsToPlay[currentSongIndex]?.name !== undefined}
 				<p class="font-bold text-2xl">
-					{$songsData[currentSongIndex]?.name}
+					{$songsToPlay[currentSongIndex]?.name}
 				</p>
 				<p class="text-lg">
-					by <span class="font-semibold">{$songsData[currentSongIndex]?.artist ?? 'Unknown artist'}</span>
+					by <span class="font-semibold">{$songsToPlay[currentSongIndex]?.artist ?? 'Unknown artist'}</span>
 				</p>
 			{:else}
 				<p class="font-bold text-2xl">No song selected</p>
