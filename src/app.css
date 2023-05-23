@@ -11,6 +11,31 @@
 
 :root
 {
+    --primary-colour: #ffffff;
+    --secondary-colour: #ffffff;
+    --secondary2-colour: #ffffff;
+    --accent-colour: #ffffff;
+    --text-colour: #ffffff;
+
+
     --time-range-colour: #43e0e6;;
     --modifier-range-colour: #0098be;
+    
+}
+
+.primary-bg
+{
+    background-color: var(--primary-colour);
+}
+.secondary-bg
+{
+    background-color: var(--secondary-color);
+}
+.accent-bg
+{
+    accent-color: var(--accent-color);
+}
+.font
+{
+    color: var(--text-colour);
 }

@@ -1,23 +1,54 @@
 <script lang="ts">
+	import { onMount } from "svelte";
+    import { settings } from "$lib/stores";
     import "../app.css";
 
+    let root : HTMLElement | any;
     let darkmode = false;   
+
+    let primaryLight = "#fecdd3";
+    let secondaryLight = "#e5e7eb";
+    let secondary2Light = "";
+    let accentLight = "#000000";
+    let fontLight = "#000000";
+
+    let primaryDark = "#dddddd";
+    let secondaryDark = "#ffffff";
+    let secondary2Dark = "";
+    let accentDark = "#000000";
+    let fontDark = "#ffffff";
 
     const toggleTheme = () => {
         darkmode = !darkmode;
         document.documentElement.classList.toggle('dark');
+
+        if(darkmode)
+            changeTheme(primaryDark, secondaryDark, secondary2Dark, accentDark, fontDark);
+        else
+            changeTheme(primaryLight, secondaryLight, secondary2Light, accentLight, fontLight);
     }
 
+    const changeTheme = (primary : string, secondary : string, secondary2 : string, accent : string, font : string) => {
+        root.style.setProperty('--primary-colour', primary);
+        root.style.setProperty('--secondary-colour', secondary);
+        root.style.setProperty('--secondary2-colour', secondary2);
+        root.style.setProperty('--accent-colour', accent);
+        root.style.setProperty('--font-colour',font);
+    }
+
+    onMount(async () => {
+        root = document.querySelector(":root");
+    });
 </script>
 
-<main class="dark:bg-black dark:text-white flex flex-grow">
-    <nav class="dark:bg-gray-900 bg-rose-200 shadow-sm shadow-rose-200/50 dark:shadow-gray-900/50 sticky top-0 left-0 h-screen p-7 font-extrabold gap-2">
+<main class="flex flex-grow font primary-bg">
+    <nav class="bg-primary shadow-sm shadow-rose-200/50 dark:shadow-gray-900/50 sticky top-0 left-0 h-screen p-7 font-extrabold gap-2">
         <button> <img src="/Icons/menu.svg" class="w-10 h-10" alt="Expand"> </button>
         <button on:click={toggleTheme} class="toggle-dark">
             {#if darkmode}
-            <svg xmlns="http://www.w3.org/2000/svg" class="ionicon h-10 w-10" viewBox="0 0 512 512"><path d="M264 480A232 232 0 0132 248c0-94 54-178.28 137.61-214.67a16 16 0 0121.06 21.06C181.07 76.43 176 104.66 176 136c0 110.28 89.72 200 200 200 31.34 0 59.57-5.07 81.61-14.67a16 16 0 0121.06 21.06C442.28 426 358 480 264 480z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="ionicon h-10 w-10" viewBox="0 0 512 512"><path d="M264 480A232 232 0 0132 248c0-94 54-178.28 137.61-214.67a16 16 0 0121.06 21.06C181.07 76.43 176 104.66 176 136c0 110.28 89.72 200 200 200 31.34 0 59.57-5.07 81.61-14.67a16 16 0 0121.06 21.06C442.28 426 358 480 264 480z"/></svg>
             {:else}
-            <svg xmlns="http://www.w3.org/2000/svg" class="ionicon h-10 w-10" viewBox="0 0 512 512"><path d="M256 118a22 22 0 01-22-22V48a22 22 0 0144 0v48a22 22 0 01-22 22zM256 486a22 22 0 01-22-22v-48a22 22 0 0144 0v48a22 22 0 01-22 22zM369.14 164.86a22 22 0 01-15.56-37.55l33.94-33.94a22 22 0 0131.11 31.11l-33.94 33.94a21.93 21.93 0 01-15.55 6.44zM108.92 425.08a22 22 0 01-15.55-37.56l33.94-33.94a22 22 0 1131.11 31.11l-33.94 33.94a21.94 21.94 0 01-15.56 6.45zM464 278h-48a22 22 0 010-44h48a22 22 0 010 44zM96 278H48a22 22 0 010-44h48a22 22 0 010 44zM403.08 425.08a21.94 21.94 0 01-15.56-6.45l-33.94-33.94a22 22 0 0131.11-31.11l33.94 33.94a22 22 0 01-15.55 37.56zM142.86 164.86a21.89 21.89 0 01-15.55-6.44l-33.94-33.94a22 22 0 0131.11-31.11l33.94 33.94a22 22 0 01-15.56 37.55zM256 358a102 102 0 11102-102 102.12 102.12 0 01-102 102z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="ionicon h-10 w-10" viewBox="0 0 512 512"><path d="M256 118a22 22 0 01-22-22V48a22 22 0 0144 0v48a22 22 0 01-22 22zM256 486a22 22 0 01-22-22v-48a22 22 0 0144 0v48a22 22 0 01-22 22zM369.14 164.86a22 22 0 01-15.56-37.55l33.94-33.94a22 22 0 0131.11 31.11l-33.94 33.94a21.93 21.93 0 01-15.55 6.44zM108.92 425.08a22 22 0 01-15.55-37.56l33.94-33.94a22 22 0 1131.11 31.11l-33.94 33.94a21.94 21.94 0 01-15.56 6.45zM464 278h-48a22 22 0 010-44h48a22 22 0 010 44zM96 278H48a22 22 0 010-44h48a22 22 0 010 44zM403.08 425.08a21.94 21.94 0 01-15.56-6.45l-33.94-33.94a22 22 0 0131.11-31.11l33.94 33.94a22 22 0 01-15.55 37.56zM142.86 164.86a21.89 21.89 0 01-15.55-6.44l-33.94-33.94a22 22 0 0131.11-31.11l33.94 33.94a22 22 0 01-15.56 37.55zM256 358a102 102 0 11102-102 102.12 102.12 0 01-102 102z"/></svg>
             {/if}
         </button>
         <a href="/" class="w-10 h-10"> 
