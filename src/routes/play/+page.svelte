@@ -41,6 +41,10 @@
         }
         $songsToPlay = $songsToPlay;
 
+		biquadIndex = biquadFilters.indexOf(currentSong.effects.biquad);
+		panning = currentSong.effects.panning;
+		updatePanning();
+
         generateImage();
     })
 
