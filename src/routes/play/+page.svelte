@@ -196,11 +196,20 @@
     }
 
     const updateSongData = () => {
+        //Updating the data in the songsData store
         $songsData[currentSongIndex].effects.biquad = biquadFilters[biquadIndex];
         $songsData[currentSongIndex].effects.panning = panning;
-        if (clickedPlay === true) $songsData[currentSongIndex].listens++;
+        if (clickedPlay === true) {
+            $songsData[currentSongIndex].listens++;
+            currentSong.listens++;
+        }
         $songsData[currentSongIndex].listenTime += currentPlayTime;
         totalPlayTime += currentPlayTime;
+
+        //Updating the data on the currentSong itself
+        currentSong.effects.biquad = biquadFilters[biquadIndex];
+        currentSong.effects.panning = panning;
+        currentSong.listenTime += currentPlayTime;
     }
 
 	const toggleAddToPlaylist = () => {
@@ -284,7 +293,6 @@
         await saveSongData(currentSong);
         playlists[currentPlaylist].listenTime += totalPlayTime;
         savePlaylist(playlists[currentPlaylist]);
-        $songsData = await getSongsFromPlaylist(playlists[playlistIndex]);
         currentPlaylist = playlistIndex;
         currentSongIndex = 0;
         currentSong = await getSong($songsData[currentSongIndex].id);
