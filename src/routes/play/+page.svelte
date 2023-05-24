@@ -410,10 +410,10 @@
 		<div class="flex flex-col justify-center items-center">
 			{#if $songsToPlay[currentSongIndex]?.name !== undefined}
 				{#key $songsToPlay[currentSongIndex]}
-					<p transition:blur class="font-bold text-2xl">
+					<p in:blur class="font-bold text-2xl">
 						{$songsToPlay[currentSongIndex]?.name}
 					</p>
-					<p transition:blur class="text-lg">
+					<p in:blur class="text-lg">
 						by <span class="font-semibold">{$songsToPlay[currentSongIndex]?.artist ?? 'Unknown artist'}</span>
 					</p>
 				{/key}
