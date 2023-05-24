@@ -10,10 +10,13 @@
 
     //peak inefficiency:
     songs.sort((a, b) => b.listens - a.listens);
-    const mostListenedByAmount = songs.filter(song => song.listenTime > 0).slice(0, 10);
+    const mostListenedSongsByAmount = songs.filter(song => song.listenTime > 0).slice(0, 10);
 
     songs.sort((a, b) => b.listenTime - a.listenTime);
-    const mostListenedByTime = songs.filter(song => song.listenTime > 0).slice(0, 10);
+    const mostListenedSongsByTime = songs.filter(song => song.listenTime > 0).slice(0, 10);
+
+    playlists.sort((a, b) => b.listenTime - a.listenTime)
+    const mostListenedPlaylists = playlists.filter(playlist => playlist.listenTime > 0).slice(0, 5);
 
     let songsCanvas: HTMLCanvasElement;
     let playlistsCanvas: HTMLCanvasElement;
@@ -22,15 +25,15 @@
 
     //loading the charts
     onMount(() => {
-        if (mostListenedByAmount.length > 0) {
+        if (mostListenedSongsByAmount.length > 0) {
             new Chart(songsCanvas, {
                 type: "bar",
                 data: {
-                    labels: mostListenedByAmount.map(song => song.name),
+                    labels: mostListenedSongsByAmount.map(song => song.name),
                     datasets: [
                         {
                             label: "Listens",
-                            data: mostListenedByAmount.map(song => song.listens)
+                            data: mostListenedSongsByAmount.map(song => song.listens)
                         }
                     ]
                 },
@@ -88,15 +91,15 @@
             }
         })
 
-        if (mostListenedByTime.length > 0) {
+        if (mostListenedSongsByTime.length > 0) {
             new Chart(songListenTimeCanvas, {
                 type: "pie",
                 data: {
-                    labels: mostListenedByTime.map(song => song.name),
+                    labels: mostListenedSongsByTime.map(song => song.name),
                     datasets: [
                         {
                             label: "Listen time of songs in hours",
-                            data: mostListenedByTime.map(song => song.listenTime / 3600)
+                            data: mostListenedSongsByTime.map(song => song.listenTime / 3600)
                         }
                     ]
                 },
@@ -118,14 +121,15 @@
 
 <main>
     <strong><p>Playlists sorted by # of songs:</p></strong>
-    {#each playlists as playlist, index}
-        <p>{playlist.name} is #{index + 1} with {playlist.songIds.length} songs and {playlist.listenTime}s of playtime</p>
+    {#each mostListenedPlaylists as playlist, index}
+        <p>Playlist {playlist.name} is #{index + 1} with {playlist.listenTime / 3600}h total listen time!</p>
     {/each}
     <br>
     <strong><p>Songs sorted by listen count:</p></strong>
-    {#each songs as song, index}
+    {#each mostListenedSongsByAmount as song, index}
         <p>{song.name} by {song.artist} is #{index + 1} with {song.listens} listen and {song.listenTime}s of play time</p>
     {/each}
+
     <canvas bind:this={songsCanvas}></canvas>
     <canvas bind:this={playlistsCanvas}></canvas>
     <canvas bind:this={playlistListenTimeCanvas}></canvas>
