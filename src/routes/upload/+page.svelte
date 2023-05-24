@@ -1,6 +1,7 @@
 <script lang="ts">
     import { deleteSong, getPlaylistWithId, savePlaylist, saveSong } from "$lib/indexedDB";
 	import { songsData } from "$lib/stores";
+	import { fade } from "svelte/transition";
 
     let artistName: string;
     let songName: string;
@@ -75,7 +76,7 @@
         <p class="font-extrabold text-xl col-span-3 flex justify-center items-center mb-2">Your Library</p>
         <div class="w-full h-[70vh] grid grid-cols-3 overflow-y-scroll gap-3 p-2 border-2 rounded-md border-white dark:border-gray-600">
             {#each $songsData as song, songIndex}
-                <div class="flex flex-grow-0 flex-row items-center justify-start px-4 py-1 gap-2 bg-white dark:bg-gray-600 dark:text-gray-200 rounded-lg">
+                <div transition:fade|local class="flex flex-grow-0 flex-row items-center justify-start px-4 py-1 gap-2 bg-white dark:bg-gray-600 dark:text-gray-200 rounded-lg">
                     <button on:click={() => removeSong(song.id, songIndex)}>
                         <img src="Icons/close-circle.svg" alt=" X " class="w-5 h-5">
                     </button>
