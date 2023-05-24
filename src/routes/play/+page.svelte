@@ -1,4 +1,6 @@
 <script lang="ts">
+
+	import "../../app.css";
     import type { PageData } from "./$types";
 	import { goto } from "$app/navigation";
 	import { createPlaylist, deletePlaylist, getSong, savePlaylist, saveSongData } from "$lib/indexedDB";
@@ -354,20 +356,20 @@
 	</h1>
 
 	{#if addingToPlaylist || changingPlaylsit}
-		<div class="bg-rose-200 dark:bg-gray-700 h-3/4 w-1/2 rounded-2xl flex flex-col p-5 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+		<div class="secondary2-bg h-3/4 w-1/2 rounded-2xl flex flex-col p-5 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
             {#if creatingNewPlaylist}
-		        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col gap-2 justify-center items-center w-70 h-35 border-2 border-gray-500 bg-rose-200 p-2 rounded-2xl">
+		        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col gap-2 justify-center items-center w-70 h-35 border-2 secondary2-bg p-2 rounded-2xl">
 			        <label for="playlistName">Playlist name:</label>
-			        <input bind:value={playlistNameInputValue} name="playlistName" type="text" class="p-1 rounded-md dark:bg-gray-600 dark:text-gray-200 outline-none"/>
+			        <input bind:value={playlistNameInputValue} name="playlistName" type="text" class="p-1 rounded-md items-bg outline-none"/>
 			        <button on:click={createNewPlaylist} type="submit" class="bg-blue-400 hover:bg-blue-450 active:bg-blue-600 p-1 px-2 rounded-md ml-2 text-white font-semibold">Create</button>
 		        </div>
 	        {/if}
 			<div class="flex flex-row justify-between items-center mb-5 w-full">
 				<button on:click={closeForm}>
-					<svg xmlns="http://www.w3.org/2000/svg" class="ionicon h-10 w-10" viewBox="0 0 512 512"><path d="M448 256c0-106-86-192-192-192S64 150 64 256s86 192 192 192 192-86 192-192z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M320 320L192 192M192 320l128-128"/></svg>
+					<svg xmlns="http://www.w3.org/2000/svg" class="ionicon fill h-10 w-10" viewBox="0 0 512 512"><path d="M448 256c0-106-86-192-192-192S64 150 64 256s86 192 192 192 192-86 192-192z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M320 320L192 192M192 320l128-128"/></svg>
 				</button>
 				{#if addingToPlaylist}
-					<button on:click={toggleCreatingNewPlaylist} class="flex flex-grow-0 flex-row items-center justify-start px-4 py-1 gap-2 mr-5 bg-white dark:bg-gray-600 dark:text-gray-200 rounded-lg font-bold">
+					<button on:click={toggleCreatingNewPlaylist} class="flex flex-grow-0 flex-row items-center justify-start px-4 py-1 gap-2 mr-5 items-bg rounded-lg font-bold">
                         Create new playlist
                     </button>
 				{/if}
@@ -377,8 +379,8 @@
 				{#if addingToPlaylist}
 					{#each playlists as playlist, index}
 						<button on:click={() => addToPlaylist(index)}
-							    class="flex items-center justify-start px-4 py-1 gap-2 bg-white dark:bg-gray-600 dark:text-gray-200 rounded-lg font-bold">
-                            <p class="break-all w-full">
+							    class="flex items-center justify-start px-4 py-1 gap-2 items-bg rounded-lg font-bold bob">
+                            <p class="break-all w-full items-bg">
                                 {playlist.name}
                             </p>
                         </button>
@@ -386,9 +388,9 @@
 				{/if}
                 {#if changingPlaylsit}
 					{#each playlists as playlist, index}
-						<div class="flex flex-grow-0 flex-row divide-x-2 items-center justify-start px-4 py-1 gap-2 bg-white dark:bg-gray-600 dark:text-gray-200 rounded-lg">
+						<div class="flex flex-grow-0 flex-row divide-x-2 items-center justify-start px-4 py-1 gap-2 items-bg rounded-lg">
 							<button on:click={() => deletePlaylistFromDb(index)}>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="ionicon h-7 w-7" viewBox="0 0 512 512"><path d="M448 256c0-106-86-192-192-192S64 150 64 256s86 192 192 192 192-86 192-192z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M320 320L192 192M192 320l128-128"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="ionicon fill h-7 w-7" viewBox="0 0 512 512"><path d="M448 256c0-106-86-192-192-192S64 150 64 256s86 192 192 192 192-86 192-192z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M320 320L192 192M192 320l128-128"/></svg>
                             </button>
 							<button on:click={() => changePlaylist(index)} class="p-2 m-2 font-bold break-all w-10/12 h-full">
                                 {playlist.name}
@@ -433,46 +435,46 @@
 				max={audioLength}
 				name="time"
 				id="time"
-				class="w-full h-3 appearance-none outline-none overflow-hidden drop-shadow-sm shadow-gray-700 dark:shadow-rose-200 dark:bg-gray-700 bg-rose-200 rounded-xl
+				class="w-full h-3 appearance-none outline-none overflow-hidden drop-shadow-sm shadow-gray-700 dark:shadow-rose-200 secondary3-bg rounded-xl
             "
 			/>
 		</div>
 
 		<!-- Controls -->
 		<div
-			class="flex flex-row items-center justify-between bg-rose-200 dark:bg-gray-700 rounded-xl w-2/3 h-1/6 px-6"
+			class="flex flex-row items-center justify-between secondary3-bg rounded-xl w-2/3 h-1/6 px-6"
 		>
 			<div class="controls-left flex flex-row items-center justify-evenly gap-10">
 				<button on:click={prevSong}>
-					<svg xmlns="http://www.w3.org/2000/svg" class="ionicon h-10 w-10" viewBox="0 0 512 512"><path d="M112 64a16 16 0 0116 16v136.43L360.77 77.11a35.13 35.13 0 0135.77-.44c12 6.8 19.46 20 19.46 34.33v290c0 14.37-7.46 27.53-19.46 34.33a35.14 35.14 0 01-35.77-.45L128 295.57V432a16 16 0 01-32 0V80a16 16 0 0116-16z"/></svg>
+					<svg xmlns="http://www.w3.org/2000/svg" class="ionicon fill h-10 w-10" viewBox="0 0 512 512"><path d="M112 64a16 16 0 0116 16v136.43L360.77 77.11a35.13 35.13 0 0135.77-.44c12 6.8 19.46 20 19.46 34.33v290c0 14.37-7.46 27.53-19.46 34.33a35.14 35.14 0 01-35.77-.45L128 295.57V432a16 16 0 01-32 0V80a16 16 0 0116-16z"/></svg>
 				</button>
 				<button on:click={rewindSeconds}>
-					<svg xmlns="http://www.w3.org/2000/svg" class="ionicon h-10 w-10" viewBox="0 0 512 512"><path d="M30.71 229.47l188.87-113a30.54 30.54 0 0131.09-.39 33.74 33.74 0 0116.76 29.47v79.05l180.72-108.16a30.54 30.54 0 0131.09-.39A33.74 33.74 0 01496 145.52v221A33.73 33.73 0 01479.24 396a30.54 30.54 0 01-31.09-.39L267.43 287.4v79.08A33.73 33.73 0 01250.67 396a30.54 30.54 0 01-31.09-.39l-188.87-113a31.27 31.27 0 010-53z"/></svg>
+					<svg xmlns="http://www.w3.org/2000/svg" class="ionicon fill h-10 w-10" viewBox="0 0 512 512"><path d="M30.71 229.47l188.87-113a30.54 30.54 0 0131.09-.39 33.74 33.74 0 0116.76 29.47v79.05l180.72-108.16a30.54 30.54 0 0131.09-.39A33.74 33.74 0 01496 145.52v221A33.73 33.73 0 01479.24 396a30.54 30.54 0 01-31.09-.39L267.43 287.4v79.08A33.73 33.73 0 01250.67 396a30.54 30.54 0 01-31.09-.39l-188.87-113a31.27 31.27 0 010-53z"/></svg>
 				</button>
 				<button on:click={playSong}>
 					{#if isPlaying}
-						<svg xmlns="http://www.w3.org/2000/svg" class="ionicon h-10 w-10" viewBox="0 0 512 512"><path d="M208 432h-48a16 16 0 01-16-16V96a16 16 0 0116-16h48a16 16 0 0116 16v320a16 16 0 01-16 16zM352 432h-48a16 16 0 01-16-16V96a16 16 0 0116-16h48a16 16 0 0116 16v320a16 16 0 01-16 16z"/></svg>
+						<svg xmlns="http://www.w3.org/2000/svg" class="ionicon fill h-10 w-10" viewBox="0 0 512 512"><path d="M208 432h-48a16 16 0 01-16-16V96a16 16 0 0116-16h48a16 16 0 0116 16v320a16 16 0 01-16 16zM352 432h-48a16 16 0 01-16-16V96a16 16 0 0116-16h48a16 16 0 0116 16v320a16 16 0 01-16 16z"/></svg>
 					{:else}
-						<svg xmlns="http://www.w3.org/2000/svg" class="ionicon h-10 w-10" viewBox="0 0 512 512"><title>Play</title><path d="M133 440a35.37 35.37 0 01-17.5-4.67c-12-6.8-19.46-20-19.46-34.33V111c0-14.37 7.46-27.53 19.46-34.33a35.13 35.13 0 0135.77.45l247.85 148.36a36 36 0 010 61l-247.89 148.4A35.5 35.5 0 01133 440z"/></svg>
+						<svg xmlns="http://www.w3.org/2000/svg" class="ionicon fill h-10 w-10" viewBox="0 0 512 512"><title>Play</title><path d="M133 440a35.37 35.37 0 01-17.5-4.67c-12-6.8-19.46-20-19.46-34.33V111c0-14.37 7.46-27.53 19.46-34.33a35.13 35.13 0 0135.77.45l247.85 148.36a36 36 0 010 61l-247.89 148.4A35.5 35.5 0 01133 440z"/></svg>
 					{/if}
 				</button>
 				<button on:click={forwardSeconds}>
-					<svg xmlns="http://www.w3.org/2000/svg" class="ionicon h-10 w-10" viewBox="0 0 512 512"><path d="M481.29 229.47l-188.87-113a30.54 30.54 0 00-31.09-.39 33.74 33.74 0 00-16.76 29.47v79.05L63.85 116.44a30.54 30.54 0 00-31.09-.39A33.74 33.74 0 0016 145.52v221A33.74 33.74 0 0032.76 396a30.54 30.54 0 0031.09-.39L244.57 287.4v79.08A33.74 33.74 0 00261.33 396a30.54 30.54 0 0031.09-.39l188.87-113a31.27 31.27 0 000-53z"/></svg>
+					<svg xmlns="http://www.w3.org/2000/svg" class="ionicon fill h-10 w-10" viewBox="0 0 512 512"><path d="M481.29 229.47l-188.87-113a30.54 30.54 0 00-31.09-.39 33.74 33.74 0 00-16.76 29.47v79.05L63.85 116.44a30.54 30.54 0 00-31.09-.39A33.74 33.74 0 0016 145.52v221A33.74 33.74 0 0032.76 396a30.54 30.54 0 0031.09-.39L244.57 287.4v79.08A33.74 33.74 0 00261.33 396a30.54 30.54 0 0031.09-.39l188.87-113a31.27 31.27 0 000-53z"/></svg>
 				</button>
 				<button on:click={nextSong}>
-					<svg xmlns="http://www.w3.org/2000/svg" class="ionicon h-10 w-10" viewBox="0 0 512 512"><path d="M400 64a16 16 0 00-16 16v136.43L151.23 77.11a35.13 35.13 0 00-35.77-.44C103.46 83.47 96 96.63 96 111v290c0 14.37 7.46 27.53 19.46 34.33a35.14 35.14 0 0035.77-.45L384 295.57V432a16 16 0 0032 0V80a16 16 0 00-16-16z"/></svg>
+					<svg xmlns="http://www.w3.org/2000/svg" class="ionicon fill h-10 w-10" viewBox="0 0 512 512"><path d="M400 64a16 16 0 00-16 16v136.43L151.23 77.11a35.13 35.13 0 00-35.77-.44C103.46 83.47 96 96.63 96 111v290c0 14.37 7.46 27.53 19.46 34.33a35.14 35.14 0 0035.77-.45L384 295.57V432a16 16 0 0032 0V80a16 16 0 00-16-16z"/></svg>
 				</button>
 
 				<!-- Bandaid Fix-->
 				<button on:click={toggleVolume} class="flex flex-col items-center justify-center -mr-5">
 					{#if volume > 0.65}
-						<svg xmlns="http://www.w3.org/2000/svg" class="ionicon h-10 w-10" viewBox="0 0 512 512"><path d="M232 416a23.88 23.88 0 01-14.2-4.68 8.27 8.27 0 01-.66-.51L125.76 336H56a24 24 0 01-24-24V200a24 24 0 0124-24h69.75l91.37-74.81a8.27 8.27 0 01.66-.51A24 24 0 01256 120v272a24 24 0 01-24 24zm-106.18-80zm-.27-159.86zM320 336a16 16 0 01-14.29-23.19c9.49-18.87 14.3-38 14.3-56.81 0-19.38-4.66-37.94-14.25-56.73a16 16 0 0128.5-14.54C346.19 208.12 352 231.44 352 256c0 23.86-6 47.81-17.7 71.19A16 16 0 01320 336z"/><path d="M368 384a16 16 0 01-13.86-24C373.05 327.09 384 299.51 384 256c0-44.17-10.93-71.56-29.82-103.94a16 16 0 0127.64-16.12C402.92 172.11 416 204.81 416 256c0 50.43-13.06 83.29-34.13 120a16 16 0 01-13.87 8z"/><path d="M416 432a16 16 0 01-13.39-24.74C429.85 365.47 448 323.76 448 256c0-66.5-18.18-108.62-45.49-151.39a16 16 0 1127-17.22C459.81 134.89 480 181.74 480 256c0 64.75-14.66 113.63-50.6 168.74A16 16 0 01416 432z"/></svg>
+						<svg xmlns="http://www.w3.org/2000/svg" class="ionicon fill h-10 w-10" viewBox="0 0 512 512"><path d="M232 416a23.88 23.88 0 01-14.2-4.68 8.27 8.27 0 01-.66-.51L125.76 336H56a24 24 0 01-24-24V200a24 24 0 0124-24h69.75l91.37-74.81a8.27 8.27 0 01.66-.51A24 24 0 01256 120v272a24 24 0 01-24 24zm-106.18-80zm-.27-159.86zM320 336a16 16 0 01-14.29-23.19c9.49-18.87 14.3-38 14.3-56.81 0-19.38-4.66-37.94-14.25-56.73a16 16 0 0128.5-14.54C346.19 208.12 352 231.44 352 256c0 23.86-6 47.81-17.7 71.19A16 16 0 01320 336z"/><path d="M368 384a16 16 0 01-13.86-24C373.05 327.09 384 299.51 384 256c0-44.17-10.93-71.56-29.82-103.94a16 16 0 0127.64-16.12C402.92 172.11 416 204.81 416 256c0 50.43-13.06 83.29-34.13 120a16 16 0 01-13.87 8z"/><path d="M416 432a16 16 0 01-13.39-24.74C429.85 365.47 448 323.76 448 256c0-66.5-18.18-108.62-45.49-151.39a16 16 0 1127-17.22C459.81 134.89 480 181.74 480 256c0 64.75-14.66 113.63-50.6 168.74A16 16 0 01416 432z"/></svg>
 					{:else if volume > 0.3}
-						<svg xmlns="http://www.w3.org/2000/svg" class="ionicon h-10 w-10" viewBox="0 0 512 512"><path d="M264 416.19a23.92 23.92 0 01-14.21-4.69l-.66-.51-91.46-75H88a24 24 0 01-24-24V200a24 24 0 0124-24h69.65l91.46-75 .66-.51A24 24 0 01288 119.83v272.34a24 24 0 01-24 24zM352 336a16 16 0 01-14.29-23.18c9.49-18.9 14.3-38 14.3-56.82 0-19.36-4.66-37.92-14.25-56.73a16 16 0 0128.5-14.54C378.2 208.16 384 231.47 384 256c0 23.83-6 47.78-17.7 71.18A16 16 0 01352 336z"/><path d="M400 384a16 16 0 01-13.87-24C405 327.05 416 299.45 416 256c0-44.12-10.94-71.52-29.83-103.95A16 16 0 01413.83 136C434.92 172.16 448 204.88 448 256c0 50.36-13.06 83.24-34.12 120a16 16 0 01-13.88 8z"/></svg>
+						<svg xmlns="http://www.w3.org/2000/svg" class="ionicon fill h-10 w-10" viewBox="0 0 512 512"><path d="M264 416.19a23.92 23.92 0 01-14.21-4.69l-.66-.51-91.46-75H88a24 24 0 01-24-24V200a24 24 0 0124-24h69.65l91.46-75 .66-.51A24 24 0 01288 119.83v272.34a24 24 0 01-24 24zM352 336a16 16 0 01-14.29-23.18c9.49-18.9 14.3-38 14.3-56.82 0-19.36-4.66-37.92-14.25-56.73a16 16 0 0128.5-14.54C378.2 208.16 384 231.47 384 256c0 23.83-6 47.78-17.7 71.18A16 16 0 01352 336z"/><path d="M400 384a16 16 0 01-13.87-24C405 327.05 416 299.45 416 256c0-44.12-10.94-71.52-29.83-103.95A16 16 0 01413.83 136C434.92 172.16 448 204.88 448 256c0 50.36-13.06 83.24-34.12 120a16 16 0 01-13.88 8z"/></svg>
 					{:else if volume > 0}
-						<svg xmlns="http://www.w3.org/2000/svg" class="ionicon h-10 w-10" viewBox="0 0 512 512"><path d="M296 416.19a23.92 23.92 0 01-14.21-4.69l-.66-.51-91.46-75H120a24 24 0 01-24-24V200a24 24 0 0124-24h69.65l91.46-75 .66-.51A24 24 0 01320 119.83v272.34a24 24 0 01-24 24zM384 336a16 16 0 01-14.29-23.18c9.49-18.9 14.3-38 14.3-56.82 0-19.36-4.66-37.92-14.25-56.73a16 16 0 0128.5-14.54C410.2 208.16 416 231.47 416 256c0 23.83-6 47.78-17.7 71.18A16 16 0 01384 336z"/></svg>
+						<svg xmlns="http://www.w3.org/2000/svg" class="ionicon fill h-10 w-10" viewBox="0 0 512 512"><path d="M296 416.19a23.92 23.92 0 01-14.21-4.69l-.66-.51-91.46-75H120a24 24 0 01-24-24V200a24 24 0 0124-24h69.65l91.46-75 .66-.51A24 24 0 01320 119.83v272.34a24 24 0 01-24 24zM384 336a16 16 0 01-14.29-23.18c9.49-18.9 14.3-38 14.3-56.82 0-19.36-4.66-37.92-14.25-56.73a16 16 0 0128.5-14.54C410.2 208.16 416 231.47 416 256c0 23.83-6 47.78-17.7 71.18A16 16 0 01384 336z"/></svg>
 					{:else}
-						<svg xmlns="http://www.w3.org/2000/svg" class="ionicon h-10 w-10" viewBox="0 0 512 512"><path d="M344 416a23.92 23.92 0 01-14.21-4.69c-.23-.16-.44-.33-.66-.51l-91.46-74.9H168a24 24 0 01-24-24V200.07a24 24 0 0124-24h69.65l91.46-74.9c.22-.18.43-.35.66-.51A24 24 0 01368 120v272a24 24 0 01-24 24z"/></svg>
+						<svg xmlns="http://www.w3.org/2000/svg" class="ionicon fill h-10 w-10" viewBox="0 0 512 512"><path d="M344 416a23.92 23.92 0 01-14.21-4.69c-.23-.16-.44-.33-.66-.51l-91.46-74.9H168a24 24 0 01-24-24V200.07a24 24 0 0124-24h69.65l91.46-74.9c.22-.18.43-.35.66-.51A24 24 0 01368 120v272a24 24 0 01-24 24z"/></svg>
 					{/if}
 				</button>
 				<div bind:this={volumeRange} class="flex flex-col hidden overflow-hidden">
@@ -492,10 +494,10 @@
 
 			<div class="controls-right flex flex-row items-center gap-10">
 				<button on:click={toggleAddToPlaylist}>
-					<svg xmlns="http://www.w3.org/2000/svg" class="ionicon h-10 w-10" viewBox="0 0 512 512"><path d="M408 112H184a72 72 0 00-72 72v224a72 72 0 0072 72h224a72 72 0 0072-72V184a72 72 0 00-72-72zm-32.45 200H312v63.55c0 8.61-6.62 16-15.23 16.43A16 16 0 01280 376v-64h-63.55c-8.61 0-16-6.62-16.43-15.23A16 16 0 01216 280h64v-63.55c0-8.61 6.62-16 15.23-16.43A16 16 0 01312 216v64h64a16 16 0 0116 16.77c-.42 8.61-7.84 15.23-16.45 15.23z"/><path d="M395.88 80A72.12 72.12 0 00328 32H104a72 72 0 00-72 72v224a72.12 72.12 0 0048 67.88V160a80 80 0 0180-80z"/></svg>
+					<svg xmlns="http://www.w3.org/2000/svg" class="ionicon fill h-10 w-10" viewBox="0 0 512 512"><path d="M408 112H184a72 72 0 00-72 72v224a72 72 0 0072 72h224a72 72 0 0072-72V184a72 72 0 00-72-72zm-32.45 200H312v63.55c0 8.61-6.62 16-15.23 16.43A16 16 0 01280 376v-64h-63.55c-8.61 0-16-6.62-16.43-15.23A16 16 0 01216 280h64v-63.55c0-8.61 6.62-16 15.23-16.43A16 16 0 01312 216v64h64a16 16 0 0116 16.77c-.42 8.61-7.84 15.23-16.45 15.23z"/><path d="M395.88 80A72.12 72.12 0 00328 32H104a72 72 0 00-72 72v224a72.12 72.12 0 0048 67.88V160a80 80 0 0180-80z"/></svg>
 				</button>
 				<button on:click={toggleChangingPlaylist}>
-					<svg xmlns="http://www.w3.org/2000/svg" class="ionicon h-10 w-10" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M160 144h288M160 256h288M160 368h288"/><circle cx="80" cy="144" r="16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><circle cx="80" cy="256" r="16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><circle cx="80" cy="368" r="16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/></svg>
+					<svg xmlns="http://www.w3.org/2000/svg" class="ionicon fill h-10 w-10" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M160 144h288M160 256h288M160 368h288"/><circle cx="80" cy="144" r="16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><circle cx="80" cy="256" r="16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><circle cx="80" cy="368" r="16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/></svg>
 				</button>
 			</div>
 		</div>
@@ -503,7 +505,7 @@
 
 	<!-- Right panel -->
 	<div
-		class="row-start-2 row-end-3 col-start-2 col-end-3 bg-rose-200 dark:bg-gray-700 py-4 px-2 rounded-tl-3xl rounded-bl-3xl"
+		class="row-start-2 row-end-3 col-start-2 col-end-3 secondary2-bg py-4 px-2 rounded-tl-3xl rounded-bl-3xl"
 	>
 		<div class="flex justify-center items-center p-2 text-xl font-semibold break-all">
 			{playlists[currentPlaylist]?.name ?? 'No Playlist'}
@@ -523,7 +525,7 @@
 
 	<!-- Bottom panel -->
 	<div
-		class="flex flex-row gap-5 row-start-3 row-end-4 col-start-1 col-end-2 bg-rose-200 dark:bg-gray-700 rounded-lg px-4 py-1 m-4 w-2/3 h-2/3 self-center justify-self-center justify-evenly"
+		class="flex flex-row gap-5 row-start-3 row-end-4 col-start-1 col-end-2 secondary3-bg rounded-lg px-4 py-1 m-4 w-2/3 h-2/3 self-center justify-self-center justify-evenly"
 	>
 		<div class="flex flex-col">
 			<label for="stereo">Panning:</label>
@@ -563,7 +565,7 @@
 		width: 0px;
 
 		box-shadow: -50vw 0 0 50vw var(--time-range-colour);
-		background-color: var(--time-range-colour);
+		background-color: var(--secondary3-colour);
 	}
 
 	#time::-moz-range-thumb {
@@ -574,7 +576,7 @@
 		width: 0px;
 
 		box-shadow: -50vw 0 0 50vw var(--time-range-colour);
-		background-color: var(--time-range-colour);
+		background-color: var(--secondary3-colour);
 	}
 
 	#time::-ms-thumb {
@@ -585,7 +587,7 @@
 		width: 0px;
 
 		box-shadow: -50vw 0 0 49vw var(--time-range-colour);
-		background-color: var(--time-range-colour);
+		background-color: var(--secondary3-colour);
 	}
 
 	input[type='range']::-webkit-slider-thumb {
@@ -593,8 +595,8 @@
 		width: 16px;
 		border: 0;
 
-		box-shadow: -192px 0 0 180px var(--modifier-range-colour);
-		background-color: #777777;
+		box-shadow: -192px 0 0 180px var(--time-range-colour);
+		background-color: var(--secondary2-colour);
 	}
 
 	input[type='range']::-moz-range-thumb {
@@ -602,8 +604,8 @@
 		width: 16px;
 		border: 0;
 
-		box-shadow: -192px 0 0 180px var(--modifier-range-colour);
-		background-color: #777777;
+		box-shadow: -192px 0 0 180px var(--time-range-colour);
+		background-color: var(--secondary2-colour);
 	}
 
 	input[type='range']::-ms-thumb {
@@ -611,7 +613,7 @@
 		width: 16px;
 		border: 0;
 
-		box-shadow: -192px 0 0 180px var(--modifier-range-colour);
-		background-color: #777777;
+		box-shadow: -192px 0 0 180px var(--time-range-colour);
+		background-color: var(--secondary2-colour);
 	}
 </style>
