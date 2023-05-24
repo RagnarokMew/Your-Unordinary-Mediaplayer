@@ -487,7 +487,7 @@
 						step="0.1"
 						name="volume"
 						id="volume"
-						class="h-2 w-20 rounded-xl secondary2-bg"
+						class="h-2 w-20 rounded-xl items-bg"
 					/>
 				</div>
 			</div>
@@ -537,7 +537,7 @@
 				max="1"
 				step="0.1"
 				name="stereo"
-				class="h-3 appearance-none secondary2-bg outline-none overflow-hidden rounded-xl drop-shadow-sm shadow-gray-700 dark:shadow-rose-200"
+				class="h-3 appearance-none items-bg outline-none overflow-hidden rounded-xl drop-shadow-sm shadow-gray-700 dark:shadow-rose-200"
 			/>
 		</div>
 
@@ -550,7 +550,7 @@
 				max={biquadFilters.length - 1}
 				step="1"
 				name="Biquad"
-				class="h-3 appearance-none secondary2-bg outline-none overflow-hidden rounded-xl drop-shadow-sm shadow-gray-700 dark:shadow-rose-200"
+				class="h-3 appearance-none items-bg outline-none overflow-hidden rounded-xl drop-shadow-sm shadow-gray-700 dark:shadow-rose-200"
 			/>
 		</div>
 	</div>
