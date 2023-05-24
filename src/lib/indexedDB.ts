@@ -82,9 +82,22 @@ export const saveSong = async(audio: ArrayBuffer, songName: string, songArtist: 
 
 export const deleteSong = async (id: number) => {
     const trans = database.transaction(["songs"], "readwrite");
-    const store = trans.objectStore("songs");
+    const songsStore = trans.objectStore("songs");
 
-    store.delete(id);
+    songsStore.delete(id);
+    const playlists = await getAllPlaylists();
+
+    for (let i = 0; i < playlists.length; i++) {
+        for (let j = 0; j < playlists[i].songIds.length; j++) {
+            if (id === playlists[i].songIds[j]) {
+                console.log(`Removing song with id ${id} from ${playlists[i].name}`)
+                playlists[i].songIds.splice(j, 1);
+                savePlaylist(playlists[i]);
+                break;
+            }
+        }
+    }
+
     trans.onerror = () => console.warn(`Failed to delete the song with id: ${id}`);
 }
 
@@ -99,6 +112,8 @@ export const getSong = async(id: number): Promise<Song> => {
     return new Promise(function(resolve, reject) {
         trans.oncomplete = () => {
             const result = request.result;
+
+            if (result === undefined) reject(`Song with id ${id} does not exist!`)
 
             resolve({
                 audio: result.audio,
@@ -190,6 +205,7 @@ export const saveSongData = async(song: Song) => {
 
     store.put({
         artist: song.artist,
+        id: song.id,
         name: song.name,
         audio: song.audio,
         listens: song.listens ?? 0,
@@ -248,10 +264,11 @@ export const getAllPlaylists = async(): Promise<Playlist[]> => {
     }
 
     const trans = database.transaction(["playlists"], "readonly");
-    const playlistsStore = trans.objectStore("playlists"); 
+    const playlistsStore = trans.objectStore("playlists");
 
+
+    let playlistArray: Playlist[] = [];
     return new Promise(function(resolve, reject)  {
-        let playlistArray: Playlist[] = [];
         playlistsStore.openCursor().onsuccess = (e) => {
             const cursor = (e.target as any).result as IDBCursorWithValue;
             if (cursor) {
@@ -263,9 +280,9 @@ export const getAllPlaylists = async(): Promise<Playlist[]> => {
                 } satisfies Playlist);
                 cursor.continue();
             }
-            
-            resolve(playlistArray);
         }
+
+        trans.oncomplete = () => resolve(playlistArray);
     });
 }
 
@@ -305,8 +322,9 @@ export const getSongsFromPlaylist = async(playlist: Playlist): Promise<Song[]> =
                     cursor.continue();
                 }
             }
-            resolve(songArray);
         }
+
+        trans.oncomplete = () => resolve(songArray);
     })
 }
 

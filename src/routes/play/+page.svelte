@@ -1,13 +1,14 @@
 <script lang="ts">
     import type { PageData } from "./$types";
 	import { goto } from "$app/navigation";
-	import { createPlaylist, deletePlaylist, getSong, getSongsFromPlaylist, savePlaylist, saveSongData } from "$lib/indexedDB";
+	import { createPlaylist, deletePlaylist, getSong, savePlaylist, saveSongData } from "$lib/indexedDB";
 	import type { Playlist, Song as Song_T } from "$lib/interfaces";
 	import { onDestroy, onMount } from "svelte";
 	import { songsData, songsToPlay } from "$lib/stores";
     import Song from "./Song.svelte";
     import { createAvatar } from "@dicebear/core"
     import * as shapes from "@dicebear/shapes"
+	import { blur } from "svelte/transition"
 
 	export let data: PageData;
 
@@ -40,6 +41,10 @@
             }
         }
         $songsToPlay = $songsToPlay;
+
+		biquadIndex = biquadFilters.indexOf(currentSong.effects.biquad);
+		panning = currentSong.effects.panning;
+		updatePanning();
 
         generateImage();
     })
@@ -295,6 +300,12 @@
         savePlaylist(playlists[currentPlaylist]);
         currentPlaylist = playlistIndex;
         currentSongIndex = 0;
+
+		if (playlists[currentPlaylist].songIds.length === 0) {
+			alert("Please add songs to that playlist first!");
+			await changePlaylist(0);
+		}
+
         currentSong = await getSong(playlists[currentPlaylist].songIds[0]);
 
         $songsToPlay = [];
@@ -398,12 +409,14 @@
 
 		<div class="flex flex-col justify-center items-center">
 			{#if $songsToPlay[currentSongIndex]?.name !== undefined}
-				<p class="font-bold text-2xl">
-					{$songsToPlay[currentSongIndex]?.name}
-				</p>
-				<p class="text-lg">
-					by <span class="font-semibold">{$songsToPlay[currentSongIndex]?.artist ?? 'Unknown artist'}</span>
-				</p>
+				{#key $songsToPlay[currentSongIndex]}
+					<p in:blur class="font-bold text-2xl">
+						{$songsToPlay[currentSongIndex]?.name}
+					</p>
+					<p in:blur class="text-lg">
+						by <span class="font-semibold">{$songsToPlay[currentSongIndex]?.artist ?? 'Unknown artist'}</span>
+					</p>
+				{/key}
 			{:else}
 				<p class="font-bold text-2xl">No song selected</p>
 			{/if}
