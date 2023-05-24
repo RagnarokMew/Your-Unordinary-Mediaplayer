@@ -299,6 +299,12 @@
         savePlaylist(playlists[currentPlaylist]);
         currentPlaylist = playlistIndex;
         currentSongIndex = 0;
+
+		if (playlists[currentPlaylist].songIds.length === 0) {
+			alert("Please add songs to that playlist first!");
+			await changePlaylist(0);
+		}
+
         currentSong = await getSong(playlists[currentPlaylist].songIds[0]);
 
         $songsToPlay = [];
