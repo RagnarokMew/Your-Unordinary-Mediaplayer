@@ -487,7 +487,7 @@
 						step="0.1"
 						name="volume"
 						id="volume"
-						class="h-2 w-20 rounded-xl"
+						class="h-2 w-20 rounded-xl secondary2-bg"
 					/>
 				</div>
 			</div>
@@ -537,7 +537,7 @@
 				max="1"
 				step="0.1"
 				name="stereo"
-				class="h-3 appearance-none outline-none overflow-hidden rounded-xl drop-shadow-sm shadow-gray-700 dark:shadow-rose-200"
+				class="h-3 appearance-none secondary2-bg outline-none overflow-hidden rounded-xl drop-shadow-sm shadow-gray-700 dark:shadow-rose-200"
 			/>
 		</div>
 
@@ -550,7 +550,7 @@
 				max={biquadFilters.length - 1}
 				step="1"
 				name="Biquad"
-				class="h-3 appearance-none outline-none overflow-hidden rounded-xl drop-shadow-sm shadow-gray-700 dark:shadow-rose-200"
+				class="h-3 appearance-none secondary2-bg outline-none overflow-hidden rounded-xl drop-shadow-sm shadow-gray-700 dark:shadow-rose-200"
 			/>
 		</div>
 	</div>
@@ -596,7 +596,7 @@
 		border: 0;
 
 		box-shadow: -192px 0 0 180px var(--time-range-colour);
-		background-color: var(--secondary2-colour);
+		background-color: var(--secondary-colour);
 	}
 
 	input[type='range']::-moz-range-thumb {
@@ -605,7 +605,7 @@
 		border: 0;
 
 		box-shadow: -192px 0 0 180px var(--time-range-colour);
-		background-color: var(--secondary2-colour);
+		background-color: var(--secondary-colour);
 	}
 
 	input[type='range']::-ms-thumb {
@@ -614,6 +614,6 @@
 		border: 0;
 
 		box-shadow: -192px 0 0 180px var(--time-range-colour);
-		background-color: var(--secondary2-colour);
+		background-color: var(--secondary-colour);
 	}
 </style>
