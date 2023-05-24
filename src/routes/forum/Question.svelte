@@ -17,7 +17,7 @@
 
 </script>
 
-<main class="flex flex-col flex-wrap border-2 rounded-md shadow-md w-4/5 m-3 border-stone-400 dark:border-stone-500 secondary3-bg">
+<main class="flex flex-col flex-wrap border-2 rounded-md shadow-md w-4/5 m-3 border-stone-400 dark:border-stone-500 secondary-bg">
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div class="border-black flex h-20">
         <button on:click={onClick} class="w-20 p-2 border-r-2 border-stone-400 dark:border-stone-500 flex justify-center items-center">
