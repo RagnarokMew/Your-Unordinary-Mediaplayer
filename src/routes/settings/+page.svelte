@@ -5,91 +5,6 @@
     
     const localStorage = window.localStorage;
     const savedSettings = localStorage.getItem("settings");
-    if (!savedSettings) {
-        localStorage.setItem("settings", JSON.stringify({
-            primaryLightColour: "#ffffff",
-            secondaryLightColour: "#e5dfdc",
-            secondary2LightColour: "#cac1ba",
-            secondary3LightColour: "#93989f",
-            accentLightColour: "#000000",
-            fontLightColour: "#000000",
-            rangeLightColour: "#cac1ba",
-            itemsLightColour: "#ffffff",
-            primaryDarkColour: "#111115",
-            secondaryDarkColour: "#404055",
-            secondary2DarkColour: "#2d2d3a",
-            secondary3DarkColour: "#1d1d24",
-            accentDarkColour: "#000000",
-            fontDarkColour: "#ffffff",
-            rangeDarkColour: "#c09967",
-            itemsDarkColour: "#69697d",
-            forwardTime: 15,
-            backwardTime: 15,
-        } satisfies Settings ));
-
-        $settings = {
-            primaryLightColour: "#ffffff",
-            secondaryLightColour: "#e5dfdc",
-            secondary2LightColour: "#cac1ba",
-            secondary3LightColour: "#93989f",
-            accentLightColour: "#000000",
-            fontLightColour: "#000000",
-            rangeLightColour: "#cac1ba",
-            itemsLightColour: "#ffffff",
-            primaryDarkColour: "#111115",
-            secondaryDarkColour: "#404055",
-            secondary2DarkColour: "#2d2d3a",
-            secondary3DarkColour: "#1d1d24",
-            accentDarkColour: "#000000",
-            fontDarkColour: "#ffffff",
-            rangeDarkColour: "#c09967",
-            itemsDarkColour: "#69697d",
-            forwardTime: 15,
-            backwardTime: 15,
-        }
-    }
-    else {
-        const parsedSavedSettings = JSON.parse(savedSettings);
-        $settings = {
-            primaryLightColour: parsedSavedSettings.primaryLightColour,
-            secondaryLightColour: parsedSavedSettings.secondaryLightColour,
-            secondary2LightColour: parsedSavedSettings.secondary2LightColour,
-            secondary3LightColour: parsedSavedSettings.secondary3LightColour,
-            accentLightColour: parsedSavedSettings.accentLightColor,
-            fontLightColour: parsedSavedSettings.fontLightColour,
-            rangeLightColour: parsedSavedSettings.rangeLightColour,
-            itemsLightColour: parsedSavedSettings.itemsLightColour,
-            primaryDarkColour: parsedSavedSettings.primaryDarkColour,
-            secondaryDarkColour: parsedSavedSettings.secondaryDarkColour,
-            secondary2DarkColour: parsedSavedSettings.secondary2DarkColour,
-            secondary3DarkColour: parsedSavedSettings.secondary3DarkColour,
-            accentDarkColour: parsedSavedSettings.accentDarkColour,
-            fontDarkColour: parsedSavedSettings.fontDarkColour,
-            rangeDarkColour: parsedSavedSettings.rangeDarkColour,
-            itemsDarkColour: parsedSavedSettings.itemsDarkColour,
-            forwardTime: parseInt(parsedSavedSettings.forwardTime),
-            backwardTime: parseInt(parsedSavedSettings.backwardTime),
-        }
-    }
-
-    let primaryLightColour= $settings.primaryLightColour;
-    let secondaryLightColour= $settings.secondaryLightColour;
-    let secondary2LightColour= $settings.secondary2LightColour;
-    let secondary3LightColour= $settings.secondary3LightColour;
-    let accentLightColour= $settings.accentLightColour;
-    let fontLightColour= $settings.fontLightColour;
-    let rangeLightColour= $settings.rangeLightColour;
-    let itemsLightColour= $settings.itemsLightColour;
-    let primaryDarkColour= $settings.primaryDarkColour;
-    let secondaryDarkColour= $settings.secondaryDarkColour;
-    let secondary2DarkColour= $settings.secondary2DarkColour;
-    let secondary3DarkColour= $settings.secondary3DarkColour;
-    let accentDarkColour= $settings.accentDarkColour;
-    let fontDarkColour= $settings.fontDarkColour;
-    let rangeDarkColour= $settings.rangeDarkColour;
-    let itemsDarkColour= $settings.itemsDarkColour;
-    let forwardTime= $settings.forwardTime;
-    let backwardTime= $settings.backwardTime;
 
     const saveSettings = () =>{
         const inputs = document.querySelectorAll("input");
@@ -148,6 +63,53 @@
     const updateTheme = () =>{
 
     }
+
+    if (!savedSettings)
+        resetSettings();
+    else {
+        const parsedSavedSettings = JSON.parse(savedSettings);
+        $settings = {
+            primaryLightColour: parsedSavedSettings.primaryLightColour,
+            secondaryLightColour: parsedSavedSettings.secondaryLightColour,
+            secondary2LightColour: parsedSavedSettings.secondary2LightColour,
+            secondary3LightColour: parsedSavedSettings.secondary3LightColour,
+            accentLightColour: parsedSavedSettings.accentLightColor,
+            fontLightColour: parsedSavedSettings.fontLightColour,
+            rangeLightColour: parsedSavedSettings.rangeLightColour,
+            itemsLightColour: parsedSavedSettings.itemsLightColour,
+            primaryDarkColour: parsedSavedSettings.primaryDarkColour,
+            secondaryDarkColour: parsedSavedSettings.secondaryDarkColour,
+            secondary2DarkColour: parsedSavedSettings.secondary2DarkColour,
+            secondary3DarkColour: parsedSavedSettings.secondary3DarkColour,
+            accentDarkColour: parsedSavedSettings.accentDarkColour,
+            fontDarkColour: parsedSavedSettings.fontDarkColour,
+            rangeDarkColour: parsedSavedSettings.rangeDarkColour,
+            itemsDarkColour: parsedSavedSettings.itemsDarkColour,
+            forwardTime: parseInt(parsedSavedSettings.forwardTime),
+            backwardTime: parseInt(parsedSavedSettings.backwardTime),
+        }
+    }
+
+    let primaryLightColour= $settings.primaryLightColour;
+    let secondaryLightColour= $settings.secondaryLightColour;
+    let secondary2LightColour= $settings.secondary2LightColour;
+    let secondary3LightColour= $settings.secondary3LightColour;
+    let accentLightColour= $settings.accentLightColour;
+    let fontLightColour= $settings.fontLightColour;
+    let rangeLightColour= $settings.rangeLightColour;
+    let itemsLightColour= $settings.itemsLightColour;
+    let primaryDarkColour= $settings.primaryDarkColour;
+    let secondaryDarkColour= $settings.secondaryDarkColour;
+    let secondary2DarkColour= $settings.secondary2DarkColour;
+    let secondary3DarkColour= $settings.secondary3DarkColour;
+    let accentDarkColour= $settings.accentDarkColour;
+    let fontDarkColour= $settings.fontDarkColour;
+    let rangeDarkColour= $settings.rangeDarkColour;
+    let itemsDarkColour= $settings.itemsDarkColour;
+    let forwardTime= $settings.forwardTime;
+    let backwardTime= $settings.backwardTime;
+
+    
 
 </script>
 
