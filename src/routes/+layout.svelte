@@ -27,7 +27,34 @@
         root.style.setProperty('--items-colour', items);
     }
 
+    const loadSettings = () => {
+        const savedSettings : string | any = window.localStorage.getItem("settings");
+        const parsedSavedSettings = JSON.parse(savedSettings);
+        $settings = {
+            primaryLightColour: parsedSavedSettings.primaryLightColour,
+            secondaryLightColour: parsedSavedSettings.secondaryLightColour,
+            secondary2LightColour: parsedSavedSettings.secondary2LightColour,
+            secondary3LightColour: parsedSavedSettings.secondary3LightColour,
+            accentLightColour: parsedSavedSettings.accentLightColor,
+            fontLightColour: parsedSavedSettings.fontLightColour,
+            rangeLightColour: parsedSavedSettings.rangeLightColour,
+            itemsLightColour: parsedSavedSettings.itemsLightColour,
+            primaryDarkColour: parsedSavedSettings.primaryDarkColour,
+            secondaryDarkColour: parsedSavedSettings.secondaryDarkColour,
+            secondary2DarkColour: parsedSavedSettings.secondary2DarkColour,
+            secondary3DarkColour: parsedSavedSettings.secondary3DarkColour,
+            accentDarkColour: parsedSavedSettings.accentDarkColour,
+            fontDarkColour: parsedSavedSettings.fontDarkColour,
+            rangeDarkColour: parsedSavedSettings.rangeDarkColour,
+            itemsDarkColour: parsedSavedSettings.itemsDarkColour,
+            forwardTime: parseInt(parsedSavedSettings.forwardTime),
+            backwardTime: parseInt(parsedSavedSettings.backwardTime),
+        }
+    }
+
     onMount(async () => {
+        loadSettings();
+
         root = document.querySelector(":root");
 
         if(darkmode)
