@@ -101,6 +101,54 @@
         localStorage.setItem("settings", JSON.stringify($settings));
     }
 
+    const resetSettings = () =>{
+        localStorage.setItem("settings", JSON.stringify({
+            primaryLightColour: "#ffffff",
+            secondaryLightColour: "#e5dfdc",
+            secondary2LightColour: "#cac1ba",
+            secondary3LightColour: "#93989f",
+            accentLightColour: "#000000",
+            fontLightColour: "#000000",
+            rangeLightColour: "#cac1ba",
+            itemsLightColour: "#ffffff",
+            primaryDarkColour: "#111115",
+            secondaryDarkColour: "#404055",
+            secondary2DarkColour: "#2d2d3a",
+            secondary3DarkColour: "#1d1d24",
+            accentDarkColour: "#000000",
+            fontDarkColour: "#ffffff",
+            rangeDarkColour: "#c09967",
+            itemsDarkColour: "#69697d",
+            forwardTime: 15,
+            backwardTime: 15,
+        } satisfies Settings ));
+
+        $settings = {
+            primaryLightColour: "#ffffff",
+            secondaryLightColour: "#e5dfdc",
+            secondary2LightColour: "#cac1ba",
+            secondary3LightColour: "#93989f",
+            accentLightColour: "#000000",
+            fontLightColour: "#000000",
+            rangeLightColour: "#cac1ba",
+            itemsLightColour: "#ffffff",
+            primaryDarkColour: "#111115",
+            secondaryDarkColour: "#404055",
+            secondary2DarkColour: "#2d2d3a",
+            secondary3DarkColour: "#1d1d24",
+            accentDarkColour: "#000000",
+            fontDarkColour: "#ffffff",
+            rangeDarkColour: "#c09967",
+            itemsDarkColour: "#69697d",
+            forwardTime: 15,
+            backwardTime: 15,
+        }
+    }
+
+    const updateTheme = () =>{
+
+    }
+
 </script>
 
 
@@ -110,6 +158,7 @@
             Settings
         </div>
         <button on:click={saveSettings} class="bg-blue-400 hover:bg-blue-450 active:bg-blue-600 p-1 px-4 rounded-md ml-2 text-xl text-white font-semibold">Save</button>
+        <button on:click={resetSettings} class="bg-[#ef6657] hover:bg-[#ee5544] active:bg-[#ec4432] p-1 px-4 rounded-md ml-2 text-xl text-white font-semibold">Reset</button>
     </div>
     
 
