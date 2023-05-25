@@ -241,6 +241,8 @@
         updateSongData();
         saveSongData(currentSong);
 
+		isPlaying = false;
+
         playStart = new Date();
         currentSongIndex = songIndex;
         currentPlayTime = 0;
@@ -302,6 +304,8 @@
         savePlaylist(playlists[currentPlaylist]);
         currentPlaylist = playlistIndex;
         currentSongIndex = 0;
+
+		isPlaying = false;
 
 		if (playlists[currentPlaylist].songIds.length === 0) {
 			alert("Please add songs to that playlist first!");
