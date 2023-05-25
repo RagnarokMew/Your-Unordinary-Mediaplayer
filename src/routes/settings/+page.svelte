@@ -72,29 +72,54 @@
         }
     }
 
-    const updateSettings = (e: Event) => {
-        const input = e.target as HTMLInputElement;
-        const id = input.id;
-        ($settings as any)[id] = input.value;
-    }
+    let primaryLightColour= $settings.primaryLightColour;
+    let secondaryLightColour= $settings.secondaryLightColour;
+    let secondary2LightColour= $settings.secondary2LightColour;
+    let secondary3LightColour= $settings.secondary3LightColour;
+    let accentLightColour= $settings.accentLightColour;
+    let fontLightColour= $settings.fontLightColour;
+    let rangeLightColour= $settings.rangeLightColour;
+    let itemsLightColour= $settings.itemsLightColour;
+    let primaryDarkColour= $settings.primaryDarkColour;
+    let secondaryDarkColour= $settings.secondaryDarkColour;
+    let secondary2DarkColour= $settings.secondary2DarkColour;
+    let secondary3DarkColour= $settings.secondary3DarkColour;
+    let accentDarkColour= $settings.accentDarkColour;
+    let fontDarkColour= $settings.fontDarkColour;
+    let rangeDarkColour= $settings.rangeDarkColour;
+    let itemsDarkColour= $settings.itemsDarkColour;
+    let forwardTime= $settings.forwardTime;
+    let backwardTime= $settings.backwardTime;
 
-    onDestroy(() => {
+    const saveSettings = () =>{
+        const inputs = document.querySelectorAll("input");
+        inputs.forEach(input => {
+            let id = input.id;
+            ($settings as any)[id] = input.value;
+        });
+
         localStorage.setItem("settings", JSON.stringify($settings));
-    })
+    }
 
 </script>
 
 
 <main class="flex flex-col divide-y-4 w-1/2 p-4">
-    <div class="font-bold text-4xl p-2">
-        Settings
+    <div class="flex gap-10 p-2">
+        <div class="font-bold text-4xl">
+            Settings
+        </div>
+        <button on:click={saveSettings} class="bg-blue-400 hover:bg-blue-450 active:bg-blue-600 p-1 px-4 rounded-md ml-2 text-xl text-white font-semibold">Save</button>
     </div>
     
 
     <div class="flex flex-col gap-1 p-4 divide-y-4">
-        <div class="font-bold text-3xl">
-            Themes
+        <div class="flex gap-5">
+            <div class="font-bold text-3xl">
+                Themes
+            </div>
         </div>
+        
 
         <!--Light Colours-->
         <div class="flex flex-col gap-2 p-4">
@@ -103,21 +128,21 @@
             </div>
 
             <label for="primaryLightColour">Primary Colour</label>
-            <input on:change={updateSettings} id="primaryLightColour" type="color">
+            <input id="primaryLightColour" type="color" bind:value={primaryLightColour}>
             <label for="secondaryLightColour">Secondary Colour 1</label>
-            <input on:change={updateSettings} id="secondaryLightColour" type="color">
+            <input id="secondaryLightColour" type="color" bind:value={secondaryLightColour}>
             <label for="secondary2LightColour">Secondary Colour 2</label>
-            <input on:change={updateSettings} id="secondary2LightColour" type="color">
+            <input id="secondary2LightColour" type="color" bind:value={secondary2LightColour}>
             <label for="secondary3LightColour">Secondary Colour 3</label>
-            <input on:change={updateSettings} id="secondary3LightColour" type="color">
+            <input id="secondary3LightColour" type="color" bind:value={secondary3LightColour}>
             <label for="accentLightColour">Accent Colour</label>
-            <input on:change={updateSettings} id="accentLightColour" type="color">
+            <input id="accentLightColour" type="color" bind:value={accentLightColour}>
             <label for="fontLightColour">Text / Icons Colour</label>
-            <input on:change={updateSettings} id="fontLightColour" type="color">
+            <input id="fontLightColour" type="color" bind:value={fontLightColour}>
             <label for="rangeLightColour">Progress Bar Colour</label>
-            <input on:change={updateSettings} id="rangeLightColour" type="color">
+            <input id="rangeLightColour" type="color" bind:value={rangeLightColour}>
             <label for="itemsLightColour">Song Bubble Colour</label>
-            <input on:change={updateSettings} id="itemsLightColour" type="color">
+            <input id="itemsLightColour" type="color" bind:value={itemsLightColour}>
         </div>
 
         <!--Dark Colours-->
@@ -127,28 +152,28 @@
             </div>
     
             <label for="primaryDarkColour">Primary Colour</label>
-            <input on:change={updateSettings} id="primaryDarkColour" type="color">
+            <input id="primaryDarkColour" type="color" bind:value={$settings.primaryDarkColour}>
             <label for="secondaryDarkColour">Secondary Colour 1</label>
-            <input on:change={updateSettings} id="secondaryDarkColour" type="color">
-            <label for="secondary2LightColour">Secondary Colour 2</label>
-            <input on:change={updateSettings} id="secondary2LightColour" type="color">
-            <label for="secondary3LightColour">Secondary Colour 3</label>
-            <input on:change={updateSettings} id="secondary3LightColour" type="color">
+            <input id="secondaryDarkColour" type="color" bind:value={$settings.secondaryDarkColour}>
+            <label for="secondary2DarkColour">Secondary Colour 2</label>
+            <input id="secondary2DarkColour" type="color" bind:value={$settings.secondary2DarkColour}>
+            <label for="secondary3DarkColour">Secondary Colour 3</label>
+            <input id="secondary3DarkColour" type="color" bind:value={$settings.secondary3DarkColour}>
             <label for="accentDarkColour">Accent Colour</label>
-            <input on:change={updateSettings} id="accentDarkColour" type="color">
+            <input id="accentDarkColour" type="color" bind:value={$settings.accentDarkColour}>
             <label for="fontDarkColour">Text / Icons Colour</label>
-            <input on:change={updateSettings} id="fontDarkColour" type="color">
+            <input id="fontDarkColour" type="color" bind:value={$settings.fontDarkColour}>
             <label for="rangeDarkColour">Progress Bar Colour</label>
-            <input on:change={updateSettings} id="rangeDarkColour" type="color">
+            <input id="rangeDarkColour" type="color" bind:value={$settings.rangeDarkColour}>
             <label for="itemsDarkColour">Song Bubble Colour</label>
-            <input on:change={updateSettings} id="itemsDarkColour" type="color">
+            <input id="itemsDarkColour" type="color" bind:value={$settings.itemsDarkColour}>
         </div>
         
         <div class="flex flex-col gap-2 my-2 py-2">
             <label for="forwardTime">Forward time:</label>
-            <input value="15" on:change={updateSettings} id="forwardTime" type="number" class="">
+            <input value="15" id="forwardTime" type="number">
             <label for="backwardTime">Backward time:</label>
-            <input value="15" on:change={updateSettings} id="backwardTime" type="number" class="">
+            <input value="15" id="backwardTime" type="number">
         </div>
         
     </div>
