@@ -8,7 +8,7 @@
     if (!savedSettings) {
         localStorage.setItem("settings", JSON.stringify({
             primaryLightColour: "#ffffff",
-            secondaryLightColour: "#efe6e6",
+            secondaryLightColour: "#e5dfdc",
             secondary2LightColour: "#cac1ba",
             secondary3LightColour: "#93989f",
             accentLightColour: "#000000",
@@ -29,7 +29,7 @@
 
         $settings = {
             primaryLightColour: "#ffffff",
-            secondaryLightColour: "#efe6e6",
+            secondaryLightColour: "#e5dfdc",
             secondary2LightColour: "#cac1ba",
             secondary3LightColour: "#93989f",
             accentLightColour: "#000000",
@@ -89,13 +89,19 @@
     <div class="font-bold text-4xl p-2">
         Settings
     </div>
-    <!--Light Colours-->
+    
+
     <div class="flex flex-col gap-1 p-4 divide-y-4">
         <div class="font-bold text-3xl">
             Themes
         </div>
 
-        <div class="flex flex-col gap-2">
+        <!--Light Colours-->
+        <div class="flex flex-col gap-2 p-4">
+            <div class="font-bold text-2xl">
+                Light Mode
+            </div>
+
             <label for="primaryLightColour">Primary Colour</label>
             <input on:change={updateSettings} id="primaryLightColour" type="color">
             <label for="secondaryLightColour">Secondary Colour 1</label>
@@ -114,44 +120,37 @@
             <input on:change={updateSettings} id="itemsLightColour" type="color">
         </div>
 
-        <div class="font-bold text-2xl p-4">
-            Light Mode
+        <!--Dark Colours-->
+        <div class="flex flex-col gap-2 p-4">
+            <div class="font-bold text-2xl">
+                Dark Mode
+            </div>
+    
+            <label for="primaryDarkColour">Primary Colour</label>
+            <input on:change={updateSettings} id="primaryDarkColour" type="color">
+            <label for="secondaryDarkColour">Secondary Colour 1</label>
+            <input on:change={updateSettings} id="secondaryDarkColour" type="color">
+            <label for="secondary2LightColour">Secondary Colour 2</label>
+            <input on:change={updateSettings} id="secondary2LightColour" type="color">
+            <label for="secondary3LightColour">Secondary Colour 3</label>
+            <input on:change={updateSettings} id="secondary3LightColour" type="color">
+            <label for="accentDarkColour">Accent Colour</label>
+            <input on:change={updateSettings} id="accentDarkColour" type="color">
+            <label for="fontDarkColour">Text / Icons Colour</label>
+            <input on:change={updateSettings} id="fontDarkColour" type="color">
+            <label for="rangeDarkColour">Progress Bar Colour</label>
+            <input on:change={updateSettings} id="rangeDarkColour" type="color">
+            <label for="itemsDarkColour">Song Bubble Colour</label>
+            <input on:change={updateSettings} id="itemsDarkColour" type="color">
         </div>
-
         
-
-        <div class="font-bold text-2xl">
-            Dark Mode
+        <div class="flex flex-col gap-2 my-2 py-2">
+            <label for="forwardTime">Forward time:</label>
+            <input value="15" on:change={updateSettings} id="forwardTime" type="number" class="">
+            <label for="backwardTime">Backward time:</label>
+            <input value="15" on:change={updateSettings} id="backwardTime" type="number" class="">
         </div>
-
-        <label for="primaryDarkColour">Primary Colour</label>
-        <input on:change={updateSettings} id="primaryDarkColour" type="color">
-        <label for="secondaryDarkColour">Secondary Colour 1</label>
-        <input on:change={updateSettings} id="secondaryDarkColour" type="color">
-        <label for="secondary2LightColour">Secondary Colour 2</label>
-        <input on:change={updateSettings} id="secondary2LightColour" type="color">
-        <label for="secondary3LightColour">Secondary Colour 3</label>
-        <input on:change={updateSettings} id="secondary3LightColour" type="color">
-        <label for="accentDarkColour">Accent Colour</label>
-        <input on:change={updateSettings} id="accentDarkColour" type="color">
-        <label for="fontDarkColour">Text / Icons Colour</label>
-        <input on:change={updateSettings} id="fontDarkColour" type="color">
-        <label for="rangeDarkColour">Progress Bar Colour</label>
-        <input on:change={updateSettings} id="rangeDarkColour" type="color">
-        <label for="itemsDarkColour">Song Bubble Colour</label>
-        <input on:change={updateSettings} id="itemsDarkColour" type="color">
-    </div>
-
-    <!--Dark Colours-->
-    <div class="flex flex-col gap-1">
         
-    </div>
-
-    <div class="flex flex-col gap-1">
-        <label for="forwardTime">Forward time:</label>
-        <input value="15" on:change={updateSettings} id="forwardTime" type="number">
-        <label for="backwardTime">Backward time:</label>
-        <input value="15" on:change={updateSettings} id="backwardTime" type="number">
     </div>
 
 </main>
@@ -160,5 +159,27 @@
     label
     {
         font-weight: 600;
+    }
+    input[type="number"]
+    {
+        background-color: var(--secondary-colour);
+        border-radius: 5px;
+        padding: 2px 10px;
+        -moz-appearance: textfield;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button 
+    {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type="color"]
+    {
+        padding: 0;
+        border: 0;
+        border-radius: 10px;
+        background: none;
     }
 </style>
