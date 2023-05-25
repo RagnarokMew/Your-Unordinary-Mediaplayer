@@ -5,7 +5,7 @@ const songsData = writable<SongData[]>(new Array<SongData>());
 const playlists = writable<Playlist[]>(new Array<Playlist>());
 const settings = writable<Settings>({
     primaryLightColour: "#ffffff",
-    secondaryLightColour: "#efe6e6",
+    secondaryLightColour: "#e5dfdc",
     secondary2LightColour: "#cac1ba",
     secondary3LightColour: "#93989f",
     accentLightColour: "#000000",
