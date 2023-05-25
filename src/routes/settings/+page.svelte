@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { Settings } from "$lib/interfaces";
     import { settings } from "$lib/stores";
-	import { onDestroy } from "svelte";
     
     const localStorage = window.localStorage;
     const savedSettings = localStorage.getItem("settings");
@@ -14,6 +13,7 @@
         });
 
         localStorage.setItem("settings", JSON.stringify($settings));
+        updateTheme();
     }
 
     const resetSettings = () =>{
@@ -60,8 +60,24 @@
         }
     }
 
-    const updateTheme = () =>{
+    const changeTheme = (primary : string, secondary : string, secondary2 : string, secondary3 : string, accent : string, font : string, time : string, items : string) => {
+        const root : HTMLElement | any = document.querySelector(":root");
 
+        root.style.setProperty('--primary-colour', primary);
+        root.style.setProperty('--secondary-colour', secondary);
+        root.style.setProperty('--secondary2-colour', secondary2);
+        root.style.setProperty('--secondary3-colour', secondary3);
+        root.style.setProperty('--accent-colour', accent);
+        root.style.setProperty('--text-colour',font);
+        root.style.setProperty('--time-range-colour',time);
+        root.style.setProperty('--items-colour', items);
+    }
+
+    const updateTheme = () =>{
+        if(document.querySelector("html")?.classList.contains("dark"))
+            changeTheme($settings.primaryDarkColour, $settings.secondaryDarkColour,$settings.secondary2DarkColour, $settings.secondary3DarkColour, $settings.accentDarkColour, $settings.fontDarkColour, $settings.rangeDarkColour, $settings.itemsDarkColour);
+        else
+            changeTheme($settings.primaryLightColour, $settings.secondaryLightColour,$settings.secondary2LightColour, $settings.secondary3LightColour, $settings.accentLightColour, $settings.fontLightColour, $settings.rangeLightColour, $settings.itemsLightColour);
     }
 
     if (!savedSettings)
