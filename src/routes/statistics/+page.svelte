@@ -119,19 +119,50 @@
 </script>
 
 
-<main>
-    <strong><p>Playlists sorted by # of songs:</p></strong>
-    {#each mostListenedPlaylists as playlist, index}
-        <p>Playlist {playlist.name} is #{index + 1} with {playlist.listenTime / 3600}h total listen time!</p>
-    {/each}
-    <br>
-    <strong><p>Songs sorted by listen count:</p></strong>
-    {#each mostListenedSongsByAmount as song, index}
-        <p>{song.name} by {song.artist} is #{index + 1} with {song.listens} listen and {song.listenTime}s of play time</p>
-    {/each}
+<main class="flex flex-col p-5 overflow-y-scroll w-full h-full gap-4">
 
-    <canvas bind:this={songsCanvas}></canvas>
-    <canvas bind:this={playlistsCanvas}></canvas>
-    <canvas bind:this={playlistListenTimeCanvas}></canvas>
-    <canvas bind:this={songListenTimeCanvas}></canvas>
+    <h1 class="text-3xl font-extrabold flex justify-center items-center">Data & Statistics</h1>
+
+    <div class="flex flex-row w-full gap-4">
+        <div class="flex justify-center items-center secondary2-bg rounded-2xl w-full h-[512px] p-8">
+            <canvas bind:this={songListenTimeCanvas}></canvas>
+        </div>
+    </div>
+
+    <div class="flex flex-row w-full gap-4">
+        <div class="flex justify-center items-center secondary2-bg rounded-2xl w-full h-[512px] p-8">
+            <canvas bind:this={playlistsCanvas}></canvas>
+        </div>
+        <div class="flex justify-center items-center secondary2-bg rounded-2xl w-full h-[512px] p-8">
+            <canvas bind:this={playlistListenTimeCanvas}></canvas>
+        </div>
+    </div>
+
+    <div class="flex flex-row w-full gap-4">
+        <div class="flex justify-center items-center secondary2-bg rounded-2xl w-full h-[512px] p-8">
+            <canvas bind:this={songsCanvas}></canvas>
+        </div>
+    </div>
+
+    <div class="flex flex-row w-full gap-4">
+        <div class="flex flex-col justify-center items-center secondary2-bg rounded-2xl w-1/2 p-8">
+            <p class="font-bold text-xl">Playlists sorted by # of songs:</p>
+            {#each mostListenedPlaylists as playlist, index}
+                <p>Playlist {playlist.name} is #{index + 1} with {playlist.listenTime / 3600}h total listen time!</p>
+            {/each}
+        </div>
+        <div class="flex flex-col justify-center items-center secondary2-bg rounded-2xl w-1/2 p-8">
+            <p class="font-bold text-xl">Songs sorted by listen count:</p>
+            {#each mostListenedSongsByAmount as song, index}
+                <p>{song.name} by {song.artist} is #{index + 1} with {song.listens} listen and {song.listenTime}s of play time</p>
+            {/each}
+        </div>
+    </div>
+
+    <div class="flex flex-row w-full gap-4">
+        <div class="flex justify-center items-center secondary2-bg rounded-2xl w-full p-8 font-bold text-2xl">
+            So many memories are here and even more are to be made. Thank you for allowing us to be a part of them!
+        </div>
+    </div>
+    
 </main>
