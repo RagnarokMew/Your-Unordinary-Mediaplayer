@@ -28,9 +28,9 @@
     <p class="text-2xl font-semibold">Copyright Statement</p>
     <div class="flex flex-col gap-1 text-lg">
         <div class="font-bold">
-            Made with: [Icons]
+            Made with: SvelteKit, Vite, TailwindCSS
         </div>
-        <p class="font-bold">Contact us: [email]</p>
+        <p class="font-bold">Contact us: <span class="pl-2"> yourunordinarymediaplayer@gmail.com</span></p>
         <div>
            <p class="font-extrabold">Sign up for our newsletter:</p>
             <form class="mt-2">
