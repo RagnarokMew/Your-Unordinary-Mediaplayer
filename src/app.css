@@ -2,24 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base
-{
-    .example{
-        @apply dark:bg-primary-dark bg-slate-300;
-    }
-}
-
 :root
 {
     --primary-colour: #ffffff;
-    --secondary-colour: #ffffff;
-    --secondary2-colour: #ffffff;
-    --accent-colour: #ffffff;
-    --text-colour: #ffffff;
-
-
-    --time-range-colour: #43e0e6;;
-    --modifier-range-colour: #0098be;
+    --secondary-colour: #efe6e6;
+    --secondary2-colour: #cac1ba;
+    --secondary3-colour: #93989f;
+    --accent-colour: #000000;
+    --text-colour: #000000;
+    --time-range-colour: #cac1ba;
+    --items-colour: #ffffff;
     
 }
 
@@ -29,13 +21,33 @@
 }
 .secondary-bg
 {
-    background-color: var(--secondary-color);
+    background-color: var(--secondary-colour);
+}
+.secondary2-bg
+{
+    background-color: var(--secondary2-colour);
+}
+.secondary3-bg
+{
+    background-color: var(--secondary3-colour);
 }
 .accent-bg
 {
-    accent-color: var(--accent-color);
+    background-color: var(--accent-color);
+}
+.items-bg
+{
+    background-color: var(--items-colour);
 }
 .font
 {
     color: var(--text-colour);
+}
+.fill
+{
+    fill: var(--text-colour);
+}
+.stroke
+{
+    stroke: var(--text-colour);
 }
