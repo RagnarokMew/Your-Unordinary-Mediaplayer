@@ -11,12 +11,12 @@
         document.documentElement.classList.toggle('dark');
 
         if(darkmode)
-            changeTheme(root, $settings.primaryDarkColour, $settings.secondaryDarkColour, $settings.secondary2DarkColour, $settings.secondary3DarkColour, $settings.accentDarkColour, $settings.fontDarkColour, $settings.rangeDarkColour, $settings.itemsDarkColour);
+            changeTheme($settings.primaryDarkColour, $settings.secondaryDarkColour, $settings.secondary2DarkColour, $settings.secondary3DarkColour, $settings.accentDarkColour, $settings.fontDarkColour, $settings.rangeDarkColour, $settings.itemsDarkColour);
         else
-            changeTheme(root, $settings.primaryLightColour, $settings.secondaryLightColour, $settings.secondary2LightColour, $settings.secondary3LightColour, $settings.accentLightColour, $settings.fontLightColour, $settings.rangeLightColour, $settings.itemsLightColour);
+            changeTheme($settings.primaryLightColour, $settings.secondaryLightColour, $settings.secondary2LightColour, $settings.secondary3LightColour, $settings.accentLightColour, $settings.fontLightColour, $settings.rangeLightColour, $settings.itemsLightColour);
     }
 
-    const changeTheme = (root : HTMLElement, primary : string, secondary : string, secondary2 : string, secondary3 : string, accent : string, font : string, time : string, items : string) => {
+    const changeTheme = (primary : string, secondary : string, secondary2 : string, secondary3 : string, accent : string, font : string, time : string, items : string) => {
         root.style.setProperty('--primary-colour', primary);
         root.style.setProperty('--secondary-colour', secondary);
         root.style.setProperty('--secondary2-colour', secondary2);
@@ -53,14 +53,14 @@
     }
 
     onMount(async () => {
-        loadSettings();
-
         root = document.querySelector(":root");
 
+        loadSettings();
+
         if(darkmode)
-            changeTheme(root, $settings.primaryDarkColour, $settings.secondaryDarkColour, $settings.secondary2DarkColour, $settings.secondary3DarkColour, $settings.accentDarkColour, $settings.fontDarkColour, $settings.rangeDarkColour, $settings.itemsDarkColour);
+            changeTheme($settings.primaryDarkColour, $settings.secondaryDarkColour, $settings.secondary2DarkColour, $settings.secondary3DarkColour, $settings.accentDarkColour, $settings.fontDarkColour, $settings.rangeDarkColour, $settings.itemsDarkColour);
         else
-            changeTheme(root, $settings.primaryLightColour, $settings.secondaryLightColour, $settings.secondary2LightColour, $settings.secondary3LightColour, $settings.accentLightColour, $settings.fontLightColour, $settings.rangeLightColour, $settings.itemsLightColour);
+            changeTheme($settings.primaryLightColour, $settings.secondaryLightColour, $settings.secondary2LightColour, $settings.secondary3LightColour, $settings.accentLightColour, $settings.fontLightColour, $settings.rangeLightColour, $settings.itemsLightColour);
     });
 </script>
 
