@@ -26,7 +26,7 @@
             Looking for a change in the way you listen to your favourite music? <br>
             Look no further than your Romanian locally sourced media player that wishes to revolutionise your music experience.
         </p>
-        <div class="pld w-96 h-60 border-solid border-black dark:border-white border-4"></div>
+        <img src="Image1.png" alt="Amazing Image" class="w-[450px] h-[300px] object-cover rounded-lg">
     </div>
     <div class="section2 py-5 secondary-bg flex-grow flex flex-col justify-center items-center"> <!--Colours not done since am not feeling them-->
         <h2 class="flex justify-center items-center text-2xl italic font-bold">What we offer...</h2>
