@@ -1,4 +1,6 @@
 # Your Unoridinary Mediaplayer
+[![en](https://img.shields.io/badge/lang-ro-red)](https://github.com/RagnarokMew/Your-Unordinary-Mediaplayer/blob/main/README.ro.md)
+[![en](https://img.shields.io/badge/lang-en-blue)](https://github.com/RagnarokMew/Your-Unordinary-Mediaplayer/blob/main/README.md)
 
 ## General Information
 * Category: Web
@@ -9,7 +11,7 @@
 ## Description
 Your Unoridinary Mediaplayer was birthed by the idea of having a better music player for already existing files on your system, as the ones provided by the operating system were not enough. As such, YUM sets out to bring the features of a mediaplayer expected by the user to the files stored locally.
 <br>
-YUM was build with a few tenets in mind, such as theme customisability, ease of use and last but not least the ability to monitor your listening habits, in a fun way with charts and piecharts.
+YUM was built with a few tenets in mind, such as theme customisability, ease of use and last but not least the ability to monitor your listening habits, in a fun way with charts and piecharts.
 <br>
 YUM is split into multiple pages each with different functionalities, these being:
 * The Home page (Landing Page), which is a general marketing presentation of YUM
@@ -34,6 +36,10 @@ YUM is split into multiple pages each with different functionalities, these bein
 * Dicebear
 * Chart.JS
 
+### Storage
+* IndexedDB
+* localStorage
+
 ### Hosting
 The site (site) is hosted via Render using the free tier.
 
@@ -42,8 +48,9 @@ The site (site) is hosted via Render using the free tier.
 * Internet Connection
 * Any Browser (except IE 6-8, Android Browser 2.1-2.3)
 
-### For hosting:
-* Node.js 16.14 OR Node.js >18
+### For hosting it yourself:
+* Node.js 16.14 OR Node.js >=18
+* Any Browser (except IE 6-8, Android Browser 2.1-2.3)
 
 ## Creators:
 
@@ -51,10 +58,12 @@ The site (site) is hosted via Render using the free tier.
 * Scoala: Colegiul National "Elena Cuza"
 * Clasa: 11
 * Judet: București
-* Oras: Sector 6
+* Oras: București
 
-### Mercea Robert Andrei (Ropler6)
+### Mercea Robert-Andrei (Ropler6)
 * Scoala: Colegiul National "Elena Cuza"
 * Clasa: 11
 * Judet: București
-* Oras: Sector 6
+* Oras: București
+
+## Screenshots
