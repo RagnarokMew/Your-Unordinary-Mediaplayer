@@ -67,3 +67,10 @@ The site (site) is hosted via Render using the free tier.
 * Oras: București
 
 ## Screenshots
+<img src="documentation/Screenshot1.png">
+
+<img src="documentation/Screenshot4.png">
+
+<img src="documentation/Screenshot5.png">
+
+<img src="documentation/Screenshot6.png">
