@@ -486,8 +486,8 @@
 				</button>
 				<div bind:this={volumeRange} class="flex flex-col hidden overflow-hidden">
 					<input
-						on:change={updateVolume}
 						bind:value={volume}
+						on:input={updateVolume}
 						type="range"
 						min="0"
 						max="1"
@@ -537,8 +537,8 @@
 		<div class="flex flex-col">
 			<label for="stereo">Panning:</label>
 			<input
-				on:change={updatePanning}
 				bind:value={panning}
+				on:input={updatePanning}
 				type="range"
 				min="-1"
 				max="1"
