@@ -18,7 +18,7 @@
 
 <main in:fade class="flex flex-col items-bg m-2 p-1 rounded-lg">
     <!-- svelte-ignore a11y-click-events-have-key-events -->
-    <button on:click={onClick} class="break-all">
+    <button on:click={onClick} class="break-before-auto break-words">
         <span class="font-bold"> {songName} </span> by <span class="font-semibold italic"> {songArtist} </span>
     </button>
 </main>
