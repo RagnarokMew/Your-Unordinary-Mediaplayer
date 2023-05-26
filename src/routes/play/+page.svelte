@@ -359,7 +359,7 @@
     })
 </script>
 
-<main class="grid grid-cols-[5fr,1fr] grid-rows-[1fr,5fr,1fr] w-full h-screen relative">
+<main class="grid grid-cols-[5fr,1fr] grid-rows-[1fr,5fr,1fr] w-full h-screen overflow-y-auto relative">
 	<h1
 		class="row-span-1 col-start-1 col-end-2 font-bold text-3xl py-3 self-center justify-self-center text-center"
 	>
@@ -460,7 +460,7 @@
 
 		<!-- Controls -->
 		<div
-			class="flex flex-row items-center justify-between secondary3-bg rounded-xl w-2/3 h-1/6 px-6"
+			class="flex flex-row items-center justify-between secondary3-bg rounded-xl w-2/3 h-1/6 px-6 overflow-x-auto"
 		>
 			<div class="controls-left flex flex-row items-center justify-evenly gap-10">
 				<button on:click={prevSong}>
@@ -543,9 +543,9 @@
 
 	<!-- Bottom panel -->
 	<div
-		class="flex flex-row gap-5 row-start-3 row-end-4 col-start-1 col-end-2 secondary3-bg rounded-lg px-4 py-1 m-4 w-2/3 h-2/3 self-center justify-self-center justify-evenly"
+		class="flex flex-row gap-5 row-start-3 row-end-4 col-start-1 col-end-2 secondary3-bg rounded-lg px-4 py-1 m-2 w-2/3 h-2/3 self-center justify-self-center justify-evenly"
 	>
-		<div class="flex flex-col">
+		<div class="flex flex-col justify-center items-center">
 			<label for="stereo">Panning:</label>
 			<input
 				bind:value={panning}
@@ -559,7 +559,7 @@
 			/>
 		</div>
 
-		<div class="flex flex-col">
+		<div class="flex flex-col justify-center items-center">
 			<label for="biquad">Biquad: {biquadFilters[biquadIndex]}</label>
 			<input
 				bind:value={biquadIndex}
