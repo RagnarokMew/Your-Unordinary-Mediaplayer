@@ -222,9 +222,15 @@
 
 	const toggleAddToPlaylist = () => {
 		addingToPlaylist = !addingToPlaylist;
+		if(addingToPlaylist)
+			changingPlaylsit = false;
 		creatingNewPlaylist = false;
 	};
-	const toggleChangingPlaylist = () => (changingPlaylsit = !changingPlaylsit);
+	const toggleChangingPlaylist = () => {
+		changingPlaylsit = !changingPlaylsit
+		if(changingPlaylsit)
+			addingToPlaylist = false;
+	};
 	const toggleCreatingNewPlaylist = () => (creatingNewPlaylist = !creatingNewPlaylist);
 
 	const closeForm = () => {
