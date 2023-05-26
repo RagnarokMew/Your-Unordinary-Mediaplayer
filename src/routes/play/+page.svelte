@@ -393,9 +393,11 @@
                 {#if changingPlaylsit}
 					{#each playlists as playlist, index}
 						<div class="flex flex-grow-0 flex-row divide-x-2 items-center justify-start px-4 py-1 gap-2 items-bg rounded-lg">
-							<button on:click={() => deletePlaylistFromDb(index)}>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="ionicon fill h-7 w-7" viewBox="0 0 512 512"><path d="M448 256c0-106-86-192-192-192S64 150 64 256s86 192 192 192 192-86 192-192z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M320 320L192 192M192 320l128-128"/></svg>
-                            </button>
+							{#if index != 0}
+								<button on:click={() => deletePlaylistFromDb(index)}>
+                                	<svg xmlns="http://www.w3.org/2000/svg" class="ionicon fill h-7 w-7" viewBox="0 0 512 512"><path d="M448 256c0-106-86-192-192-192S64 150 64 256s86 192 192 192 192-86 192-192z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M320 320L192 192M192 320l128-128"/></svg>
+                            	</button>
+							{/if}
 							<button on:click={() => changePlaylist(index)} class="p-2 m-2 font-bold break-all w-10/12 h-full">
                                 {playlist.name}
                             </button>
