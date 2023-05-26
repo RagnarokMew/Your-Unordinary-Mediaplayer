@@ -35,6 +35,7 @@ YUM is split into multiple pages each with different functionalities, these bein
 * Node.js
 * Dicebear
 * Chart.JS
+* ionicons
 
 ### Storage
 * IndexedDB
