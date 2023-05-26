@@ -1,6 +1,6 @@
 # Your Unoridinary Mediaplayer
-[![en](https://img.shields.io/badge/lang-ro-red)](https://github.com/RagnarokMew/Your-Unordinary-Mediaplayer/blob/main/README.ro.md)
-[![en](https://img.shields.io/badge/lang-en-blue)](https://github.com/RagnarokMew/Your-Unordinary-Mediaplayer/blob/main/README.md)
+[![en](https://img.shields.io/badge/lang-ro-red)](README.ro.md)
+[![en](https://img.shields.io/badge/lang-en-blue)](README.md)
 
 ## General Information
 * Category: Web
