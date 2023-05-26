@@ -391,7 +391,7 @@
 				{/if}
 			</div>
 
-			<div class="w-full h-[70vh] grid grid-cols-4 overflow-y-scroll gap-3 p-2 border-2 rounded-md border-white dark:border-gray-600">
+			<div class="w-full h-[70vh] grid grid-cols-4 overflow-y-auto gap-3 p-2 border-2 rounded-md border-white dark:border-gray-600">
 				{#if addingToPlaylist}
 					{#each playlists as playlist, index}
 						<button on:click={() => addToPlaylist(index)}
@@ -528,7 +528,7 @@
 		<div class="flex justify-center items-center p-2 text-xl font-semibold break-all">
 			{playlists[currentPlaylist]?.name ?? 'No Playlist'}
 		</div>
-		<div class="overflow-y-scroll h-[70vh]">
+		<div class="overflow-y-auto h-[70vh]">
 			{#each $songsToPlay as song, index}
 				<Song
 					on:playsong={songChosen}

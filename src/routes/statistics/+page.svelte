@@ -119,7 +119,7 @@
 </script>
 
 
-<main class="flex flex-col p-5 overflow-y-scroll w-full h-full gap-4">
+<main class="flex flex-col p-5 overflow-y-auto w-full h-full gap-4">
 
     <h1 class="text-3xl font-extrabold flex justify-center items-center">Data & Statistics</h1>
 

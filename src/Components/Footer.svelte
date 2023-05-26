@@ -4,7 +4,7 @@
     //Form code go here
 </script>
 
-<footer class="secondary2-bg flex gap-28 justify-around items-center px-10 py-3 w-full overflow-x-scroll">
+<footer class="secondary2-bg flex gap-28 justify-around items-center px-10 py-3 w-full overflow-x-auto">
     <div class="flex flex-col gap-3">
         <a href="https://github.com/RagnarokMew/Your-Unordinary-Mediaplayer" target="_blank" rel="noreferrer" class="text-2xl font-extrabold">Your Unordinary Repository</a>
         <div class="flex gap-2">
