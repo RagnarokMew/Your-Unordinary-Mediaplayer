@@ -49,7 +49,7 @@
 </script>
 
 
-<main class="grid grid-cols-3 place-items-center h-screen w-full">
+<main class="grid grid-cols-3 place-items-center h-full min-h-screen w-full overflow-scroll">
     
     <div class="col-span-1 w-1/2 flex flex-col items-center justify-evenly gap-5 p-5 rounded-lg secondary2-bg">
         <h1 class="p-4 font-extrabold text-xl">Add a song</h1>
