@@ -565,7 +565,7 @@
 
 <style>
 	#time::-webkit-slider-thumb {
-		outline: none;
+		outline-color: transparent;
 		cursor: pointer;
 		border: 0;
 		height: 12px;
@@ -576,7 +576,7 @@
 	}
 
 	#time::-moz-range-thumb {
-		outline: none;
+		outline-color: transparent;
 		cursor: pointer;
 		border: 0;
 		height: 12px;
@@ -587,7 +587,7 @@
 	}
 
 	#time::-ms-thumb {
-		outline: none;
+		outline-color: transparent;
 		cursor: pointer;
 		border: 0;
 		height: 12px;
