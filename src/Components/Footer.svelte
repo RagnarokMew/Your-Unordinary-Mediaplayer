@@ -32,7 +32,7 @@
         </div>
         <p class="font-bold">Contact us: <span class="pl-2 break-all"> yourunordinarymediaplayer@gmail.com</span></p>
         <div>
-           <p class="font-extrabold">Sign up for our newsletter:</p>
+           <p class="font-bold">Sign up for our newsletter:</p>
             <form class="mt-2">
                 <input type="email" class="p-1 rounded-md  mb-3 outline-none items-bg">
                 <input type="submit" class="bg-blue-400 hover:bg-blue-450 active:bg-blue-600 p-1 px-2 rounded-md ml-2 text-white font-semibold">
