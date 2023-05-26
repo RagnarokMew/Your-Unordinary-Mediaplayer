@@ -373,9 +373,14 @@
 				<button on:click={closeForm}>
 					<svg xmlns="http://www.w3.org/2000/svg" class="ionicon fill h-10 w-10" viewBox="0 0 512 512"><path d="M448 256c0-106-86-192-192-192S64 150 64 256s86 192 192 192 192-86 192-192z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M320 320L192 192M192 320l128-128"/></svg>
 				</button>
+				{#if changingPlaylsit}
+					<h2 class="flex justify-center items-center font-bold text-xl self-center justify-self-center">Delete / Change Playlist</h2>
+					<div class="flexworkaround"></div>
+				{/if}
 				{#if addingToPlaylist}
+					<h2 class="flex justify-center items-center font-bold text-xl">Add Current Song to Playlist</h2>
 					<button on:click={toggleCreatingNewPlaylist} class="flex flex-grow-0 flex-row items-center justify-start px-4 py-1 gap-2 mr-5 items-bg rounded-lg font-bold">
-                        Create new playlist
+                        Create new playlists
                     </button>
 				{/if}
 			</div>
