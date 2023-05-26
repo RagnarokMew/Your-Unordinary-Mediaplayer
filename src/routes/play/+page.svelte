@@ -11,6 +11,7 @@
     import { createAvatar } from "@dicebear/core"
     import * as shapes from "@dicebear/shapes"
 	import { blur } from "svelte/transition"
+	import { settings } from "$lib/stores";
 
 	export let data: PageData;
 
@@ -137,8 +138,8 @@
 		time = audio.currentTime;
 	};
 
-	let forwardTime = 15;
-	let rewindTime = 15;
+	let forwardTime =  $settings.forwardTime ?? 15;
+	let rewindTime = $settings.backwardTime ?? 15;
 
 	// Make a forward button
 	const forwardSeconds = () => {
