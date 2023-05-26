@@ -1,4 +1,4 @@
-# Your Unoridinary Mediaplayer
+# Your Unordinary Mediaplayer
 [![en](https://img.shields.io/badge/lang-ro-red)](README.ro.md)
 [![en](https://img.shields.io/badge/lang-en-blue)](README.md)
 
@@ -9,7 +9,7 @@
 * Homepage: [site]
 
 ## Description
-Your Unoridinary Mediaplayer was birthed by the idea of having a better music player for already existing files on your system, as the ones provided by the operating system were not enough. As such, YUM sets out to bring the features of a mediaplayer expected by the user to the files stored locally.
+Your Unordinary Mediaplayer was birthed by the idea of having a better music player for already existing files on your system, as the ones provided by the operating system were not enough. As such, YUM sets out to bring the features of a mediaplayer expected by the user to the files stored locally.
 <br>
 YUM was built with a few tenets in mind, such as theme customisability, ease of use and last but not least the ability to monitor your listening habits, in a fun way with charts and piecharts.
 <br>
