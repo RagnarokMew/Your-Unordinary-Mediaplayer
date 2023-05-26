@@ -81,7 +81,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" class="ionicon fill w-5 h-5" viewBox="0 0 512 512"><path d="M448 256c0-106-86-192-192-192S64 150 64 256s86 192 192 192 192-86 192-192z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M320 320L192 192M192 320l128-128"/></svg>
                     </button>
                 
-                    <p class="break-all w-10/12">
+                    <p class="break-before-auto break-words w-10/12">
                         <span class="font-bold"> {song.name} </span> by <span class="font-semibold italic"> {song.artist} </span>
                     </p>
                 </div>
