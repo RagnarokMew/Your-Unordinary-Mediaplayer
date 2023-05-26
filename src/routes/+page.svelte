@@ -22,7 +22,7 @@
         <h3 class="flex justify-center items-center text-3xl font-bold my-5">A novel way to listen to media, right in your browser</h3>
     </div>
     <div class="section1 flex items-center justify-around px-40 py-20 flex-grow">
-        <p class="w-80 self-start text-start flex items-center h-full text-lg gap-2">
+        <p class="w-80 self-start text-start flex items-center h-full text-lg gap-2 font-semibold">
             Looking for a change in the way you listen to your favourite music? <br>
             Look no further than your Romanian locally sourced media player that wishes to revolutionise your music experience.
         </p>
