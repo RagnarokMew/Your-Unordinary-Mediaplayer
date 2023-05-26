@@ -4,7 +4,7 @@
     //Form code go here
 </script>
 
-<footer class="secondary2-bg flex gap-28 justify-around items-center px-10 py-3 w-full">
+<footer class="secondary2-bg flex gap-28 justify-around items-center px-10 py-3 w-full overflow-x-scroll">
     <div class="flex flex-col gap-3">
         <a href="https://github.com/RagnarokMew/Your-Unordinary-Mediaplayer" target="_blank" rel="noreferrer" class="text-2xl font-extrabold">Your Unordinary Repository</a>
         <div class="flex gap-2">
@@ -30,7 +30,7 @@
         <div class="font-bold">
             Made with: SvelteKit, Vite, TailwindCSS
         </div>
-        <p class="font-bold">Contact us: <span class="pl-2"> yourunordinarymediaplayer@gmail.com</span></p>
+        <p class="font-bold">Contact us: <span class="pl-2 break-all"> yourunordinarymediaplayer@gmail.com</span></p>
         <div>
            <p class="font-extrabold">Sign up for our newsletter:</p>
             <form class="mt-2">
