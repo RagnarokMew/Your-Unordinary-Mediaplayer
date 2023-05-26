@@ -65,7 +65,7 @@
 </script>
 
 <main class="primary-bg flex flex-grow font">
-    <nav class="secondary3-bg shadow-sm shadow-rose-200/50 dark:shadow-gray-900/50 sticky top-0 left-0 h-screen p-7 font-extrabold gap-2">
+    <nav class="secondary3-bg shadow-sm shadow-rose-200/50 dark:shadow-gray-900/50 sticky top-0 left-0 h-screen p-7 font-extrabold gap-2 flex flex-col justify-center items-center overflow-y-auto">
         <button> 
             <svg xmlns="http://www.w3.org/2000/svg" class="ionicon fill w-10 h-10" viewBox="0 0 512 512"><title>Menu</title><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="48" d="M88 152h336M88 256h336M88 360h336"/></svg>
         </button>
