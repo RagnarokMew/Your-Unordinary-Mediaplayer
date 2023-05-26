@@ -1,38 +1,60 @@
-# create-svelte
+# Your Unoridinary Mediaplayer
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+## General Information
+* Category: Web
+* Judetul: București
+* Sources: https://github.com/RagnarokMew/Your-Unordinary-Mediaplayer
+* Homepage: [site]
 
-## Creating a project
+## Description
+Your Unoridinary Mediaplayer was birthed by the idea of having a better music player for already existing files on your system, as the ones provided by the operating system were not enough. As such, YUM sets out to bring the features of a mediaplayer expected by the user to the files stored locally.
+<br>
+YUM was build with a few tenets in mind, such as theme customisability, ease of use and last but not least the ability to monitor your listening habits, in a fun way with charts and piecharts.
+<br>
+YUM is split into multiple pages each with different functionalities, these being:
+* The Home page (Landing Page), which is a general marketing presentation of YUM
+* The Play page, where users can play uploaded songs and manage them via playlists
+* The Upload page, where users can upload songs and manage their already uploaded songs via an intuitive UI
+* The Statistics page, where users can see their monitor their listening habits such as: playtime, playcount, song distribution across playlists and more
+* The Forum page, where users can find the answers to frequently asked questions
+* The settings page, where users can customise YUM according to their own wants
 
-If you're seeing this, you've probably already done this step. Congrats!
+## Technical Explanation
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+### Languages used:
+* HTML
+* CSS
+* Javascript / Typescript
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+### Technologies used:
+* SvelteKit
+* Vite
+* TailwindCSS
+* Node.js
+* Dicebear
+* Chart.JS
 
-## Developing
+### Hosting
+The site (site) is hosted via Render using the free tier.
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+## System Requirements:
+### For accessing in on the browser:
+* Internet Connection
+* Any Browser (except IE 6-8, Android Browser 2.1-2.3)
 
-```bash
-npm run dev
+### For hosting:
+* Node.js 16.14 OR Node.js >18
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+## Creators:
 
-## Building
+### Simion Ștefan (RagnarokMew)
+* Scoala: Colegiul National "Elena Cuza"
+* Clasa: 11
+* Judet: București
+* Oras: Sector 6
 
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+### Mercea Robert Andrei (Ropler6)
+* Scoala: Colegiul National "Elena Cuza"
+* Clasa: 11
+* Judet: București
+* Oras: Sector 6
