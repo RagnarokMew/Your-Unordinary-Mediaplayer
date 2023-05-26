@@ -19,7 +19,7 @@ YUM is split into multiple pages each with different functionalities, these bein
 * The Upload page, where users can upload songs and manage their already uploaded songs via an intuitive UI
 * The Statistics page, where users can see their monitor their listening habits such as: playtime, playcount, song distribution across playlists and more
 * The Forum page, where users can find the answers to frequently asked questions
-* The settings page, where users can customise YUM according to their own wants
+* The Settings page, where users can customise YUM according to their own wants
 
 ## Technical Explanation
 
