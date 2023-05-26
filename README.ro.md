@@ -6,7 +6,7 @@
 * Categorie: Web
 * Judetul: București
 * Surse: https://github.com/RagnarokMew/Your-Unordinary-Mediaplayer
-* Homepage: [site]
+* Homepage: https://your-unordinary-mediaplayer.onrender.com
 
 ## Descriere
 Your Unordinary Mediaplayer a luat naștere din ideea de a avea un player de muzica mai bun pentru fișierele deja existente pe sistem, deoarece solutiile oferite de sistemul de operare nu sunt suficiente. Ca atare, YUM își propune să aducă functiile unui mediaplayer modern fișierelor stocate local.
@@ -42,7 +42,7 @@ YUM este împărțit în mai multe pagini, fiecare cu funcționalități diferit
 * localStorage
 
 ### Hosting
-Site-ul (site-ul) este hosted prin intermediul Render folosind nivelul gratuit.
+Site-ul (https://your-unordinary-mediaplayer.onrender.com) este hosted prin intermediul Render folosind nivelul gratuit.
 
 ## Cerinte Sistem:
 ### Pentru accesare in browser:
