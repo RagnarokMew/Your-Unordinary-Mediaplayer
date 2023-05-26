@@ -198,9 +198,9 @@
         
         <div class="flex flex-col gap-2 my-2 py-2">
             <label for="forwardTime">Forward time:</label>
-            <input value="15" id="forwardTime" type="number">
+            <input id="forwardTime" type="number" bind:value={forwardTime}>
             <label for="backwardTime">Backward time:</label>
-            <input value="15" id="backwardTime" type="number">
+            <input id="backwardTime" type="number" bind:value={backwardTime}>
         </div>
         
     </div>
