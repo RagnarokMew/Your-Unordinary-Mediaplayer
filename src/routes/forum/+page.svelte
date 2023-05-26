@@ -9,7 +9,7 @@
 
 </script>
 
-<main class="w-full h-screen flex flex-col">
+<main class="w-full h-full min-h-screen flex flex-col">
 	<div class="flex flex-col items-center justify-center mb-3 secondary-bg">
 		<h2 class="flex justify-center items-center text-5xl font-extrabold my-5">Your Unordinary Mediaplayer - FAQ</h2>
 	</div>
