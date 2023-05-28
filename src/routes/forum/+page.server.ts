@@ -19,7 +19,7 @@ let questions: Question[] = [
     },
     {
         user: "Cosmina",
-        question: "Why does the music stops when changing pages (on the site)?",
+        question: "Why does the music stop when changing pages (on the site)?",
         details: "Due to the design architecture of YUM, the song that is playing at any given time will stop when changing pages (leaving the page designated for playing music). At the moment there are no plans to change this.",
     },
     {
